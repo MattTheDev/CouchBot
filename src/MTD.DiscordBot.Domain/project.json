@@ -2,8 +2,8 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Discord.Net": "1.0.0-rc-00545",
-    "Discord.Net.Commands": "1.0.0-rc-00545",
+    "Discord.Net": "1.0.0-rc-00623",
+    "Discord.Net.Commands": "1.0.0-rc-00623",
     "NETStandard.Library": "1.6.1"
   },
 

@@ -5,8 +5,8 @@
   },
 
   "dependencies": {
-    "Discord.Net": "1.0.0-rc-00545",
-    "Discord.Net.Commands": "1.0.0-rc-00545",
+    "Discord.Net": "1.0.0-rc-00623",
+    "Discord.Net.Commands": "1.0.0-rc-00623",
     "Microsoft.Extensions.Configuration": "1.1.0",
     "Microsoft.Extensions.DependencyInjection": "1.1.0",
     "Microsoft.Extensions.Logging": "1.1.0",

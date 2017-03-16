@@ -119,9 +119,11 @@ namespace MTD.DiscordBot
             map = new DependencyMap();
             client = new DiscordSocketClient();
             commands = new CommandService();
+
             await InstallCommands();
             await client.LoginAsync(TokenType.Bot, Constants.DiscordToken);
-            await client.ConnectAsync();
+            await client.StartAsync();
+
             ConfigureEventHandlers();
         }
 
@@ -596,7 +598,7 @@ namespace MTD.DiscordBot
                                             }
 
                                             Color purple = new Color(100, 65, 164);
-                                            author.IconUrl = client.CurrentUser.AvatarUrl + Guid.NewGuid().ToString().Replace("-","");
+                                            author.IconUrl = client.CurrentUser.GetAvatarUrl() + Guid.NewGuid().ToString().Replace("-","");
                                             author.Name = "CouchBot";
                                             author.Url = url;
                                             footer.Text = "[Twitch] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
@@ -764,7 +766,7 @@ namespace MTD.DiscordBot
                                         }
 
                                         Color purple = new Color(100, 65, 164);
-                                        author.IconUrl = client.CurrentUser.AvatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                                        author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
                                         author.Name = "CouchBot";
                                         author.Url = url;
                                         footer.Text = "[Twitch] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
@@ -932,7 +934,7 @@ namespace MTD.DiscordBot
                                             }
 
                                             Color red = new Color(179, 18, 23);
-                                            author.IconUrl = client.CurrentUser.AvatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                                            author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
                                             author.Name = "CouchBot";
                                             author.Url = url;
                                             footer.Text = "[YouTube Gaming] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
@@ -1096,7 +1098,7 @@ namespace MTD.DiscordBot
                                         }
 
                                         Color red = new Color(179, 18, 23);
-                                        author.IconUrl = client.CurrentUser.AvatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                                        author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
                                         author.Name = "CouchBot";
                                         author.Url = url;
                                         footer.Text = "[YouTube Gaming] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
@@ -1258,7 +1260,7 @@ namespace MTD.DiscordBot
                                             }
 
                                             Color blue = new Color(76, 144, 243);
-                                            author.IconUrl = client.CurrentUser.AvatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                                            author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
                                             author.Name = "CouchBot";
                                             author.Url = url;
                                             footer.Text = "[Beam] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
@@ -1426,7 +1428,7 @@ namespace MTD.DiscordBot
                                         }
 
                                         Color blue = new Color(76, 144, 243);
-                                        author.IconUrl = client.CurrentUser.AvatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                                        author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
                                         author.Name = "CouchBot";
                                         author.Url = url;
                                         footer.Text = "[Beam] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
@@ -1583,7 +1585,7 @@ namespace MTD.DiscordBot
                                                 }
 
                                                 Color green = new Color(153, 204, 0);
-                                                author.IconUrl = client.CurrentUser.AvatarUrl;
+                                                author.IconUrl = client.CurrentUser.GetAvatarUrl();
                                                 author.Name = "CouchBot";
                                                 author.Url = url;
                                                 footer.Text = "[Hitbox] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
@@ -1749,7 +1751,7 @@ namespace MTD.DiscordBot
                                             }
 
                                             Color green = new Color(153, 204, 0);
-                                            author.IconUrl = client.CurrentUser.AvatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                                            author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
                                             author.Name = "CouchBot";
                                             author.Url = url;
                                             footer.Text = "[Hitbox] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
@@ -1920,7 +1922,7 @@ namespace MTD.DiscordBot
                         }
 
                         Color red = new Color(179, 18, 23);
-                        author.IconUrl = client.CurrentUser.AvatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                        author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
                         author.Name = "CouchBot";
                         author.Url = url;
                         footer.Text = "[YouTube] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
@@ -2065,7 +2067,7 @@ namespace MTD.DiscordBot
                         }
 
                         Color red = new Color(179, 18, 23);
-                        author.IconUrl = client.CurrentUser.AvatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                        author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
                         author.Name = "CouchBot";
                         author.Url = url;
                         footer.Text = "[YouTube] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
