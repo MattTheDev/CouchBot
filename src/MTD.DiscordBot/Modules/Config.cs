@@ -12,67 +12,6 @@ namespace MTD.DiscordBot.Modules
     [Group("config")]
     public class Config : ModuleBase
     {
-        [Command("alloweveryone"), Summary("Sets use of everyone tag")]
-        public async Task AllowEveryone(string trueFalse)
-        {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                //await Context.Channel.SendMessageAsync("You do not have access to this command. Only the server owner does.");
-
-                return;
-            }
-
-            trueFalse = trueFalse.ToLower();
-            if(!trueFalse.Equals("true") && !trueFalse.Equals("false"))
-            {
-                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowEveryone. (ie: !cb config AllowEveryone true)");
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.AllowEveryone = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Allow everyone has been set to: " + trueFalse);
-        }
-
-        [Command("broadcastothers"), Summary("Sets use of everyone tag")]
-        public async Task BroadcastOthers(string trueFalse)
-        {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            trueFalse = trueFalse.ToLower();
-            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
-            {
-                await Context.Channel.SendMessageAsync("Pass true or false when configuring BroadcastOthers. (ie: !cb config BroadcastOthers true)");
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.BroadcastOthers = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Broadcast others has been set to: " + trueFalse);
-        }
-
         [Command("broadcastsubgoals"), Summary("Sets broadcasting of sub goals being met.")]
         public async Task BroadcastSubGoals(string trueFalse)
         {
@@ -124,64 +63,6 @@ namespace MTD.DiscordBot.Modules
             await Context.Channel.SendMessageAsync("Your Server Time Zone Offset has been set.");
         }
 
-        [Command("allowthumbnails"), Summary("Sets use of thumbnails in announcements.")]
-        public async Task AllowThumbnails(string trueFalse)
-        {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            trueFalse = trueFalse.ToLower();
-            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
-            {
-                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowThumbnails. (ie: !cb config AllowThumbnails true)");
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.AllowThumbnails = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Allow thumbnails has been set to: " + trueFalse);
-        }
-
-        [Command("allowpublished")]
-        public async Task AllowPublished(string trueFalse)
-        {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            trueFalse = trueFalse.ToLower();
-            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
-            {
-                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowPublished. (ie: !cb config AllowPublished true)");
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.AllowPublished = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Allow published has been set to: " + trueFalse);
-        }
-
         [Command("textannouncements")]
         public async Task TextAnnouncements(string trueFalse)
         {
@@ -209,35 +90,6 @@ namespace MTD.DiscordBot.Modules
             server.UseTextAnnouncements = bool.Parse(trueFalse);
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Text announcements has been set to: " + trueFalse);
-        }
-
-        [Command("allowpublishedothers")]
-        public async Task AllowPublishedOthers(string trueFalse)
-        {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            trueFalse = trueFalse.ToLower();
-            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
-            {
-                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowPublishedOthers. (ie: !cb config AllowPublishedOthers true)");
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.AllowPublishedOthers = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Allow published others has been set to: " + trueFalse);
         }
 
         [Command("list")]
@@ -597,6 +449,158 @@ namespace MTD.DiscordBot.Modules
             }
         }
 
+        [Obsolete("Deprecating, moving to Allow group.", false)]
+        [Command("alloweveryone"), Summary("Sets use of everyone tag")]
+        public async Task AllowEveryone(string trueFalse)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                //await Context.Channel.SendMessageAsync("You do not have access to this command. Only the server owner does.");
+
+                return;
+            }
+
+            trueFalse = trueFalse.ToLower();
+            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
+            {
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowEveryone. (ie: !cb config AllowEveryone true)");
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.AllowEveryone = bool.Parse(trueFalse);
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Allow everyone has been set to: " + trueFalse);
+        }
+
+        [Obsolete("Deprecating, moving to Allow group.", false)]
+        [Command("allowthumbnails"), Summary("Sets use of thumbnails in announcements.")]
+        public async Task AllowThumbnails(string trueFalse)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            trueFalse = trueFalse.ToLower();
+            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
+            {
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowThumbnails. (ie: !cb config AllowThumbnails true)");
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.AllowThumbnails = bool.Parse(trueFalse);
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Allow thumbnails has been set to: " + trueFalse);
+        }
+
+        [Obsolete("Deprecating, moving to Allow group.", false)]
+        [Command("allowpublished")]
+        public async Task AllowPublished(string trueFalse)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            trueFalse = trueFalse.ToLower();
+            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
+            {
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowPublished. (ie: !cb config AllowPublished true)");
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.AllowPublished = bool.Parse(trueFalse);
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Allow published has been set to: " + trueFalse);
+        }
+
+        [Obsolete("Deprecating, moving to Allow group.", false)]
+        [Command("allowpublishedothers")]
+        public async Task AllowPublishedOthers(string trueFalse)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            trueFalse = trueFalse.ToLower();
+            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
+            {
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowPublishedOthers. (ie: !cb config AllowPublishedOthers true)");
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.AllowPublishedOthers = bool.Parse(trueFalse);
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Allow published others has been set to: " + trueFalse);
+        }
+
+        [Obsolete("Deprecating, moving to Allow group.", false)]
+        [Command("broadcastothers"), Summary("Sets use of everyone tag")]
+        public async Task BroadcastOthers(string trueFalse)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            trueFalse = trueFalse.ToLower();
+            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
+            {
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring BroadcastOthers. (ie: !cb config BroadcastOthers true)");
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.BroadcastOthers = bool.Parse(trueFalse);
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Broadcast others has been set to: " + trueFalse);
+        }
         #endregion
     }
 

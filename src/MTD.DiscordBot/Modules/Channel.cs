@@ -56,6 +56,27 @@ namespace MTD.DiscordBot.Modules
             await Context.Channel.SendMessageAsync("The Live Channel has been set.");
         }
 
+        [Command("ownerlive"), Summary("Sets owner live channel.")]
+        public async Task OwnerLive(IGuildChannel guildChannel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.OwnerLiveChannel = guildChannel.Id;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("The Owner Live Channel has been set.");
+        }
+
         [Command("greetings"), Summary("Sets greetings channel.")]
         public async Task Greetings(IGuildChannel guildChannel)
         {
@@ -96,6 +117,27 @@ namespace MTD.DiscordBot.Modules
             server.PublishedChannel = guildChannel.Id;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("The Published Channel has been set.");
+        }
+
+        [Command("ownerpublished"), Summary("Sets owner published video channel.")]
+        public async Task OwnerPublished(IGuildChannel guildChannel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.OwnerPublishedChannel = guildChannel.Id;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("The Owner Published Channel has been set.");
         }
 
         [Command("clear"), Summary("Clears channels settings for a guild.")]

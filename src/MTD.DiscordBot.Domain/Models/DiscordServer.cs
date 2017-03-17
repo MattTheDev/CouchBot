@@ -37,5 +37,8 @@ namespace MTD.DiscordBot.Json
         public bool UseTextAnnouncements { get; set; }
         public bool DeleteWhenOffline { get; set; }
         public ulong MentionRole { get; set; }
+        public ulong OwnerLiveChannel { get; set; }
+        public ulong OwnerPublishedChannel { get; set; }
+        public bool AllowLive { get; set; }
     }
 }
