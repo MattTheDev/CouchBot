@@ -10,5 +10,6 @@ namespace MTD.DiscordBot.Models
         public string Message { get; set; }
         public string Platform { get; set; }
         public Embed Embed { get; set; }
+        public bool MarkOffline { get; set; }
     }
 }

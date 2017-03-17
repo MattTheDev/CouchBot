@@ -621,15 +621,17 @@ namespace MTD.DiscordBot
                                                 message += "**[Twitch]** " + server.LiveMessage.Replace("%CHANNEL%", stream.stream.channel.display_name.Replace("_", "").Replace("*", "")).Replace("%GAME%", stream.stream.game).Replace("%TITLE%", stream.stream.channel.status).Replace("%URL%", url);
                                             }
 
-                                            await SendMessage(new BroadcastMessage()
+
+                                            channel.ChannelMessages.Add(await SendMessage(new BroadcastMessage()
                                             {
                                                 GuildId = server.Id,
                                                 ChannelId = server.GoLiveChannel,
                                                 UserId = user.Id,
                                                 Message = message,
                                                 Platform = "Twitch",
-                                                Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-                                            });
+                                                Embed = (!server.UseTextAnnouncements ? embed.Build() : null),
+                                                MarkOffline = !server.DeleteWhenOffline
+                                            }));
 
                                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + 
                                                 Constants.TwitchDirectory + user.TwitchId + ".json", JsonConvert.SerializeObject(channel));
@@ -2048,7 +2050,7 @@ namespace MTD.DiscordBot
                         Logging.LogInfo("Cleaning Up Live Files Complete.");
                     }
                 }
-            }, null, 0, 3600000);
+            }, null, 0, 600000);
         }
 
         public void QueueUptimeCheckIn()
@@ -2191,87 +2193,126 @@ namespace MTD.DiscordBot
         {
             if (platform == "beam")
             {
-                var liveStreams = new List<string>();
+                var liveStreams = new List<LiveChannel>();
 
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory))
                 {
-                    string userId = Path.GetFileNameWithoutExtension(live);
-
-                    if (!liveStreams.Contains(userId))
-                        liveStreams.Add(userId);
+                    var channel = JsonConvert.DeserializeObject<LiveChannel>(live);
+                    if (liveStreams.Where(x => x.Name == channel.Name) == null)
+                    {
+                        liveStreams.Add(channel);
+                    }
                 }
 
                 foreach (var stream in liveStreams)
                 {
                     try
                     {
-                        var liveStream = await beamManager.GetBeamChannelByName(stream);
+                        var liveStream = await beamManager.GetBeamChannelByName(stream.Name);
 
                         if (liveStream == null || liveStream.online == false)
                         {
+                            if (stream.ChannelMessages != null && stream.ChannelMessages.Count > 0)
+                            {
+                                foreach (var channelMessage in stream.ChannelMessages)
+                                {
+                                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
+                                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
+                                    IList<IMessage> msgs = new List<IMessage>();
+                                    msgs.Add(message);
+                                    await messageChannel.DeleteMessagesAsync(msgs);
+                                }
+                            }
+
                             File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory + stream + ".json");
                         }
                     }
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up Beam Error: " + wex.Message + " for user: " + stream);
+                        Logging.LogError("Clean Up Beam Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
 
             if (platform == "twitch")
             {
-                var liveStreams = new List<string>();
+                var liveStreams = new List<LiveChannel>();
 
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
                 {
-                    string userId = Path.GetFileNameWithoutExtension(live);
-
-                    if (!liveStreams.Contains(userId))
-                        liveStreams.Add(userId);
+                    var channel = JsonConvert.DeserializeObject<LiveChannel>(live);
+                    if (liveStreams.Where(x => x.Name == channel.Name) == null)
+                    {
+                        liveStreams.Add(channel);
+                    }
                 }
 
                 foreach (var stream in liveStreams)
                 {
                     try
                     {
-                        var liveStream = await twitchManager.GetStreamById(stream);
+                        var liveStream = await twitchManager.GetStreamById(stream.Name);
 
                         if (liveStream == null || liveStream.stream == null)
                         {
+                            if (stream.ChannelMessages != null && stream.ChannelMessages.Count > 0)
+                            {
+                                foreach (var channelMessage in stream.ChannelMessages)
+                                {
+                                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
+                                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
+                                    IList<IMessage> msgs = new List<IMessage>();
+                                    msgs.Add(message);
+                                    await messageChannel.DeleteMessagesAsync(msgs);
+                                }
+                            }
+
                             File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream + ".json");
                         }
                     }
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up Twitch Error: " + wex.Message + " for user: " + stream);
+                        Logging.LogError("Clean Up Twitch Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
 
             if (platform == "youtube")
             {
-                var liveStreams = new List<string>();
+                var liveStreams = new List<LiveChannel>();
 
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
                 {
-                    string userId = Path.GetFileNameWithoutExtension(live);
-
-                    if (!liveStreams.Contains(userId))
-                        liveStreams.Add(userId);
+                    var channel = JsonConvert.DeserializeObject<LiveChannel>(live);
+                    if (liveStreams.Where(x => x.Name == channel.Name) == null)
+                    {
+                        liveStreams.Add(channel);
+                    }
                 }
 
                 foreach (var stream in liveStreams)
                 {
                     try
                     {
-                        var youtubeStream = await youtubeManager.GetLiveVideoByChannelId(stream);
+                        var youtubeStream = await youtubeManager.GetLiveVideoByChannelId(stream.Name);
 
                         if (youtubeStream == null || youtubeStream.items.Count < 1)
                         {
-                            var file = Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + stream + ".json";
+                            var file = Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + stream.Name + ".json";
+
+                            if (stream.ChannelMessages != null && stream.ChannelMessages.Count > 0)
+                            {
+                                foreach (var channelMessage in stream.ChannelMessages)
+                                {
+                                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
+                                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
+                                    IList<IMessage> msgs = new List<IMessage>();
+                                    msgs.Add(message);
+                                    await messageChannel.DeleteMessagesAsync(msgs);
+                                }
+                            }
 
                             File.Delete(file);
                         }
@@ -2279,44 +2320,57 @@ namespace MTD.DiscordBot
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up YouTube Error: " + wex.Message + " for user: " + stream + " in Discord Id: " + Path.GetFileNameWithoutExtension(stream));
+                        Logging.LogError("Clean Up YouTube Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
 
             if (platform == "hitbox")
             {
-                var liveStreams = new List<string>();
+                var liveStreams = new List<LiveChannel>();
 
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
                 {
-                    string userId = Path.GetFileNameWithoutExtension(live);
-
-                    if (!liveStreams.Contains(userId))
-                        liveStreams.Add(userId);
+                    var channel = JsonConvert.DeserializeObject<LiveChannel>(live);
+                    if (liveStreams.Where(x => x.Name == channel.Name) == null)
+                    {
+                        liveStreams.Add(channel);
+                    }
                 }
 
                 foreach (var stream in liveStreams)
                 {
                     try
                     {
-                        var liveStream = await hitboxManager.GetChannelByName(stream);
+                        var liveStream = await hitboxManager.GetChannelByName(stream.Name);
 
                         if (liveStream == null || liveStream.livestream == null || liveStream.livestream.Count < 1 || liveStream.livestream[0].media_is_live == "0")
                         {
+                            if (stream.ChannelMessages != null && stream.ChannelMessages.Count > 0)
+                            {
+                                foreach (var channelMessage in stream.ChannelMessages)
+                                {
+                                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
+                                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
+                                    IList<IMessage> msgs = new List<IMessage>();
+                                    msgs.Add(message);
+                                    await messageChannel.DeleteMessagesAsync(msgs);
+                                }
+                            }
+
                             File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + stream + ".json");
                         }
                     }
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up Hitbox Error: " + wex.Message + " for user: " + stream);
+                        Logging.LogError("Clean Up Hitbox Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
         }
 
-        public async Task SendMessage(BroadcastMessage message)
+        public async Task<ChannelMessage> SendMessage(BroadcastMessage message)
         {
             var chat = await DiscordHelper.GetMessageChannel(message.GuildId, message.ChannelId);
 
@@ -2324,15 +2378,30 @@ namespace MTD.DiscordBot
             {
                 try
                 {
+                    ChannelMessage channelMessage = new ChannelMessage();
+                    channelMessage.ChannelId = message.ChannelId;
+                    channelMessage.GuildId = message.GuildId;
+                    channelMessage.MarkOffline = message.MarkOffline;
+
                     if (message.Embed != null)
                     {
                         RequestOptions options = new RequestOptions();
                         options.RetryMode = RetryMode.AlwaysRetry;
-                        await chat.SendMessageAsync(message.Message, false, message.Embed, options);
+                        var msg = await chat.SendMessageAsync(message.Message, false, message.Embed, options);
+
+                        if(msg != null || msg.Id != 0)
+                        {
+                            channelMessage.MessageId = msg.Id;
+                        }
                     }
                     else
                     {
-                        await chat.SendMessageAsync(message.Message);
+                        var msg = await chat.SendMessageAsync(message.Message);
+
+                        if (msg != null || msg.Id != 0)
+                        {
+                            channelMessage.MessageId = msg.Id;
+                        }
                     }
 
                     if (message.Platform.Equals("YouTube"))
@@ -2360,6 +2429,8 @@ namespace MTD.DiscordBot
                     Logging.LogError("Send Message Error: " + ex.Message + " in server " + message.GuildId);
                 }
             }
+
+            return null; // we never get here :(
         }
 
 
