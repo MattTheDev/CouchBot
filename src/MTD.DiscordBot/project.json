@@ -14,6 +14,7 @@
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
     "Microsoft.Extensions.Options": "1.1.0",
     "Microsoft.NETCore.App": "1.1.0",
+    "MTD.DiscordBot.Constellation": "1.0.0-*",
     "MTD.DiscordBot.Dals": "1.0.0-*",
     "MTD.DiscordBot.Domain": "1.0.0-*",
     "MTD.DiscordBot.Managers": "1.0.0-*",

@@ -20,5 +20,6 @@ namespace MTD.DiscordBot.Json
         public DateTime? Birthday { get; set; }
         public Schedule Schedule { get; set; }
         public float TimeZoneOffset { get; set; }
+        public string BeamId { get; set; }
     }
 }
