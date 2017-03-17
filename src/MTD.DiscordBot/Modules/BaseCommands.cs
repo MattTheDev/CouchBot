@@ -227,54 +227,6 @@ namespace MTD.DiscordBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
 
-        //[Command("servercleanup")]
-        //public async Task ServerCleanup()
-        //{
-        //    if (Context.Message.Author.Id != 93015586698727424)
-        //    {
-        //        return;
-        //    }
-
-        //    var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-
-        //    List<ulong> serversUsingNone = new List<ulong>();
-
-        //    foreach (var s in serverFiles)
-        //    {
-        //        var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
-                
-        //        if (server.GoLiveChannel == 0 && server.AnnouncementsChannel == 0 && server.PublishedChannel == 0 && server.GreetingsChannel == 0)
-        //        {
-        //            serversUsingNone.Add(ulong.Parse(Path.GetFileNameWithoutExtension(s)));
-        //        }
-        //    }
-
-        //    foreach(var s in serversUsingNone)
-        //    {
-        //        try
-        //        {
-        //            var guildObj = Program.client.GetGuild(s);
-
-        //            if (guildObj != null)
-        //            {
-        //                await guildObj.LeaveAsync();
-        //            }
-        //            else
-        //            {
-        //                File.Delete(@"c:\programdata\CouchBot\Guilds\" + s.ToString() + ".json");
-        //            }
-        //        }
-        //        catch(Exception ex)
-        //        {
-        //            Logging.LogError("Server Cleanup Error: " + ex.Message);
-        //        }
-        //    }
-
-        //    string info = "Cleanup Complete. Left " + serversUsingNone.Count + " servers.";
-
-        //    await Context.Channel.SendMessageAsync(info);
-        //}
-
         [Command("help")]
         public async Task Help()
         {
