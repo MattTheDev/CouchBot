@@ -12,35 +12,6 @@ namespace MTD.DiscordBot.Modules
     [Group("config")]
     public class Config : ModuleBase
     {
-        [Command("broadcastsubgoals"), Summary("Sets broadcasting of sub goals being met.")]
-        public async Task BroadcastSubGoals(string trueFalse)
-        {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            trueFalse = trueFalse.ToLower();
-            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
-            {
-                await Context.Channel.SendMessageAsync("Pass true or false when configuring BroadcastSubGoals. (ie: !cb config BroadcastSubGoals true)");
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.BroadcastSubGoals = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Broadcast sub goals has been set to: " + trueFalse);
-        }
-
         [Command("timezoneoffset"), Summary("Sets servers time zone offset.")]
         public async Task TimeZoneOffset(float offset)
         {
@@ -171,52 +142,6 @@ namespace MTD.DiscordBot.Modules
             }
         }
 
-        [Command("livemessage")]
-        public async Task LiveMessage(string message)
-        {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.LiveMessage = message;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Live Message has been set.");
-        }
-
-        [Command("publishedmessage")]
-        public async Task PublishedMessage(string message)
-        {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.PublishedMessage = message;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Live Message has been set.");
-        }
-
         [Command("publishedytg"), Summary("Sets www vs gaming in published content urls.")]
         public async Task PublishedYtg(string trueFalse)
         {
@@ -296,7 +221,36 @@ namespace MTD.DiscordBot.Modules
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Mention Role has been set to: " + role.Name);
         }
-        
+
+        [Command("broadcastsubgoals"), Summary("Sets broadcasting of sub goals being met.")]
+        public async Task BroadcastSubGoals(string trueFalse)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            trueFalse = trueFalse.ToLower();
+            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
+            {
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring BroadcastSubGoals. (ie: !cb config BroadcastSubGoals true)");
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.BroadcastSubGoals = bool.Parse(trueFalse);
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Broadcast sub goals has been set to: " + trueFalse);
+        }
+
         #region : Obsolete/Moved : 
 
         [Obsolete("Moving to Channel Group", false)]
@@ -600,6 +554,54 @@ namespace MTD.DiscordBot.Modules
             server.BroadcastOthers = bool.Parse(trueFalse);
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Broadcast others has been set to: " + trueFalse);
+        }
+
+        [Obsolete("Moved to Message group.", false)]
+        [Command("livemessage")]
+        public async Task LiveMessage(string message)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.LiveMessage = message;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Live Message has been set.");
+        }
+
+        [Obsolete("Moved to Message group.", false)]
+        [Command("publishedmessage")]
+        public async Task PublishedMessage(string message)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.PublishedMessage = message;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Live Message has been set.");
         }
         #endregion
     }
