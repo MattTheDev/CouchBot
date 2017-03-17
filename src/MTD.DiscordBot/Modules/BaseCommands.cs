@@ -30,9 +30,13 @@ namespace MTD.DiscordBot.Modules
             var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
             var userFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory);
             var twitchCount = 0;
+            var serverTwitchCount = 0;
             var youTubeCount = 0;
+            var serverYouTubeCount = 0;
             var beamCount = 0;
+            var serverBeamCount = 0;
             var hitboxCount = 0;
+            var serverHitboxCount = 0;
 
             foreach (var u in userFiles)
             {
@@ -67,7 +71,7 @@ namespace MTD.DiscordBot.Modules
                 {
                     foreach (var u in server.ServerBeamChannels)
                     {
-                        beamCount++;
+                        serverBeamCount++;
                     }
                 }
 
@@ -75,7 +79,7 @@ namespace MTD.DiscordBot.Modules
                 {
                     foreach (var u in server.ServerTwitchChannelIds)
                     {
-                        twitchCount++;
+                        serverTwitchCount++;
                     }
                 }
 
@@ -83,7 +87,7 @@ namespace MTD.DiscordBot.Modules
                 {
                     foreach (var u in server.ServerYouTubeChannelIds)
                     {
-                        youTubeCount++;
+                        serverYouTubeCount++;
                     }
                 }
 
@@ -91,7 +95,7 @@ namespace MTD.DiscordBot.Modules
                 {
                     foreach (var u in server.ServerHitboxChannels)
                     {
-                        hitboxCount++;
+                        serverHitboxCount++;
                     }
                 }
             }
@@ -101,11 +105,15 @@ namespace MTD.DiscordBot.Modules
                           "- Guilds: " + serverFiles.Length + "\r\n" +
                           "- Users: " + userFiles.Length + "\r\n" +
                           "Platforms: \r\n" +
-                          "-- YouTube: " + youTubeCount + "\r\n" +
-                          "-- Twitch: " + twitchCount + "\r\n" +
-                          "-- Beam: " + beamCount + "\r\n" +
-                          "-- Hitbox: " + hitboxCount + "\r\n" +
-                          "-- Total Channels Checked: " + (youTubeCount + twitchCount + beamCount + hitboxCount) + "\r\n" +
+                          "-- User Configured YouTube: " + youTubeCount + "\r\n" +
+                          "-- Server Configured YouTube: " + serverYouTubeCount + "\r\n" +
+                          "-- User Configured Twitch: " + twitchCount + "\r\n" +
+                          "-- Server Configured Twitch: " + serverTwitchCount + "\r\n" +
+                          "-- User Configured Beam: " + beamCount + "\r\n" +
+                          "-- Server Configured Beam: " + serverBeamCount + "\r\n" +
+                          "-- User Configured Hitbox: " + hitboxCount + "\r\n" +
+                          "-- Server Configured Hitbox: " + serverHitboxCount + "\r\n" +
+                          "-- Total Channels Checked: " + (youTubeCount + twitchCount + beamCount + hitboxCount + serverYouTubeCount + serverTwitchCount + serverBeamCount + serverHitboxCount) + "\r\n" +
                           "- Current Memory Usage: " + ((System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024) / 1024) + "MB \r\n" +
                           "- Built on Discord.Net - (https://github.com/RogueException/Discord.Net)\r\n" +
                           "- Developed and Maintained by Dawgeth - (http://twitter.com/dawgeth)\r\n" +
