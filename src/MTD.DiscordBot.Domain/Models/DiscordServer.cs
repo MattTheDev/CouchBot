@@ -36,5 +36,6 @@ namespace MTD.DiscordBot.Json
         public bool UseYouTubeGamingPublished { get; set; }
         public bool UseTextAnnouncements { get; set; }
         public bool DeleteWhenOffline { get; set; }
+        public ulong MentionRole { get; set; }
     }
 }

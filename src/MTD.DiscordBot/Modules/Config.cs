@@ -540,6 +540,57 @@ namespace MTD.DiscordBot.Modules
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Publised YTG has been set to: " + trueFalse);
         }
+
+        [Command("deleteoffline"), Summary("Do you want items to be deleted when you go offline?")]
+        public async Task DeleteWhenOffline(string trueFalse)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            trueFalse = trueFalse.ToLower();
+            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
+            {
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring DeleteOffline. (ie: !cb config deleteoffline true)");
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.DeleteWhenOffline = !bool.Parse(trueFalse);
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Delete Offline has been set to: " + trueFalse);
+        }
+
+        [Command("mentionrole"), Summary("Set the role to mention instead of Everyone.")]
+        public async Task MentionRole(IRole role)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.MentionRole = role.Id;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Mention Role has been set to: " + role.Name);
+        }
     }
 
 }

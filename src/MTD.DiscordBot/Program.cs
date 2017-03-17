@@ -445,7 +445,7 @@ namespace MTD.DiscordBot
                                             embed.ImageUrl = server.AllowThumbnails ? stream.stream.preview.large + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                             embed.Footer = footer;
 
-                                            var message = (allowEveryone ? "@everyone " : "");
+                                            var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                                             if (server.UseTextAnnouncements)
                                             {
@@ -465,7 +465,7 @@ namespace MTD.DiscordBot
                                                 Message = message,
                                                 Platform = "Twitch",
                                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null),
-                                                MarkOffline = !server.DeleteWhenOffline
+                                                DeleteOffline = server.DeleteWhenOffline
                                             }));
 
                                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + 
@@ -585,7 +585,7 @@ namespace MTD.DiscordBot
                                         embed.ImageUrl = server.AllowThumbnails ? stream.preview.large + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                         embed.Footer = footer;
 
-                                        var message = (allowEveryone ? "@everyone " : "");
+                                        var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                                         if (server.UseTextAnnouncements)
                                         {
@@ -726,7 +726,7 @@ namespace MTD.DiscordBot
                                             embed.ImageUrl = server.AllowThumbnails ? stream.snippet.thumbnails.high.url + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                             embed.Footer = footer;
 
-                                            var message = (allowEveryone ? "@everyone " : "");
+                                            var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                                             if (server.UseTextAnnouncements)
                                             {
@@ -860,7 +860,7 @@ namespace MTD.DiscordBot
                                         embed.ImageUrl = server.AllowThumbnails ? stream.snippet.thumbnails.high.url + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                         embed.Footer = footer;
 
-                                        var message = (allowEveryone ? "@everyone " : "");
+                                        var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                                         if (server.UseTextAnnouncements)
                                         {
@@ -995,7 +995,7 @@ namespace MTD.DiscordBot
                                             embed.ImageUrl = server.AllowThumbnails ? "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                             embed.Footer = footer;
 
-                                            var message = (allowEveryone ? "@everyone " : "");
+                                            var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                                             if (server.UseTextAnnouncements)
                                             {
@@ -1127,7 +1127,7 @@ namespace MTD.DiscordBot
                                         embed.ImageUrl = server.AllowThumbnails ? "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                         embed.Footer = footer;
 
-                                        var message = (allowEveryone ? "@everyone " : "");
+                                        var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                                         if (server.UseTextAnnouncements)
                                         {
@@ -1262,7 +1262,7 @@ namespace MTD.DiscordBot
                                                 embed.ImageUrl = server.AllowThumbnails ? "http://edge.sf.hitbox.tv" + stream.livestream[0].media_thumbnail_large + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                                 embed.Footer = footer;
 
-                                                var message = (allowEveryone ? "@everyone " : "");
+                                                var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                                                 if (server.UseTextAnnouncements)
                                                 {
@@ -1398,7 +1398,7 @@ namespace MTD.DiscordBot
                                             embed.ImageUrl = server.AllowThumbnails ? "http://edge.sf.hitbox.tv" + stream.livestream[0].media_thumbnail_large + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                             embed.Footer = footer;
 
-                                            var message = (allowEveryone ? "@everyone " : "");
+                                            var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                                             if (server.UseTextAnnouncements)
                                             {
@@ -1564,7 +1564,7 @@ namespace MTD.DiscordBot
                         if (lc == null || lc.Servers.Count < 1 || (!lc.Servers.Contains(server.Id) && !lc.Name.Equals(user.YouTubeChannelId + "|" + video.snippet.resourceId.videoId)))
                         {
 
-                            var message = (server.AllowEveryone ? "@everyone " : "");
+                            var message = (server.AllowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                             if (server.UseTextAnnouncements)
                             {
@@ -1699,7 +1699,7 @@ namespace MTD.DiscordBot
 
                         if (lc == null || lc.Servers.Count < 1 || (!lc.Servers.Contains(server.Id) && !lc.Name.Equals(user + "|" + video.snippet.resourceId.videoId)))
                         {
-                            var message = (server.AllowEveryone ? "@everyone " : "");
+                            var message = (server.AllowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
 
                             if (server.UseTextAnnouncements)
                             {
@@ -2033,7 +2033,7 @@ namespace MTD.DiscordBot
             {
                 foreach (var channelMessage in channelMessages)
                 {
-                    if(channelMessage.MarkOffline)
+                    if(!channelMessage.DeleteOffline)
                     {
                         continue;
                     }
@@ -2058,7 +2058,7 @@ namespace MTD.DiscordBot
                     ChannelMessage channelMessage = new ChannelMessage();
                     channelMessage.ChannelId = message.ChannelId;
                     channelMessage.GuildId = message.GuildId;
-                    channelMessage.MarkOffline = message.MarkOffline;
+                    channelMessage.DeleteOffline = message.DeleteOffline;
 
                     if (message.Embed != null)
                     {

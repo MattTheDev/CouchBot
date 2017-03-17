@@ -32,5 +32,30 @@ namespace MTD.DiscordBot.Utilities
 
             return channel;
         }
+
+        public static async Task<IRole> GetRoleByGuildAndId(ulong guildId, ulong roleId)
+        {
+            IGuild guild = null;
+            IRole role = null;
+
+            if (guildId != 0 && roleId != 0)
+            {
+                guild = Program.client.GetGuild(guildId);
+
+                if (guild != null)
+                {
+                    try
+                    {
+                        role = guild.GetRole(roleId);
+                    }
+                    catch (Exception ex)
+                    {
+                        role = null;
+                    }
+                }
+            }
+
+            return role;
+        }
     }
 }
