@@ -125,7 +125,7 @@ namespace MTD.DiscordBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
         
-        [Command("servers")]
+        [Command("servers"), Summary("Get Server Statistic Information.")]
         public async Task Servers()
         {
             var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
@@ -179,7 +179,7 @@ namespace MTD.DiscordBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
 
-        [Command("help")]
+        [Command("help"), Summary("Provides a link to the CouchBot Website.")]
         public async Task Help()
         {
             string info = "```Markdown\r\n" + 
@@ -190,13 +190,13 @@ namespace MTD.DiscordBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
 
-        [Command("invite")]
+        [Command("invite"), Summary("Provide an invite link via DM.")]
         public async Task Invite()
         {
             await (await ((IGuildUser)(Context.Message.Author)).CreateDMChannelAsync()).SendMessageAsync("Want me to join your server? Click here: <http://discordapp.com/oauth2/authorize?client_id=227846530613248000&scope=bot>");
         }
 
-        [Command("uptime")]
+        [Command("uptime"), Summary("Get Uptime Statistic Information.")]
         public async Task Uptime()
         {
             var botStats = statisticsManager.GetBotStats();
@@ -215,7 +215,7 @@ namespace MTD.DiscordBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
 
-        [Command("alerts")]
+        [Command("alerts"), Summary("Get Alert Statistic Information.")]
         public async Task Alerts()
         {
             var botStats = statisticsManager.GetBotStats();
@@ -232,7 +232,7 @@ namespace MTD.DiscordBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
         
-        [Command("supporters")]
+        [Command("supporters"), Summary("Get Supporter Information")]
         public async Task Supporters()
         {
             string info = "```Markdown\r\n" +
@@ -248,9 +248,10 @@ namespace MTD.DiscordBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
 
-        [Command("broadcast")]
+        [Command("broadcast"), Summary("Broadcasts to EVERY server with an AnnounceChannel set.")]
         public async Task Broadcast([Summary("Message to Broadcast")]string message)
         {
+            // Lock this command to Bot Owner only.
             if (Context.Message.Author.Id == 93015586698727424)
             {
                 var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
@@ -289,7 +290,7 @@ namespace MTD.DiscordBot.Modules
             }
         }
 
-        [Command("ytidlookup")]
+        [Command("ytidlookup"), Summary("Query YouTube API to find a Channel ID.")]
         public async Task YtIdLookup([Summary("Username to Query")]string name)
         {
             var channels = await youtubeManager.GetYouTubeChannelByQuery(name);
