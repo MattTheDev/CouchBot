@@ -69,7 +69,8 @@ namespace MTD.DiscordBot
             statisticsManager.LogRestartTime();
 
             // Setup file system
-            CheckFolderStructure();
+            BotFiles.CheckFolderStructure();
+
             await DoBotStuff();
             await ValidateGuildData();
             await ValidateUserData();
@@ -85,34 +86,7 @@ namespace MTD.DiscordBot
             QueueTwitterStats();
 
             await Task.Delay(-1);
-        }
-
-        public void CheckFolderStructure()
-        {
-            if (!Directory.Exists(Constants.ConfigRootDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory);
-
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.UserDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.UserDirectory);
-
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory);
-
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory);
-
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory);
-
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory);
-
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory);
-        }
+        }    
 
         public async Task DoBotStuff()
         {
@@ -194,6 +168,7 @@ namespace MTD.DiscordBot
                 var userJson = File.ReadAllText(file);
                 var user = JsonConvert.DeserializeObject<User>(userJson);
 
+                // Ensure anyone with a Twithc Name has their Id configured.
                 if(string.IsNullOrEmpty(user.TwitchId) && !string.IsNullOrEmpty(user.TwitchName))
                 {
                     user.TwitchId = (await twitchManager.GetTwitchIdByLogin(user.TwitchName));
@@ -205,63 +180,6 @@ namespace MTD.DiscordBot
             }
 
             Logging.LogInfo("User Validating Complete. " + totalUsers + " users validated. " + modifiedUsers + " users modified.");
-        }
-
-        //public void QueueBirthdays()
-        //{
-        //    birthdayTimer = new Timer(async (e) =>
-        //    {
-        //        var userFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-        //        foreach(var serverFile in serverFiles)
-        //        {
-        //            var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(serverFile));
-
-
-        //        }
-        //        await client.GetGuildAsync(1234);
-        //    }, null, 0, 60000);
-        //}
-
-        public void QueueTwitterStats()
-        {
-            twitterTimer = new Timer(async (e) =>
-            {
-                if ((DateTime.Now.Hour == 0 || DateTime.Now.Hour == 12) && !tweetSent)
-                {
-                    var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-                    var userFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory);
-
-                    var botStats = statisticsManager.GetBotStats();
-
-                    var tweet = "CouchBot Stats\r\n- Servers: " + serverFiles.Count() + "\r\n" +
-                                "- Users: " + userFiles.Count() + "\r\n" +
-                                "- Alerts: " + (botStats.YouTubeAlertCount + botStats.BeamAlertCount + botStats.TwitchAlertCount) + "!\r\n http://multiyt.tv/CouchBot";
-
-                    var fullQuery = "http://api.multiyt.tv/api/Twitter";
-
-                    WebRequest request = WebRequest.Create(fullQuery);
-                    request.Method = "POST";
-                    request.ContentType = "application/x-www-form-urlencoded";
-
-                    string postString = "=" + tweet;
-                    byte[] data = Encoding.UTF8.GetBytes(postString);
-                    Stream newStream = await request.GetRequestStreamAsync();
-                    newStream.Write(data, 0, data.Length);
-                    newStream.Dispose();
-
-                    WebResponse response = await request.GetResponseAsync();
-                    StreamReader requestReader = new StreamReader(response.GetResponseStream());
-                    string webResponse = requestReader.ReadToEnd();
-                    response.Dispose();
-
-                    tweetSent = true;
-                }
-
-                if (DateTime.Now.Hour == 1 && tweetSent)
-                {
-                    tweetSent = false;
-                }
-            }, null, 0, 60000);
         }
 
         public void QueueBeamChecks()
@@ -400,74 +318,11 @@ namespace MTD.DiscordBot
         public async Task Client_JoinedGuild(IGuild arg)
         {
             await CreateGuild(arg);
-
-            var fullQuery = "http://api.multiyt.tv/api/Twitter";
-
-            WebRequest request = WebRequest.Create(fullQuery);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-
-            string postString = "=I've joined the '" + arg.Name + "' server!";
-            byte[] data = Encoding.UTF8.GetBytes(postString);
-            Stream newStream = await request.GetRequestStreamAsync();
-            newStream.Write(data, 0, data.Length);
-            newStream.Dispose();
-
-            WebResponse response = await request.GetResponseAsync();
-            StreamReader requestReader = new StreamReader(response.GetResponseStream());
-            string webResponse = requestReader.ReadToEnd();
-            response.Dispose();
-
-            var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-
-            var carbon = "https://www.carbonitex.net/discord/data/botdata.php?id=227846530613250000";
-            string json = "{" +
-                                "\"key\":\"mattthedev0a891laf298anm46\"," +
-                                "\"servercount\":" + serverFiles.Length + "," +
-                                "\"botname\":\"CouchBot\"," +
-                                "\"botid\":227846530613250000" +
-                                "}";
-
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(carbon);
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "POST";
-
-            using (var streamWriter = new StreamWriter(await httpWebRequest.GetRequestStreamAsync()))
-            {
-                streamWriter.Write(json);
-                streamWriter.Flush();
-                streamWriter.Dispose();
-            }
-
-            var httpResponse = (HttpWebResponse)(await httpWebRequest.GetResponseAsync());
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                var result = streamReader.ReadToEnd();
-
-                Logging.LogInfo("CARBON CHECKIN STATUS: " + result);
-            }
         }
 
         public async Task Client_LeftGuild(IGuild arg)
         {
             File.Delete(Constants.ConfigRootDirectory + Constants.GuildDirectory + arg.Id + ".json");
-
-            var fullQuery = "http://api.multiyt.tv/api/Twitter";
-
-            WebRequest request = WebRequest.Create(fullQuery);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-
-            string postString = "=I've left the '" + arg.Name + "' server!";
-            byte[] data = Encoding.UTF8.GetBytes(postString);
-            Stream newStream = await request.GetRequestStreamAsync();
-            newStream.Write(data, 0, data.Length);
-            newStream.Dispose();
-
-            WebResponse response = await request.GetResponseAsync();
-            StreamReader requestReader = new StreamReader(response.GetResponseStream());
-            string webResponse = requestReader.ReadToEnd();
-            response.Dispose();
         }
 
         public async Task InstallCommands()
@@ -493,27 +348,9 @@ namespace MTD.DiscordBot
 
         public async Task CheckTwitchLive()
         {
-            var servers = new List<DiscordServer>();
-            var users = new List<User>();
-            var liveChannels = new List<LiveChannel>();
-
-            // Get Servers
-            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-            {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
-            }
-
-            // Get Users
-            foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
-            }
-
-            // Get Live Users
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
-            {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
-            }
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
 
             // Loop through users to broadcast.
             foreach (var user in users)
@@ -621,7 +458,6 @@ namespace MTD.DiscordBot
                                                 message += "**[Twitch]** " + server.LiveMessage.Replace("%CHANNEL%", stream.stream.channel.display_name.Replace("_", "").Replace("*", "")).Replace("%GAME%", stream.stream.game).Replace("%TITLE%", stream.stream.channel.status).Replace("%URL%", url);
                                             }
 
-
                                             channel.ChannelMessages.Add(await SendMessage(new BroadcastMessage()
                                             {
                                                 GuildId = server.Id,
@@ -647,27 +483,9 @@ namespace MTD.DiscordBot
 
         public async Task CheckServerTwitchLive()
         {
-            var servers = new List<DiscordServer>();
-            var users = new List<User>();
-            var liveChannels = new List<LiveChannel>();
-
-            // Get Servers
-            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-            {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
-            }
-
-            // Get Users
-            foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
-            }
-
-            // Get Live Users
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
-            {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
-            }
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
 
             // Loop through servers to broadcast.
             foreach (var server in servers)
@@ -804,27 +622,9 @@ namespace MTD.DiscordBot
 
         public async Task CheckYouTubeLive()
         {
-            var servers = new List<DiscordServer>();
-            var users = new List<User>();
-            var liveChannels = new List<LiveChannel>();
-
-            // Get Servers
-            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-            {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
-            }
-
-            // Get Users
-            foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
-            }
-
-            // Get Live Users
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
-            {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
-            }
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
 
             // Loop through users to broadcast.
             foreach (var user in users)
@@ -962,28 +762,10 @@ namespace MTD.DiscordBot
 
         public async Task CheckServerYouTubeLive()
         {
-            var servers = new List<DiscordServer>();
-            var users = new List<User>();
-            var liveChannels = new List<LiveChannel>();
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
 
-            // Get Servers
-            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-            {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
-            }
-
-            // Get Users
-            foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
-            }
-
-            // Get Live Users
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
-            {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
-            }
-             
             // Loop through servers to broadcast.
             foreach (var server in servers)
             {
@@ -1116,27 +898,9 @@ namespace MTD.DiscordBot
 
         public async Task CheckBeamLive()
         {
-            var servers = new List<DiscordServer>();
-            var users = new List<User>();
-            var liveChannels = new List<LiveChannel>();
-
-            // Get Servers
-            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-            {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
-            }
-
-            // Get Users
-            foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
-            }
-
-            // Get Live Users
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory))
-            {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
-            }
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
 
             foreach (var user in users)
             {
@@ -1267,27 +1031,9 @@ namespace MTD.DiscordBot
 
         public async Task CheckServerBeamLive()
         {
-            var servers = new List<DiscordServer>();
-            var users = new List<User>();
-            var liveChannels = new List<LiveChannel>();
-
-            // Get Servers
-            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-            {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
-            }
-
-            // Get Users
-            foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
-            }
-
-            // Get Live Users
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory))
-            {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
-            }
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
 
             // Loop through servers to broadcast.
             foreach (var server in servers)
@@ -1417,27 +1163,9 @@ namespace MTD.DiscordBot
 
         public async Task CheckHitboxLive()
         {
-            var servers = new List<DiscordServer>();
-            var users = new List<User>();
-            var liveChannels = new List<LiveChannel>();
-
-            // Get Servers
-            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-            {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
-            }
-
-            // Get Users
-            foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
-            }
-
-            // Get Live Users
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
-            {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
-            }
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
 
             foreach (var user in users)
             {
@@ -1571,27 +1299,9 @@ namespace MTD.DiscordBot
 
         public async Task CheckServerHitboxLive()
         {
-            var servers = new List<DiscordServer>();
-            var users = new List<User>();
-            var liveChannels = new List<LiveChannel>();
-
-            // Get Servers
-            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-            {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
-            }
-
-            // Get Users
-            foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
-            }
-
-            // Get Live Users
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
-            {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
-            }
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
 
             // Loop through servers to broadcast.
             foreach (var server in servers)
@@ -1725,24 +1435,12 @@ namespace MTD.DiscordBot
 
         public async Task CheckPublishedYouTube()
         {
-            var servers = new List<DiscordServer>();
-            var users = new List<User>();
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
             var liveChannels = new List<LiveChannel>();
 
-            // Get Servers
-            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
-            {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
-            }
-
-            // Get Users
-            foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
-            {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
-            }
-
             // Check Users
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 if(string.IsNullOrEmpty(user.YouTubeChannelId))
                 {
@@ -2212,17 +1910,7 @@ namespace MTD.DiscordBot
 
                         if (liveStream == null || liveStream.online == false)
                         {
-                            if (stream.ChannelMessages != null && stream.ChannelMessages.Count > 0)
-                            {
-                                foreach (var channelMessage in stream.ChannelMessages)
-                                {
-                                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
-                                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
-                                    IList<IMessage> msgs = new List<IMessage>();
-                                    msgs.Add(message);
-                                    await messageChannel.DeleteMessagesAsync(msgs);
-                                }
-                            }
+                            await CleanupMessages(stream.ChannelMessages);
 
                             File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory + stream + ".json");
                         }
@@ -2256,17 +1944,7 @@ namespace MTD.DiscordBot
 
                         if (liveStream == null || liveStream.stream == null)
                         {
-                            if (stream.ChannelMessages != null && stream.ChannelMessages.Count > 0)
-                            {
-                                foreach (var channelMessage in stream.ChannelMessages)
-                                {
-                                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
-                                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
-                                    IList<IMessage> msgs = new List<IMessage>();
-                                    msgs.Add(message);
-                                    await messageChannel.DeleteMessagesAsync(msgs);
-                                }
-                            }
+                            await CleanupMessages(stream.ChannelMessages);
 
                             File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream + ".json");
                         }
@@ -2302,17 +1980,7 @@ namespace MTD.DiscordBot
                         {
                             var file = Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + stream.Name + ".json";
 
-                            if (stream.ChannelMessages != null && stream.ChannelMessages.Count > 0)
-                            {
-                                foreach (var channelMessage in stream.ChannelMessages)
-                                {
-                                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
-                                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
-                                    IList<IMessage> msgs = new List<IMessage>();
-                                    msgs.Add(message);
-                                    await messageChannel.DeleteMessagesAsync(msgs);
-                                }
-                            }
+                            await CleanupMessages(stream.ChannelMessages);
 
                             File.Delete(file);
                         }
@@ -2346,17 +2014,7 @@ namespace MTD.DiscordBot
 
                         if (liveStream == null || liveStream.livestream == null || liveStream.livestream.Count < 1 || liveStream.livestream[0].media_is_live == "0")
                         {
-                            if (stream.ChannelMessages != null && stream.ChannelMessages.Count > 0)
-                            {
-                                foreach (var channelMessage in stream.ChannelMessages)
-                                {
-                                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
-                                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
-                                    IList<IMessage> msgs = new List<IMessage>();
-                                    msgs.Add(message);
-                                    await messageChannel.DeleteMessagesAsync(msgs);
-                                }
-                            }
+                            await CleanupMessages(stream.ChannelMessages);
 
                             File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + stream + ".json");
                         }
@@ -2366,6 +2024,26 @@ namespace MTD.DiscordBot
 
                         Logging.LogError("Clean Up Hitbox Error: " + wex.Message + " for user: " + stream.Name);
                     }
+                }
+            }
+        }
+
+        private async Task CleanupMessages(List<ChannelMessage> channelMessages)
+        {
+            if (channelMessages != null && channelMessages.Count > 0)
+            {
+                foreach (var channelMessage in channelMessages)
+                {
+                    if(channelMessage.MarkOffline)
+                    {
+                        continue;
+                    }
+
+                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
+                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
+                    IList<IMessage> msgs = new List<IMessage>();
+                    msgs.Add(message);
+                    await messageChannel.DeleteMessagesAsync(msgs);
                 }
             }
         }
@@ -2433,6 +2111,7 @@ namespace MTD.DiscordBot
             return null; // we never get here :(
         }
 
+        #region TODO
 
         //public void QueueSubGoalCheck()
         //{
@@ -2550,5 +2229,22 @@ namespace MTD.DiscordBot
         //        }
         //    }
         //}
+
+        //public void QueueBirthdays()
+        //{
+        //    birthdayTimer = new Timer(async (e) =>
+        //    {
+        //        var userFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
+        //        foreach(var serverFile in serverFiles)
+        //        {
+        //            var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(serverFile));
+
+
+        //        }
+        //        await client.GetGuildAsync(1234);
+        //    }, null, 0, 60000);
+        //}
+
+        #endregion
     }
 }
