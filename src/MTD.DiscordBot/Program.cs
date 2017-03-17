@@ -83,8 +83,7 @@ namespace MTD.DiscordBot
 
             QueueCleanUp();
             QueueUptimeCheckIn();
-            QueueTwitterStats();
-
+            
             await Task.Delay(-1);
         }    
 
