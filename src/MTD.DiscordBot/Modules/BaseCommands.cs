@@ -182,24 +182,10 @@ namespace MTD.DiscordBot.Modules
         [Command("help")]
         public async Task Help()
         {
-            string info = "We've got so many commands, we needed to move all of them to our website, <http://couchbot.io>!\r\n" +
-                          "If you need any further help, join us on our Discord Server, <http://discord.couchbot.io>. Thanks!!";
-
-            await Context.Channel.SendMessageAsync(info);
-        }
-
-        [Command("help")]
-        public async Task Help([Summary("Help Section")] string section)
-        {
-            string info = "";
-
-            switch(section.ToLower())
-            {
-                default:
-                    info = "We've got so many commands, we needed to move all of them to our website, <http://couchbot.io>!\r\n" +
-                          "If you need any further help, join us on our Discord Server, <http://discord.couchbot.io>. Thanks!!";
-                    break;
-            }
+            string info = "```Markdown\r\n" + 
+                          "#CouchBot v2.0 Help\r\n\r\n" + 
+                          "We've got so many commands, we needed to move all of them to our website, http://couchbot.io!\r\n\r\n" +
+                          "If you need any further help, join us on our Discord Server, http://discord.couchbot.io. Thanks!!";
 
             await Context.Channel.SendMessageAsync(info);
         }
