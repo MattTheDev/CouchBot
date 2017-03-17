@@ -1,105 +1,17 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Discord.Commands;
-using Discord.WebSocket;
 using System.Threading.Tasks;
 using Discord;
 using Newtonsoft.Json;
 using MTD.DiscordBot.Json;
 using MTD.DiscordBot.Domain;
+using System;
 
 namespace MTD.DiscordBot.Modules
 {     
-    // Create a module with the 'sample' prefix
     [Group("config")]
     public class Config : ModuleBase
     {
-        [Command("announcechannel"), Summary("Sets announcement channel.")]
-        public async Task AnnounceChannel(IGuildChannel guildChannel)
-        {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                //await Context.Channel.SendMessageAsync("You do not have access to this command. Only the server owner does.");
-
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.AnnouncementsChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("The Announce Channel has been set.");
-        }
-
-        [Command("golivechannel"), Summary("Sets go live channel.")]
-        public async Task GoLiveChannel(IGuildChannel guildChannel)
-        {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if(File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.GoLiveChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("The Go Live Channel has been set.");
-        }
-
-        [Command("greetingschannel"), Summary("Sets greetings channel.")]
-        public async Task GreetingsChannel(IGuildChannel guildChannel)
-        {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.GreetingsChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("The Greetings Channel has been set.");
-        }
-
-        [Command("publishedchannel"), Summary("Sets published video channel.")]
-        public async Task PublishedChannel(IGuildChannel guildChannel)
-        {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            server.PublishedChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("The Published Channel has been set.");
-        }
-        
         [Command("alloweveryone"), Summary("Sets use of everyone tag")]
         public async Task AllowEveryone(string trueFalse)
         {
@@ -159,65 +71,6 @@ namespace MTD.DiscordBot.Modules
             server.BroadcastOthers = bool.Parse(trueFalse);
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Broadcast others has been set to: " + trueFalse);
-        }
-
-        [Command("clear"), Summary("Clears configuration settings for a guild.")]
-        public async Task Clear(string option)
-        {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            if (File.Exists(file))
-            {
-                option = option.ToLower();
-                string label = "";
-
-                switch (option)
-                {
-                    case "golivechannel":
-                        server.GoLiveChannel = 0;
-                        label = "Go Live Channel";
-                        break;
-                    case "announcechannel":
-                        server.AnnouncementsChannel = 0;
-                        label = "Announcements";
-                        break;
-                    case "greetingschannel":
-                        server.GreetingsChannel = 0;
-                        label = "Greetings";
-                        break;
-                    case "publishedchannel":
-                        server.PublishedChannel = 0;
-                        label = "Published";
-                        break;
-                    case "all":
-                        server.AnnouncementsChannel = 0;
-                        server.GoLiveChannel = 0;
-                        server.GreetingsChannel = 0;
-                        server.PublishedChannel = 0;
-                        label = "All";
-                        break;
-                    default:
-                        break;
-                }
-
-                if (!string.IsNullOrEmpty(label))
-                {
-                    File.WriteAllText(file, JsonConvert.SerializeObject(server));
-                    await Context.Channel.SendMessageAsync(label + " settings have been reset.");
-                }
-            }
         }
 
         [Command("broadcastsubgoals"), Summary("Sets broadcasting of sub goals being met.")]
@@ -591,6 +444,160 @@ namespace MTD.DiscordBot.Modules
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Mention Role has been set to: " + role.Name);
         }
+        
+        #region : Obsolete/Moved : 
+
+        [Obsolete("Moving to Channel Group", false)]
+        [Command("announcechannel"), Summary("Sets announcement channel.")]
+        public async Task AnnounceChannel(IGuildChannel guildChannel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                //await Context.Channel.SendMessageAsync("You do not have access to this command. Only the server owner does.");
+
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.AnnouncementsChannel = guildChannel.Id;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("The Announce Channel has been set.");
+        }
+
+        [Obsolete("Moving to Channel Group", false)]
+        [Command("golivechannel"), Summary("Sets go live channel.")]
+        public async Task GoLiveChannel(IGuildChannel guildChannel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.GoLiveChannel = guildChannel.Id;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("The Go Live Channel has been set.");
+        }
+
+        [Obsolete("Moving to Channel Group", false)]
+        [Command("greetingschannel"), Summary("Sets greetings channel.")]
+        public async Task GreetingsChannel(IGuildChannel guildChannel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.GreetingsChannel = guildChannel.Id;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("The Greetings Channel has been set.");
+        }
+
+        [Obsolete("Moving to Channel Group", false)]
+        [Command("publishedchannel"), Summary("Sets published video channel.")]
+        public async Task PublishedChannel(IGuildChannel guildChannel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.PublishedChannel = guildChannel.Id;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("The Published Channel has been set.");
+        }
+
+        [Obsolete("Moving to Channel Group", false)]
+        [Command("clear"), Summary("Clears configuration settings for a guild.")]
+        public async Task Clear(string option)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            if (File.Exists(file))
+            {
+                option = option.ToLower();
+                string label = "";
+
+                switch (option)
+                {
+                    case "golivechannel":
+                        server.GoLiveChannel = 0;
+                        label = "Go Live Channel";
+                        break;
+                    case "announcechannel":
+                        server.AnnouncementsChannel = 0;
+                        label = "Announcements";
+                        break;
+                    case "greetingschannel":
+                        server.GreetingsChannel = 0;
+                        label = "Greetings";
+                        break;
+                    case "publishedchannel":
+                        server.PublishedChannel = 0;
+                        label = "Published";
+                        break;
+                    case "all":
+                        server.AnnouncementsChannel = 0;
+                        server.GoLiveChannel = 0;
+                        server.GreetingsChannel = 0;
+                        server.PublishedChannel = 0;
+                        label = "All";
+                        break;
+                    default:
+                        break;
+                }
+
+                if (!string.IsNullOrEmpty(label))
+                {
+                    File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                    await Context.Channel.SendMessageAsync(label + " settings have been reset.");
+                }
+            }
+        }
+
+        #endregion
     }
 
 }
