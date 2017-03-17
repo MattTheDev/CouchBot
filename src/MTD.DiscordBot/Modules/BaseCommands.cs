@@ -24,8 +24,8 @@ namespace MTD.DiscordBot.Modules
             youtubeManager = new YouTubeManager();
         }
 
-        [Command("admininfo"), Summary("Get admin stats.")]
-        public async Task AdminInfo()
+        [Command("info"), Summary("Get CouchBot Information.")]
+        public async Task Info()
         {
             var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
             var userFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory);
@@ -124,63 +124,7 @@ namespace MTD.DiscordBot.Modules
 
             await Context.Channel.SendMessageAsync(info);
         }
-
-        [Command("info")]
-        public async Task Info()
-        {
-            var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-            var userFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory);
-            var twitchCount = 0;
-            var youTubeCount = 0;
-            var beamCount = 0;
-            var hitboxCount = 0;
-
-            foreach(var u in userFiles)
-            {
-                var user = JsonConvert.DeserializeObject<User>(File.ReadAllText(u));
-
-                if(!string.IsNullOrEmpty(user.BeamName))
-                {
-                    beamCount++;
-                }
-
-                if (!string.IsNullOrEmpty(user.TwitchName))
-                {
-                    twitchCount++;
-                }
-
-                if (!string.IsNullOrEmpty(user.YouTubeChannelId))
-                {
-                    youTubeCount++;
-                }
-
-                if(!string.IsNullOrEmpty(user.HitboxName))
-                {
-                    hitboxCount++;
-                }
-            }
-
-            string info = "```Markdown\r\n" +
-                          "# CouchBot v1.0\r\n" +
-                          "- Guilds: " + serverFiles.Length + "\r\n" +
-                          "- Users: " + userFiles.Length + "\r\n" +
-                          "Platforms: \r\n" +
-                          "-- YouTube: " + youTubeCount + "\r\n" +
-                          "-- Twitch: " + twitchCount + "\r\n" +
-                          "-- Beam: " + beamCount + "\r\n" +
-                          "-- Hitbox: " + hitboxCount + "\r\n" +
-                          "-- Total Channels Checked: " + (youTubeCount + twitchCount + beamCount + hitboxCount) + "\r\n" +
-                          "- Current Memory Usage: " + ((System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024) / 1024) + "MB \r\n" +
-                          "- Built on Discord.Net - (https://github.com/RogueException/Discord.Net)\r\n" +
-                          "- Developed and Maintained by Dawgeth - (http://twitter.com/dawgeth)\r\n" +
-                          "- Want to submit feedback, a bug, or suggestion ? - (https://bitbucket.org/MattTheDev/couchbot/issues?status=new&status=open)\r\n" +
-                          "- Join us on Discord!-(http://discord.couchbot.io)\r\n" +
-                          "- I've become self aware. http://twitter.com/CouchBotIsAlive\r\n" +
-                          "```\r\n";
-
-            await Context.Channel.SendMessageAsync(info);
-        }
-
+        
         [Command("servers")]
         public async Task Servers()
         {
