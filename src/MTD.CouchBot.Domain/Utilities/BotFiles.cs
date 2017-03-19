@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Utilities
+namespace MTD.CouchBot.Domain.Utilities
 {
     public static class BotFiles
     {
@@ -79,12 +79,51 @@ namespace MTD.CouchBot.Utilities
             return users;
         }
 
-        public static List<LiveChannel> GetCurrentlyLiveChannels()
+        public static List<LiveChannel> GetCurrentlyLiveBeamChannels()
+        {
+            var liveChannels = new List<LiveChannel>();
+
+            // Get Live Channels
+            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory))
+            {
+                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+            }
+
+            return liveChannels;
+        }
+
+        public static List<LiveChannel> GetCurrentlyLiveYouTubeChannels()
+        {
+            var liveChannels = new List<LiveChannel>();
+
+            // Get Live Channels
+            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
+            {
+                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+            }
+
+            return liveChannels;
+        }
+
+        public static List<LiveChannel> GetCurrentlyLiveTwitchChannels()
         {
             var liveChannels = new List<LiveChannel>();
 
             // Get Live Channels
             foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
+            {
+                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+            }
+
+            return liveChannels;
+        }
+
+        public static List<LiveChannel> GetCurrentlyLiveHitboxChannels()
+        {
+            var liveChannels = new List<LiveChannel>();
+
+            // Get Live Channels
+            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
             {
                 liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
             }

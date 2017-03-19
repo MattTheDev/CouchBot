@@ -9,7 +9,7 @@ using MTD.CouchBot.Managers.Implementations;
 using System;
 using MTD.CouchBot.Domain;
 using System.Collections.Generic;
-using MTD.CouchBot.Utilities;
+using MTD.CouchBot.Domain.Utilities;
 
 namespace MTD.CouchBot.Modules
 {

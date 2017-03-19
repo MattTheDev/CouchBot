@@ -14,8 +14,6 @@
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
     "Microsoft.Extensions.Options": "1.1.0",
     "Microsoft.NETCore.App": "1.1.0",
-    "MTD.CouchBot.Constellation": "1.0.0-*",
-    "MTD.CouchBot.Dals": "1.0.0-*",
     "MTD.CouchBot.Domain": "1.0.0-*",
     "MTD.CouchBot.Managers": "1.0.0-*",
     "System.Diagnostics.Contracts": "4.3.0"

@@ -17,10 +17,12 @@ namespace MTD.CouchBot.Modules
     public class StreamerAdd : ModuleBase
     {
         ITwitchManager twitchManager;
+        IBeamManager _beamManager;
 
         public StreamerAdd()
         {
-            twitchManager = new TwitchManager();    
+            twitchManager = new TwitchManager();
+            _beamManager = new BeamManager();
         }
 
         [Command("twitch"), Summary("Add a new twitch streamer.")]
@@ -115,9 +117,14 @@ namespace MTD.CouchBot.Modules
             if (server.ServerBeamChannels == null)
                 server.ServerBeamChannels = new List<string>();
 
+            if (server.ServerBeamChannelIds == null)
+                server.ServerBeamChannelIds = new List<string>();
+
             if (!server.ServerBeamChannels.Contains(channel.ToLower()))
             {
+                var beamChannel = await _beamManager.GetBeamChannelByName(channel);
                 server.ServerBeamChannels.Add(channel.ToLower());
+                server.ServerBeamChannelIds.Add(beamChannel.id.Value.ToString());
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
                 await Context.Channel.SendMessageAsync("Added " + channel + " to the server Beam streamer list.");
             }

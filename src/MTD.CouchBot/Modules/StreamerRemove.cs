@@ -17,10 +17,12 @@ namespace MTD.CouchBot.Modules
     public class StreamerRemove : ModuleBase
     {
         ITwitchManager twitchManager;
+        IBeamManager _beamManager;
 
         public StreamerRemove()
         {
             twitchManager = new TwitchManager();
+            _beamManager = new BeamManager();
         }
 
         [Command("twitch"), Summary("Remove a twitch streamer.")]
@@ -110,7 +112,9 @@ namespace MTD.CouchBot.Modules
 
             if (server.ServerBeamChannels.Contains(channel.ToLower()))
             {
+                var beamChannel = await _beamManager.GetBeamChannelByName(channel);
                 server.ServerBeamChannels.Remove(channel.ToLower());
+                server.ServerBeamChannelIds.Remove(beamChannel.id.Value.ToString());
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
                 await Context.Channel.SendMessageAsync("Removed " + channel + " from the server Beam streamer list.");
             }

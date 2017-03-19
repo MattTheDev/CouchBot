@@ -2,7 +2,7 @@
 using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Json;
-using MTD.CouchBot.Utilities;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

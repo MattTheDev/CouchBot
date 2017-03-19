@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Utilities
+namespace MTD.CouchBot.Domain.Utilities
 {
     public static class Logging
     {

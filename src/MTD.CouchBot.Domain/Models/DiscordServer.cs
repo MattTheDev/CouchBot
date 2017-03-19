@@ -21,6 +21,7 @@ namespace MTD.CouchBot.Json
         public List<string> ServerTwitchChannels { get; set; }
         public List<string> ServerTwitchChannelIds { get; set; }
         public List<string> ServerBeamChannels { get; set; }
+        public List<string> ServerBeamChannelIds { get; set; }
         public List<string> ServerHitboxChannels { get; set; }
         public float TimeZoneOffset { get; set; }
         public bool AllowThumbnails { get; set; }

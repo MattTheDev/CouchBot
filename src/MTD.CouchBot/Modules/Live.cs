@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
+using MTD.CouchBot.Bot;
 
 namespace MTD.CouchBot.Modules
 {     
@@ -17,13 +18,15 @@ namespace MTD.CouchBot.Modules
     [Group("live")]
     public class Live : ModuleBase
     {
-        private ITwitchManager twitchManager;
-        private IYouTubeManager youtubeManager;
+        ITwitchManager twitchManager;
+        IYouTubeManager youtubeManager;
+        IBeamManager _beamManager;
 
         public Live()
         {
             twitchManager = new TwitchManager();
             youtubeManager = new YouTubeManager();
+            _beamManager = new BeamManager();
         }
 
         [Command("check"), Summary("Sets twitch channel.")]
@@ -120,6 +123,7 @@ namespace MTD.CouchBot.Modules
                 {
                     case "twitch":
                         user.TwitchName = null;
+                        user.TwitchId = null;
                         label = "Twitch";
                         break;
                     case "youtube":
@@ -127,7 +131,9 @@ namespace MTD.CouchBot.Modules
                         label = "YouTube";
                         break;
                     case "beam":
+                        await Program.beamClient.UnsubscribeFromLiveAnnouncements(user.BeamId);
                         user.BeamName = null;
+                        user.BeamId = null;
                         label = "Beam";
                         break;
                     case "hitbox":
@@ -195,8 +201,19 @@ namespace MTD.CouchBot.Modules
             if (File.Exists(file))
                 user = JsonConvert.DeserializeObject<User>(File.ReadAllText(file));
 
+            var beamChannel = await _beamManager.GetBeamChannelByName(channel);
+
+            if(beamChannel == null)
+            {
+                await Context.Channel.SendMessageAsync(channel + " is an invalid Beam channel.");
+                return;
+            }
+
+            await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
+
             user.Id = Context.Message.Author.Id;
             user.BeamName = channel;
+            user.BeamId = beamChannel.id.Value.ToString();
             File.WriteAllText(file, JsonConvert.SerializeObject(user));
             await Context.Channel.SendMessageAsync("Your Beam Channel has been set.");
         }

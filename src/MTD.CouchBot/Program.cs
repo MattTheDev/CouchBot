@@ -20,8 +20,9 @@ using MTD.CouchBot.Domain.Models;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using MTD.CouchBot.Utilities;
-using MTD.CouchBot.Constellation;
+using MTD.CouchBot.Domain.Utilities;
+using MTD.CouchBot.Bot.Utilities;
+using MTD.CouchBot.Bot;
 
 namespace MTD.CouchBot
 {
@@ -31,6 +32,7 @@ namespace MTD.CouchBot
 
         private CommandService commands;
         public static DiscordSocketClient client;
+        public static BeamClient beamClient;
         private DependencyMap map;
 
         private static Timer twitchTimer;
@@ -71,8 +73,10 @@ namespace MTD.CouchBot
             await ValidateGuildData();
             await ValidateUserData();
 
+            await ResubscribeToBeamEvents();
+
             // Queue up timer jobs.
-            QueueBeamChecks();
+            //QueueBeamChecks();
             QueueTwitchChecks();
             QueueYouTubeChecks();
             QueueHitboxChecks();
@@ -102,50 +106,50 @@ namespace MTD.CouchBot
             var totalServers = 0;
             var removedServers = 0;
 
-            foreach (var serverFile in serverFiles)
-            {
-                totalServers++;
-                var serverId = Path.GetFileNameWithoutExtension(serverFile);
+            //foreach (var serverFile in serverFiles)
+            //{
+            //    totalServers++;
+            //    var serverId = Path.GetFileNameWithoutExtension(serverFile);
 
-                var serverJson = File.ReadAllText(serverFile);
-                var server = JsonConvert.DeserializeObject<DiscordServer>(serverJson);
+            //    var serverJson = File.ReadAllText(serverFile);
+            //    var server = JsonConvert.DeserializeObject<DiscordServer>(serverJson);
 
-                var guild = client.GetGuild(ulong.Parse(serverId));
+            //    var guild = client.GetGuild(ulong.Parse(serverId));
 
-                if (guild == null)
-                {
-                    File.Delete(Constants.ConfigRootDirectory + Constants.GuildDirectory + serverId + ".json");
-                    removedServers++;
-                }
+            //    if (guild == null)
+            //    {
+            //        File.Delete(Constants.ConfigRootDirectory + Constants.GuildDirectory + serverId + ".json");
+            //        removedServers++;
+            //    }
 
-                if (guild != null)
-                {
-                    server.Name = guild.Name;
-                    var owner = guild.Owner;
+            //    if (guild != null)
+            //    {
+            //        server.Name = guild.Name;
+            //        var owner = guild.Owner;
                     
-                    // Validate Guild Owner Name
-                    if (owner != null)
-                    {
-                        server.OwnerName = owner.Username;
-                    }
+            //        // Validate Guild Owner Name
+            //        if (owner != null)
+            //        {
+            //            server.OwnerName = owner.Username;
+            //        }
 
-                    // Validate Messaging
-                    if(string.IsNullOrEmpty(server.LiveMessage))
-                    {
-                        server.LiveMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
-                    }
+            //        // Validate Messaging
+            //        if(string.IsNullOrEmpty(server.LiveMessage))
+            //        {
+            //            server.LiveMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
+            //        }
 
-                    if(string.IsNullOrEmpty(server.PublishedMessage))
-                    {
-                        server.PublishedMessage = "%CHANNEL% just published a new video - %TITLE% - %URL%";
-                    }
+            //        if(string.IsNullOrEmpty(server.PublishedMessage))
+            //        {
+            //            server.PublishedMessage = "%CHANNEL% just published a new video - %TITLE% - %URL%";
+            //        }
 
-                    serverJson = JsonConvert.SerializeObject(server);
+            //        serverJson = JsonConvert.SerializeObject(server);
 
-                    File.Delete(serverFile);
-                    File.WriteAllText(serverFile, serverJson);
-                }
-            }
+            //        File.Delete(serverFile);
+            //        File.WriteAllText(serverFile, serverJson);
+            //    }
+            //}
 
             Logging.LogInfo("Server Validating Complete. " + totalServers + " servers validated. " + removedServers + " servers removed.");
         }
@@ -189,40 +193,47 @@ namespace MTD.CouchBot
 
         public async Task ResubscribeToBeamEvents()
         {
-            var users = BotFiles.GetConfiguredUsers();
+            beamClient = new BeamClient();
+            var users = BotFiles.GetConfiguredUsers().Where(x => !string.IsNullOrEmpty(x.BeamId));
 
-            BeamClient client = new BeamClient();
+            await Task.Run(async () =>
+             {
+                 await beamClient.RunWebSockets();
+             });
 
-            foreach(var u in users)
+            if (users != null && users.Count() > 0)
             {
-                if(!string.IsNullOrEmpty(u.BeamId))
+                foreach (var u in users)
                 {
-                    await client.SubscribeToLiveAnnouncements(u.BeamId);
+                    if (!string.IsNullOrEmpty(u.BeamId))
+                    {
+                        await beamClient.SubscribeToLiveAnnouncements(u.BeamId);
+                    }
                 }
             }
         }
 
         public void QueueBeamChecks()
         {
-            beamTimer = new Timer(async (e) =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                Logging.LogBeam("Checking Beam");
-                await CheckBeamLive();
-                sw.Stop();
-                Logging.LogBeam("Beam Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
-            }, null, 0, 300000);
+            //beamTimer = new Timer(async (e) =>
+            //{
+            //    Stopwatch sw = new Stopwatch();
+            //    sw.Start();
+            //    Logging.LogBeam("Checking Beam");
+            //    await CheckBeamLive();
+            //    sw.Stop();
+            //    Logging.LogBeam("Beam Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
+            //}, null, 0, 300000);
 
-            beamServerTimer = new Timer(async (e) =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                Logging.LogBeam("Checking Server Beam");
-                await CheckServerBeamLive();
-                sw.Stop();
-                Logging.LogBeam("Server Beam Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
-            }, null, 0, 300000);
+            //beamServerTimer = new Timer(async (e) =>
+            //{
+            //    Stopwatch sw = new Stopwatch();
+            //    sw.Start();
+            //    Logging.LogBeam("Checking Server Beam");
+            //    await CheckServerBeamLive();
+            //    sw.Stop();
+            //    Logging.LogBeam("Server Beam Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
+            //}, null, 0, 300000);
         }
 
         public void QueueHitboxChecks()
@@ -359,7 +370,7 @@ namespace MTD.CouchBot
 
             int argPos = 0;
 
-            if (!(message.HasStringPrefix("!cb ", ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
+            if (!(message.HasStringPrefix("!cbt ", ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
 
             var context = new CommandContext(client, message);
 
@@ -370,7 +381,7 @@ namespace MTD.CouchBot
         {
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
+            var liveChannels = BotFiles.GetCurrentlyLiveTwitchChannels();
 
             // Loop through users to broadcast.
             foreach (var user in users)
@@ -482,7 +493,7 @@ namespace MTD.CouchBot
                                             {
                                                 GuildId = server.Id,
                                                 ChannelId = server.GoLiveChannel,
-                                                UserId = user.Id,
+                                                UserId = user.TwitchId,
                                                 Message = message,
                                                 Platform = "Twitch",
                                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null),
@@ -505,7 +516,7 @@ namespace MTD.CouchBot
         {
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
+            var liveChannels = BotFiles.GetCurrentlyLiveTwitchChannels();
 
             // Loop through servers to broadcast.
             foreach (var server in servers)
@@ -622,7 +633,7 @@ namespace MTD.CouchBot
                                         {
                                             GuildId = server.Id,
                                             ChannelId = server.GoLiveChannel,
-                                            UserId = 0,
+                                            UserId = stream.channel._id.ToString(),
                                             Message = message,
                                             Platform = "Twitch",
                                             Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
@@ -644,7 +655,7 @@ namespace MTD.CouchBot
         {
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
+            var liveChannels = BotFiles.GetCurrentlyLiveYouTubeChannels();
 
             // Loop through users to broadcast.
             foreach (var user in users)
@@ -763,7 +774,7 @@ namespace MTD.CouchBot
                                             {
                                                 GuildId = server.Id,
                                                 ChannelId = server.GoLiveChannel,
-                                                UserId = user.Id,
+                                                UserId = user.YouTubeChannelId,
                                                 Message = message,
                                                 Platform = "YouTube",
                                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
@@ -784,7 +795,7 @@ namespace MTD.CouchBot
         {
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
+            var liveChannels = BotFiles.GetCurrentlyLiveYouTubeChannels();
 
             // Loop through servers to broadcast.
             foreach (var server in servers)
@@ -898,7 +909,7 @@ namespace MTD.CouchBot
                                             {
                                                 GuildId = server.Id,
                                                 ChannelId = server.GoLiveChannel,
-                                                UserId = 0,
+                                                UserId = youtubeChannelId,
                                                 Message = message,
                                                 Platform = "YouTube",
                                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
@@ -920,7 +931,7 @@ namespace MTD.CouchBot
         {
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
+            var liveChannels = BotFiles.GetCurrentlyLiveHitboxChannels();
 
             foreach (var user in users)
             {
@@ -1034,7 +1045,7 @@ namespace MTD.CouchBot
                                                 {
                                                     GuildId = server.Id,
                                                     ChannelId = server.GoLiveChannel,
-                                                    UserId = 0,
+                                                    UserId = user.HitboxName,
                                                     Message = message,
                                                     Platform = "Hitbox",
                                                     Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
@@ -1056,7 +1067,7 @@ namespace MTD.CouchBot
         {
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
+            var liveChannels = BotFiles.GetCurrentlyLiveHitboxChannels();
 
             // Loop through servers to broadcast.
             foreach (var server in servers)
@@ -1170,7 +1181,7 @@ namespace MTD.CouchBot
                                             {
                                                 GuildId = server.Id,
                                                 ChannelId = server.GoLiveChannel,
-                                                UserId = 0,
+                                                UserId = hitboxChannel,
                                                 Message = message,
                                                 Platform = "Hitbox",
                                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
@@ -1336,7 +1347,7 @@ namespace MTD.CouchBot
                             {
                                 GuildId = server.Id,
                                 ChannelId = server.PublishedChannel,
-                                UserId = user.Id,
+                                UserId = user.YouTubeChannelId,
                                 Message = message,
                                 Platform = "YouTube",
                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
@@ -1471,7 +1482,7 @@ namespace MTD.CouchBot
                             {
                                 GuildId = server.Id,
                                 ChannelId = server.PublishedChannel,
-                                UserId = 0,
+                                UserId = user,
                                 Message = message,
                                 Platform = "YouTube",
                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
@@ -1498,7 +1509,7 @@ namespace MTD.CouchBot
                         Logging.LogInfo("Cleaning Up Live Files.");
                         await CleanUpLiveStreams("youtube");
                         await CleanUpLiveStreams("twitch");
-                        await CleanUpLiveStreams("beam");
+                        //await CleanUpLiveStreams("beam");
                         await CleanUpLiveStreams("hitbox");
                         Logging.LogInfo("Cleaning Up Live Files Complete.");
                     }
@@ -2012,7 +2023,7 @@ namespace MTD.CouchBot
         {
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
+            var liveChannels = BotFiles.GetCurrentlyLiveBeamChannels();
 
             foreach (var user in users)
             {
@@ -2124,7 +2135,7 @@ namespace MTD.CouchBot
                                             {
                                                 GuildId = server.Id,
                                                 ChannelId = server.GoLiveChannel,
-                                                UserId = 0,
+                                                UserId = user.BeamId,
                                                 Message = message,
                                                 Platform = "Beam",
                                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
@@ -2145,7 +2156,7 @@ namespace MTD.CouchBot
         {
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveChannels();
+            var liveChannels = BotFiles.GetCurrentlyLiveBeamChannels();
 
             // Loop through servers to broadcast.
             foreach (var server in servers)
@@ -2256,7 +2267,7 @@ namespace MTD.CouchBot
                                         {
                                             GuildId = server.Id,
                                             ChannelId = server.GoLiveChannel,
-                                            UserId = 0,
+                                            UserId = beamChannel,
                                             Message = message,
                                             Platform = "Beam",
                                             Embed = (!server.UseTextAnnouncements ? embed.Build() : null)

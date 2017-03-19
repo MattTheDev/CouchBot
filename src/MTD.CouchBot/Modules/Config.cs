@@ -195,7 +195,7 @@ namespace MTD.CouchBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            server.DeleteWhenOffline = !bool.Parse(trueFalse);
+            server.DeleteWhenOffline = bool.Parse(trueFalse);
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Delete Offline has been set to: " + trueFalse);
         }

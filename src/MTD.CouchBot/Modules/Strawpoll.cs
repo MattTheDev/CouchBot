@@ -4,7 +4,7 @@ using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
-using MTD.CouchBot.Utilities;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
