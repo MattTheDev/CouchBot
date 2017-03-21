@@ -6,6 +6,7 @@ using MTD.CouchBot.Domain.Models;
 using System.Net;
 using System.IO;
 using Newtonsoft.Json;
+using MTD.CouchBot.Domain;
 
 namespace MTD.CouchBot.Dals.Implementations
 {
@@ -13,7 +14,7 @@ namespace MTD.CouchBot.Dals.Implementations
     {
         public async Task<YouTubeChannelStatistics> GetChannelStatisticsById(string id)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/channels?part=statistics&key=Constants.YouTubeApiKey&id=" + id);
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/channels?part=statistics&key=" + Constants.YouTubeApiKey + " &id=" + id);
             webRequest.ContentType = "application/json; charset=utf-8";
             string str;
             using (StreamReader streamReader = new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()))
@@ -23,7 +24,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
         public async Task<YouTubeSearchListChannel> GetLiveVideoByChannelId(string id)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=" + id + "&eventType=live&maxResults=1&type=video&key=Constants.YouTubeApiKey&fields=items(id/videoId)");
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=" + id + "&eventType=live&maxResults=1&type=video&key=" + Constants.YouTubeApiKey + "&fields=items(id/videoId)");
             webRequest.ContentType = "application/json; charset=utf-8";
             string str = "";
 
@@ -44,7 +45,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
         public async Task<YouTubeSearchListChannel> GetVideoById(string id)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,liveStreamingDetails&key=Constants.YouTubeApiKey&id=" + id);
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,liveStreamingDetails&key=" + Constants.YouTubeApiKey + "&id=" + id);
             webRequest.ContentType = "application/json; charset=utf-8";
             string str;
             using (StreamReader streamReader = new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()))
@@ -54,7 +55,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
         public async Task<YouTubeChannelContentDetails> GetContentDetailsByChannelId(string channelId)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&key=Constants.YouTubeApiKey&id=" + channelId);
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/channels?part=contentDetails&key=" + Constants.YouTubeApiKey + "&id=" + channelId);
             webRequest.ContentType = "application/json; charset=utf-8";
             string str;
             using (StreamReader streamReader = new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()))
@@ -64,7 +65,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
         public async Task<YouTubePlaylist> GetPlaylistItemsByPlaylistId(string playlistId)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&key=Constants.YouTubeApiKey&playlistId=" + playlistId);
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&key=" + Constants.YouTubeApiKey + "&playlistId=" + playlistId);
             webRequest.ContentType = "application/json; charset=utf-8";
             string str;
             using (StreamReader streamReader = new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()))
@@ -75,7 +76,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
         public async Task<YouTubeChannelSearchList> GetYouTubeChannelByQuery(string name)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + name + "&type=channel&key=Constants.YouTubeApiKey");
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + name + "&type=channel&key=" + Constants.YouTubeApiKey);
             webRequest.ContentType = "application/json; charset=utf-8";
             string str = "";
 
@@ -87,7 +88,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
         public async Task<YouTubeChannelSnippet> GetYouTubeChannelSnippetById(string channelId)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelId + "&key=Constants.YouTubeApiKey");
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/channels?part=snippet&id=" + channelId + "&key=" + Constants.YouTubeApiKey);
             webRequest.ContentType = "application/json; charset=utf-8";
             string str = "";
 

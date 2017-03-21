@@ -489,19 +489,27 @@ namespace MTD.CouchBot
                                                 message += "**[Twitch]** " + server.LiveMessage.Replace("%CHANNEL%", stream.stream.channel.display_name.Replace("_", "").Replace("*", "")).Replace("%GAME%", stream.stream.game).Replace("%TITLE%", stream.stream.channel.status).Replace("%URL%", url);
                                             }
 
-                                            channel.ChannelMessages.Add(await SendMessage(new BroadcastMessage()
-                                            {
-                                                GuildId = server.Id,
-                                                ChannelId = server.GoLiveChannel,
-                                                UserId = user.TwitchId,
-                                                Message = message,
-                                                Platform = "Twitch",
-                                                Embed = (!server.UseTextAnnouncements ? embed.Build() : null),
-                                                DeleteOffline = server.DeleteWhenOffline
-                                            }));
+                                            var finalCheck = BotFiles.GetCurrentlyLiveTwitchChannels().FirstOrDefault(x => x.Name == user.TwitchId);
 
-                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + 
-                                                Constants.TwitchDirectory + user.TwitchId + ".json", JsonConvert.SerializeObject(channel));
+                                            if (finalCheck == null || !finalCheck.Servers.Contains(server.Id))
+                                            {
+                                                if (channel.ChannelMessages == null)
+                                                    channel.ChannelMessages = new List<ChannelMessage>();
+
+                                                channel.ChannelMessages.Add(await SendMessage(new BroadcastMessage()
+                                                {
+                                                    GuildId = server.Id,
+                                                    ChannelId = server.GoLiveChannel,
+                                                    UserId = user.TwitchId,
+                                                    Message = message,
+                                                    Platform = "Twitch",
+                                                    Embed = (!server.UseTextAnnouncements ? embed.Build() : null),
+                                                    DeleteOffline = server.DeleteWhenOffline
+                                                }));
+
+                                                File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory +
+                                                    Constants.TwitchDirectory + user.TwitchId + ".json", JsonConvert.SerializeObject(channel));
+                                            }
                                         }
                                     }
                                 }
@@ -629,18 +637,27 @@ namespace MTD.CouchBot
                                             message += "**[Twitch]** " + server.LiveMessage.Replace("%CHANNEL%", stream.channel.display_name.Replace("_", "").Replace("*", "")).Replace("%GAME%", stream.game).Replace("%TITLE%", stream.channel.status).Replace("%URL%", url);
                                         }
 
-                                        await SendMessage(new BroadcastMessage()
-                                        {
-                                            GuildId = server.Id,
-                                            ChannelId = server.GoLiveChannel,
-                                            UserId = stream.channel._id.ToString(),
-                                            Message = message,
-                                            Platform = "Twitch",
-                                            Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-                                        });                                        
+                                        var finalCheck = BotFiles.GetCurrentlyLiveTwitchChannels().FirstOrDefault(x => x.Name == stream.channel._id.ToString());
 
-                                        File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream.channel._id.ToString() + ".json", 
-                                            JsonConvert.SerializeObject(channel));
+                                        if (finalCheck == null || !finalCheck.Servers.Contains(server.Id))
+                                        {
+                                            if (channel.ChannelMessages == null)
+                                                channel.ChannelMessages = new List<ChannelMessage>();
+
+                                            channel.ChannelMessages.Add(await SendMessage(new BroadcastMessage()
+                                            {
+                                                GuildId = server.Id,
+                                                ChannelId = server.GoLiveChannel,
+                                                UserId = stream.channel._id.ToString(),
+                                                Message = message,
+                                                Platform = "Twitch",
+                                                Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
+                                            }));
+
+
+                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream.channel._id.ToString() + ".json",
+                                                JsonConvert.SerializeObject(channel));
+                                        }
                                     }
 
                                 }
@@ -770,17 +787,25 @@ namespace MTD.CouchBot
                                                 message += "**[YouTube Gaming]** " + server.LiveMessage.Replace("%CHANNEL%", stream.snippet.channelTitle).Replace("%GAME%", "a game").Replace("%TITLE%", stream.snippet.title).Replace("%URL%", url);
                                             }
 
-                                            await SendMessage(new BroadcastMessage()
-                                            {
-                                                GuildId = server.Id,
-                                                ChannelId = server.GoLiveChannel,
-                                                UserId = user.YouTubeChannelId,
-                                                Message = message,
-                                                Platform = "YouTube",
-                                                Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-                                            });
+                                            var finalCheck = BotFiles.GetCurrentlyLiveYouTubeChannels().FirstOrDefault(x => x.Name == user.YouTubeChannelId);
 
-                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + user.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
+                                            if (finalCheck == null || !finalCheck.Servers.Contains(server.Id))
+                                            {
+                                                if (channel.ChannelMessages == null)
+                                                    channel.ChannelMessages = new List<ChannelMessage>();
+
+                                                channel.ChannelMessages.Add(await SendMessage(new BroadcastMessage()
+                                                {
+                                                    GuildId = server.Id,
+                                                    ChannelId = server.GoLiveChannel,
+                                                    UserId = user.YouTubeChannelId,
+                                                    Message = message,
+                                                    Platform = "YouTube",
+                                                    Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
+                                                }));
+
+                                                File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + user.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
+                                            }
                                         }
                                     }
                                 }
@@ -800,7 +825,7 @@ namespace MTD.CouchBot
             // Loop through servers to broadcast.
             foreach (var server in servers)
             {
-                if (server.Id == 0 || server.GoLiveChannel == 0 || liveChannels.Count < 1)
+                if (server.Id == 0 || server.GoLiveChannel == 0)
                 { continue; }
 
                 if (server.ServerYouTubeChannelIds != null)
@@ -905,7 +930,14 @@ namespace MTD.CouchBot
                                         }
 
 
-                                        await SendMessage(new BroadcastMessage()
+                                        var finalCheck = BotFiles.GetCurrentlyLiveYouTubeChannels().FirstOrDefault(x => x.Name == youtubeChannelId);
+
+                                        if (finalCheck == null || !finalCheck.Servers.Contains(server.Id))
+                                        {
+                                            if (channel.ChannelMessages == null)
+                                                channel.ChannelMessages = new List<ChannelMessage>();
+
+                                            channel.ChannelMessages.Add(await SendMessage(new BroadcastMessage()
                                             {
                                                 GuildId = server.Id,
                                                 ChannelId = server.GoLiveChannel,
@@ -913,10 +945,11 @@ namespace MTD.CouchBot
                                                 Message = message,
                                                 Platform = "YouTube",
                                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-                                            });
+                                            }));
 
 
-                                        File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + youtubeChannelId + ".json", JsonConvert.SerializeObject(channel));
+                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + youtubeChannelId + ".json", JsonConvert.SerializeObject(channel));
+                                        }
                                     }
 
                                 }
@@ -1041,17 +1074,25 @@ namespace MTD.CouchBot
                                                     message += "**[Hitbox]** " + server.LiveMessage.Replace("%CHANNEL%", user.HitboxName).Replace("%GAME%", gameName).Replace("%TITLE%", stream.livestream[0].media_status).Replace("%URL%", url);
                                                 }
 
-                                                await SendMessage(new BroadcastMessage()
-                                                {
-                                                    GuildId = server.Id,
-                                                    ChannelId = server.GoLiveChannel,
-                                                    UserId = user.HitboxName,
-                                                    Message = message,
-                                                    Platform = "Hitbox",
-                                                    Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-                                                });
+                                                var finalCheck = BotFiles.GetCurrentlyLiveHitboxChannels().FirstOrDefault(x => x.Name == user.HitboxName);
 
-                                                File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + user.HitboxName + ".json", JsonConvert.SerializeObject(channel));
+                                                if (finalCheck == null || !finalCheck.Servers.Contains(server.Id))
+                                                {
+                                                    if (channel.ChannelMessages == null)
+                                                        channel.ChannelMessages = new List<ChannelMessage>();
+
+                                                    channel.ChannelMessages.Add(await SendMessage(new BroadcastMessage()
+                                                    {
+                                                        GuildId = server.Id,
+                                                        ChannelId = server.GoLiveChannel,
+                                                        UserId = user.HitboxName,
+                                                        Message = message,
+                                                        Platform = "Hitbox",
+                                                        Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
+                                                    }));
+
+                                                    File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + user.HitboxName + ".json", JsonConvert.SerializeObject(channel));
+                                                }
                                             }
                                         }
                                     }
@@ -1177,17 +1218,25 @@ namespace MTD.CouchBot
                                                 message += "**[Hitbox]** " + server.LiveMessage.Replace("%CHANNEL%", hitboxChannel).Replace("%GAME%", gameName).Replace("%TITLE%", stream.livestream[0].media_status).Replace("%URL%", url);
                                             }
 
-                                            await SendMessage(new BroadcastMessage()
-                                            {
-                                                GuildId = server.Id,
-                                                ChannelId = server.GoLiveChannel,
-                                                UserId = hitboxChannel,
-                                                Message = message,
-                                                Platform = "Hitbox",
-                                                Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-                                            });                                            
+                                            var finalCheck = BotFiles.GetCurrentlyLiveHitboxChannels().FirstOrDefault(x => x.Name == hitboxChannel);
 
-                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + hitboxChannel + ".json", JsonConvert.SerializeObject(channel));
+                                            if (finalCheck == null || !finalCheck.Servers.Contains(server.Id))
+                                            {
+                                                if (channel.ChannelMessages == null)
+                                                    channel.ChannelMessages = new List<ChannelMessage>();
+
+                                                channel.ChannelMessages.Add(await SendMessage(new BroadcastMessage()
+                                                {
+                                                    GuildId = server.Id,
+                                                    ChannelId = server.GoLiveChannel,
+                                                    UserId = hitboxChannel,
+                                                    Message = message,
+                                                    Platform = "Hitbox",
+                                                    Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
+                                                }));
+
+                                                File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + hitboxChannel + ".json", JsonConvert.SerializeObject(channel));
+                                            }
                                         }
 
                                     }

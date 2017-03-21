@@ -26,6 +26,7 @@ Endpoint: http://multiyt.tv/CouchBot
 
         public static readonly string DiscordToken = "DISCORDBOTTOKEN";
         public static readonly string TwitchClientId = "TWITCHCLIENTID";
+        public static readonly string YouTubeApiKey = "YOUTUBEAPIKEY";
 
         public static readonly ulong CouchBotId = 1234567890; //Replace with your Bot ID.
     }
