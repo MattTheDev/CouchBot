@@ -2,10 +2,7 @@
 using MTD.CouchBot.Domain.Models;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Dals.Implementations
 {

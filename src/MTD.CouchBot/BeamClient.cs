@@ -1,14 +1,13 @@
 ﻿using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
-using MTD.CouchBot.Bot;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using System;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Schema;
 
 namespace MTD.CouchBot.Bot
 {

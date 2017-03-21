@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models;
-using System.Net;
-using System.IO;
 using Newtonsoft.Json;
-using MTD.CouchBot.Domain;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Dals.Implementations
 {

@@ -1,10 +1,4 @@
-﻿using Discord;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace MTD.CouchBot.Domain
+﻿namespace MTD.CouchBot.Domain
 {
     /*
      * ame: CouchBot

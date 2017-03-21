@@ -1,5 +1,4 @@
 ﻿using Discord;
-using MTD.CouchBot;
 using MTD.CouchBot.Bot.Utilities;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models;

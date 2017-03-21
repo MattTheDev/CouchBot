@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MTD.CouchBot.Domain.Models;
-using MTD.CouchBot.Dals;
+﻿using MTD.CouchBot.Dals;
 using MTD.CouchBot.Dals.Implementations;
+using MTD.CouchBot.Domain.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {

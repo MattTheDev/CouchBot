@@ -1,15 +1,15 @@
 ﻿using Discord;
 using Discord.Commands;
+using MTD.CouchBot.Domain;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
+using MTD.CouchBot.Managers.Implementations;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using MTD.CouchBot.Managers.Implementations;
-using System;
-using MTD.CouchBot.Domain;
-using System.Collections.Generic;
-using MTD.CouchBot.Domain.Utilities;
 
 namespace MTD.CouchBot.Modules
 {

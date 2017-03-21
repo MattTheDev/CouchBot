@@ -1,14 +1,14 @@
-﻿using System.IO;
+﻿using Discord;
 using Discord.Commands;
-using System.Threading.Tasks;
-using Discord;
-using Newtonsoft.Json;
-using MTD.CouchBot.Json;
 using MTD.CouchBot.Domain;
+using MTD.CouchBot.Json;
+using Newtonsoft.Json;
 using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
-{     
+{
     [Group("config")]
     public class Config : ModuleBase
     {

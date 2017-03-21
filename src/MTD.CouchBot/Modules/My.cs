@@ -1,13 +1,10 @@
-﻿using System;
-using System.IO;
-using Discord.Commands;
-using Discord.WebSocket;
-using System.Threading.Tasks;
-using Discord;
-using Newtonsoft.Json;
-using MTD.CouchBot.Json;
-using Microsoft.Extensions.Configuration;
+﻿using Discord.Commands;
 using MTD.CouchBot.Domain;
+using MTD.CouchBot.Json;
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
 {
