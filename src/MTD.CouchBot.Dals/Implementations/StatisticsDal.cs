@@ -2,6 +2,7 @@
 using MTD.CouchBot.Domain.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace MTD.CouchBot.Dals.Implementations
@@ -12,7 +13,7 @@ namespace MTD.CouchBot.Dals.Implementations
         {
             var path = Constants.ConfigRootDirectory + Constants.BotStatistics;
 
-            if(!File.Exists(path))
+            if (!File.Exists(path))
             {
                 var stats = new BotStats();
                 stats.BeamAlertCount = 0;
@@ -62,7 +63,7 @@ namespace MTD.CouchBot.Dals.Implementations
         public void AddUptimeMinutes()
         {
             var stats = GetBotStats();
-            stats.UptimeMinutes+=5;
+            stats.UptimeMinutes += 5;
             SaveBotStats(stats);
         }
 
@@ -91,11 +92,47 @@ namespace MTD.CouchBot.Dals.Implementations
             return GetBotStats().YouTubeAlertCount;
         }
 
+        public void AddRandomInt(int random)
+        {
+            var stats = GetBotStats();
+            if (stats.BeamSubIds == null)
+            {
+                stats.BeamSubIds = new List<int>();
+            }
+
+            stats.BeamSubIds.Add(random);
+            SaveBotStats(stats);
+        }
+
+        public bool ContainsRandomInt(int random)
+        {
+            var stats = GetBotStats();
+
+            if (stats.BeamSubIds == null)
+            {
+                stats.BeamSubIds = new List<int>();
+                SaveBotStats(stats);
+
+                return false;
+            }
+
+            return stats.BeamSubIds.Contains(random);
+        }
+
         public void LogRestartTime()
         {
             var stats = GetBotStats();
             stats.LastRestart = DateTime.UtcNow;
             SaveBotStats(stats);
+        }
+
+        public void ClearRandomInts()
+        {
+            var botStats = GetBotStats();
+
+            botStats.BeamSubIds = new List<int>();
+
+            SaveBotStats(botStats);
         }
 
     }

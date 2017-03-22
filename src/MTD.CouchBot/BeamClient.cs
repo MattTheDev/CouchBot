@@ -4,6 +4,7 @@ using MTD.CouchBot.Managers.Implementations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using System;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -15,11 +16,13 @@ namespace MTD.CouchBot.Bot
     public class BeamClient
     {
         public ClientWebSocket client = new ClientWebSocket();
-        IBeamManager _beamManager;    
+        IBeamManager _beamManager;
+        IStatisticsManager _statisticsManager;
     
         public BeamClient()
         {
             _beamManager = new BeamManager();
+            _statisticsManager = new StatisticsManager();
         }
 
         public async Task RunWebSockets()
@@ -77,7 +80,16 @@ namespace MTD.CouchBot.Bot
         public async Task SubscribeToLiveAnnouncements(string beamId)
         {
             //var channel = await beamManager.GetBeamChannelByName(channelName);
-            var subscribe = "{\"type\": \"method\", \"method\": \"livesubscribe\", \"params\": {\"events\": [\"channel:" + beamId + ":update\"]}, \"id\": " + GetRandomInt() + "}";
+            int random = GetRandomInt();
+
+            while (!_statisticsManager.ContainsRandomInt(random))
+            {
+                random = GetRandomInt();
+            }
+
+            _statisticsManager.AddRandomInt(random);            
+            
+            var subscribe = "{\"type\": \"method\", \"method\": \"livesubscribe\", \"params\": {\"events\": [\"channel:" + beamId + ":update\"]}, \"id\": " + random + "}";
 
             var bytes = Encoding.UTF8.GetBytes(subscribe);
 

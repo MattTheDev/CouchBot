@@ -62,6 +62,7 @@ namespace MTD.CouchBot
             hitboxManager = new HitboxManager();
 
             statisticsManager.LogRestartTime();
+            statisticsManager.ClearRandomInts();
 
             // Setup file system
             BotFiles.CheckFolderStructure();
@@ -192,6 +193,7 @@ namespace MTD.CouchBot
         {
             beamClient = new BeamClient();
             var users = BotFiles.GetConfiguredUsers().Where(x => !string.IsNullOrEmpty(x.BeamId));
+            var servers = BotFiles.GetConfiguredServers().Where(x => x.ServerBeamChannelIds != null && x.ServerBeamChannelIds.Count > 0);
 
             await Task.Run(async () =>
              {
@@ -205,6 +207,17 @@ namespace MTD.CouchBot
                     if (!string.IsNullOrEmpty(u.BeamId))
                     {
                         await beamClient.SubscribeToLiveAnnouncements(u.BeamId);
+                    }
+                }
+            }
+
+            if(servers != null && servers.Count() > 0)
+            {
+                foreach(var s in servers)
+                {
+                    foreach(var b in s.ServerBeamChannelIds)
+                    {
+                        await beamClient.SubscribeToLiveAnnouncements(b);
                     }
                 }
             }

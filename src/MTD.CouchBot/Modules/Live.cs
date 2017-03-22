@@ -126,7 +126,7 @@ namespace MTD.CouchBot.Modules
                         label = "YouTube";
                         break;
                     case "beam":
-                        await Program.beamClient.UnsubscribeFromLiveAnnouncements(user.BeamId);
+                        //await Program.beamClient.UnsubscribeFromLiveAnnouncements(user.BeamId);
                         user.BeamName = null;
                         user.BeamId = null;
                         label = "Beam";

@@ -123,6 +123,7 @@ namespace MTD.CouchBot.Modules
                 var beamChannel = await _beamManager.GetBeamChannelByName(channel);
                 server.ServerBeamChannels.Add(channel.ToLower());
                 server.ServerBeamChannelIds.Add(beamChannel.id.Value.ToString());
+                await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
                 await Context.Channel.SendMessageAsync("Added " + channel + " to the server Beam streamer list.");
             }

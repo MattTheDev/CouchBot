@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MTD.CouchBot.Domain.Models
 {
@@ -11,5 +12,6 @@ namespace MTD.CouchBot.Domain.Models
         public int UptimeMinutes { get; set; }
         public DateTime LoggingStartDate { get; set; }
         public DateTime LastRestart { get; set; }
+        public List<int> BeamSubIds { get; set; }
     }
 }
