@@ -22,6 +22,6 @@ Endpoint: http://multiyt.tv/CouchBot
         public static readonly string TwitchClientId = "TWITCHID";
         public static readonly string YouTubeApiKey = "YOUTUBEAPI";
 
-        public static readonly ulong CouchBotId = BOTID; //Replace with your Bot ID.
+        public static readonly ulong CouchBotId = 0; //Replace with your Bot ID.
     }
 }
