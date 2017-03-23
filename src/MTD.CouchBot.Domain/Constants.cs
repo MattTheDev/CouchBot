@@ -18,10 +18,10 @@ Endpoint: http://multiyt.tv/CouchBot
         public static readonly string HitboxDirectory = @"Hitbox\";
         public static readonly string BotStatistics = "BotStats.json";
 
-        public static readonly string DiscordToken = "MjI3ODQ2NTMwNjEzMjQ4MDAw.C6yHxg.9M_TVByBKkCGyn7t6Oq20vlhB1c";
-        public static readonly string TwitchClientId = "g4lzetoz0ff2zkd46mduk03myr749uc";
-        public static readonly string YouTubeApiKey = "AIzaSyAltqMrQbBWhNCRHyT9_q4moXARvCRy3Lc";
+        public static readonly string DiscordToken = "DISCORDTOKEN";
+        public static readonly string TwitchClientId = "TWITCHID";
+        public static readonly string YouTubeApiKey = "YOUTUBEAPI";
 
-        public static readonly ulong CouchBotId = 227846530613248000; //Replace with your Bot ID.
+        public static readonly ulong CouchBotId = BOTID; //Replace with your Bot ID.
     }
 }
