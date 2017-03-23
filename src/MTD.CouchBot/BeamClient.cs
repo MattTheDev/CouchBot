@@ -43,27 +43,21 @@ namespace MTD.CouchBot.Bot
 
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
-                    string schemaJson = @"{'type':'string','event':'string','data':{'channel':'string','payload':{'online':'bool'}}}";
+                    var data = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-                    JsonSchema schema = JsonSchema.Parse(schemaJson);
 
-                    var payloadData = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-                    if (!payloadData.ToLower().Contains("online"))
-                        continue;
-                    
-                    var payload = JsonConvert.DeserializeObject<BeamPayload>(payloadData);
-                    Console.WriteLine(payloadData);
-
-                    if(payload != null && payload.@event != null && payload.@event.ToLower().Equals("live") && 
-                        payload.data.payload.online)
+                    if (data.ToLower().Contains("{\"online\": true}"))
                     {
+                        Console.WriteLine("BEAM DATA: " + data);
+                        var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
                         var id = (payload.data.channel.Split(':'))[1];
                         await BeamHelper.AnnounceLiveChannel(id);
                     }
-                    else if (payload != null && payload.@event != null && payload.@event.ToLower().Equals("live") &&
-                        !payload.data.payload.online)
+                    else if(data.ToLower().Contains("{\"online\": false}"))
                     {
+                        Console.WriteLine("BEAM DATA: " + data);
+                        var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
                         var id = (payload.data.channel.Split(':'))[1];
                         await BeamHelper.StreamOffline(id);
                     }
@@ -82,7 +76,7 @@ namespace MTD.CouchBot.Bot
             //var channel = await beamManager.GetBeamChannelByName(channelName);
             int random = GetRandomInt();
 
-            while (!_statisticsManager.ContainsRandomInt(random))
+            while (_statisticsManager.ContainsRandomInt(random))
             {
                 random = GetRandomInt();
             }

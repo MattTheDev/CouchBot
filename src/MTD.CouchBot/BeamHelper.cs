@@ -24,32 +24,60 @@ namespace MTD.CouchBot.Bot
 
             var beamUsers = BotFiles.GetConfiguredUsers()
                 .Where(x => !string.IsNullOrEmpty(x.BeamId) && x.BeamId == beamId);
-            var beamServers = BotFiles.GetConfiguredServers()
-                .Where(x => x.ServerBeamChannels != null && x.ServerBeamChannels.Count > 0 && x.ServerBeamChannels.Contains(beamId));
+            var servers = BotFiles.GetConfiguredServers();
 
-            var beamName = "";
+            var beamServers = new List<DiscordServer>();
+            var userSharedServers = new List<DiscordServer>();
+
+            foreach(var server in servers)
+            {
+                if(server.ServerBeamChannels != null && server.ServerBeamChannelIds != null)
+                {
+                    if(server.ServerBeamChannels.Count > 0 && server.ServerBeamChannelIds.Count > 0)
+                    {
+                        if (server.ServerBeamChannelIds.Contains(beamId))
+                        {
+                            if (server.GoLiveChannel != 0)
+                            {
+                                beamServers.Add(server);
+                            }
+                        }
+                    }
+                }
+            }
 
             List<BroadcastMessage> messages = new List<BroadcastMessage>();
 
             foreach (var user in beamUsers)
             {
-                var userServers = BotFiles.GetConfiguredServers()
-                    .Where(x => x.Users.Contains(user.Id.ToString()));
+                var userServers = new List<DiscordServer>();
+
+                foreach(var server in BotFiles.GetConfiguredServers())
+                {
+                    if(server.Users != null && server.Users.Contains(user.Id.ToString()))
+                    {
+                        if (server.GoLiveChannel != 0 && server.Id != 0)
+                        {
+                            if ((!server.BroadcastOthers && server.OwnerId == user.Id) || server.BroadcastOthers)
+                            {
+                                if (server.BroadcasterWhitelist == null)
+                                    server.BroadcasterWhitelist = new List<string>();
+
+                                if (!server.UseWhitelist || (server.UseWhitelist && server.BroadcasterWhitelist.Contains(user.Id.ToString())))
+                                {
+                                    userServers.Add(server);
+                                }
+                            }
+                        }
+                    }
+                }
 
                 var stream = await beamManager.GetBeamChannelByName(beamId);
-                beamName = stream.token;
 
-                if (userServers != null && userServers.Count() > 0)
+                if (userServers != null && userServers.Count > 0)
                 {
                     foreach (var server in userServers)
                     {
-                        // Check to see if we have a message already queued up. If so, jump to the next server.
-                        if (messages.Count != 0 && messages
-                            .Where(x => x.GuildId == server.Id && x.UserId == beamId) != null)
-                        {
-                            continue;
-                        }
-
                         messages.Add(await BuildMessage(stream, server));
                     }
                 }
@@ -58,31 +86,36 @@ namespace MTD.CouchBot.Bot
             foreach (var server in beamServers)
             {
                 // Check to see if we have a message already queued up. If so, jump to the next server.
-                if (messages
-                    .Where(x => x.GuildId == server.Id && x.UserId == beamId) != null)
+
+                if (server.GoLiveChannel != 0 && server.Id != 0)
                 {
-                    continue;
+                    if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
+                    {
+                        var stream = await beamManager.GetBeamChannelByName(beamId);
+
+                        messages.Add(await BuildMessage(stream, server));
+                    }
                 }
 
-                var stream = await beamManager.GetBeamChannelByName(beamId);
-                beamName = stream.token;
-
-                messages.Add(await BuildMessage(stream, server));
             }
 
-            var channel = new LiveChannel()
+            if (messages.Count > 0)
             {
-                Name = beamName,
-                Servers = new List<ulong>(),
-                ChannelMessages = await SendMessages(messages)
-            };
 
-            File.WriteAllText(
-                Constants.ConfigRootDirectory +
-                Constants.LiveDirectory +
-                Constants.BeamDirectory +
-                beamName + ".json",
-                JsonConvert.SerializeObject(channel));
+                var channel = new LiveChannel()
+                {
+                    Name = beamId,
+                    Servers = new List<ulong>(),
+                    ChannelMessages = await SendMessages(messages)
+                };
+
+                File.WriteAllText(
+                    Constants.ConfigRootDirectory +
+                    Constants.LiveDirectory +
+                    Constants.BeamDirectory +
+                    beamId + ".json",
+                    JsonConvert.SerializeObject(channel));
+            }
         }
 
         public static async Task<BroadcastMessage> BuildMessage(BeamChannel stream, DiscordServer server)
@@ -109,7 +142,7 @@ namespace MTD.CouchBot.Bot
             embed.Color = blue;
             embed.Description = server.LiveMessage.Replace("%CHANNEL%", stream.token).Replace("%GAME%", gameName).Replace("%TITLE%", stream.name).Replace("%URL%", url);
             embed.Title = stream.token + " has gone live!";
-            embed.ThumbnailUrl = stream.user.avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+            embed.ThumbnailUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
             embed.ImageUrl = server.AllowThumbnails ? "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
 
@@ -194,7 +227,7 @@ namespace MTD.CouchBot.Bot
         {
             IBeamManager beamManager = new BeamManager();
             var stream = await beamManager.GetBeamChannelByName(beamId);
-            var live = BotFiles.GetCurrentlyLiveBeamChannels().FirstOrDefault(x => x.Name == stream.token);
+            var live = BotFiles.GetCurrentlyLiveBeamChannels().FirstOrDefault(x => x.Name == beamId);
             
             if (live == null)
                 return;
@@ -214,6 +247,8 @@ namespace MTD.CouchBot.Bot
                 {
                     await DiscordHelper.SetOfflineStream(message.GuildId, message.ChannelId, message.MessageId);
                 }
+
+                BotFiles.DeleteLiveBeamChannel(beamId);
             }
         }
     }

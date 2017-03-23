@@ -206,6 +206,7 @@ namespace MTD.CouchBot
                 {
                     if (!string.IsNullOrEmpty(u.BeamId))
                     {
+                        Console.WriteLine("Resub to: " + u.BeamName + " (" + u.BeamId + ")");
                         await beamClient.SubscribeToLiveAnnouncements(u.BeamId);
                     }
                 }
@@ -217,6 +218,7 @@ namespace MTD.CouchBot
                 {
                     foreach(var b in s.ServerBeamChannelIds)
                     {
+                        Console.WriteLine("Resub to: " + b);
                         await beamClient.SubscribeToLiveAnnouncements(b);
                     }
                 }
@@ -380,7 +382,7 @@ namespace MTD.CouchBot
 
             int argPos = 0;
 
-            if (!(message.HasStringPrefix("!cbt ", ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
+            if (!(message.HasStringPrefix("!cb ", ref argPos) || message.HasMentionPrefix(client.CurrentUser, ref argPos))) return;
 
             var context = new CommandContext(client, message);
 
@@ -1568,7 +1570,6 @@ namespace MTD.CouchBot
                         Logging.LogInfo("Cleaning Up Live Files.");
                         await CleanUpLiveStreams("youtube");
                         await CleanUpLiveStreams("twitch");
-                        //await CleanUpLiveStreams("beam");
                         await CleanUpLiveStreams("hitbox");
                         Logging.LogInfo("Cleaning Up Live Files Complete.");
                     }
@@ -1714,47 +1715,13 @@ namespace MTD.CouchBot
 
         public async Task CleanUpLiveStreams(string platform)
         {
-            if (platform == "beam")
-            {
-                var liveStreams = new List<LiveChannel>();
-
-                foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory))
-                {
-                    var channel = JsonConvert.DeserializeObject<LiveChannel>(live);
-                    if (liveStreams.Where(x => x.Name == channel.Name) == null)
-                    {
-                        liveStreams.Add(channel);
-                    }
-                }
-
-                foreach (var stream in liveStreams)
-                {
-                    try
-                    {
-                        var liveStream = await beamManager.GetBeamChannelByName(stream.Name);
-
-                        if (liveStream == null || liveStream.online == false)
-                        {
-                            await CleanupMessages(stream.ChannelMessages);
-
-                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory + stream + ".json");
-                        }
-                    }
-                    catch (Exception wex)
-                    {
-
-                        Logging.LogError("Clean Up Beam Error: " + wex.Message + " for user: " + stream.Name);
-                    }
-                }
-            }
-
             if (platform == "twitch")
             {
                 var liveStreams = new List<LiveChannel>();
 
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
                 {
-                    var channel = JsonConvert.DeserializeObject<LiveChannel>(live);
+                    var channel = JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live));
                     if (liveStreams.Where(x => x.Name == channel.Name) == null)
                     {
                         liveStreams.Add(channel);
@@ -1788,7 +1755,7 @@ namespace MTD.CouchBot
 
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
                 {
-                    var channel = JsonConvert.DeserializeObject<LiveChannel>(live);
+                    var channel = JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live));
                     if (liveStreams.Where(x => x.Name == channel.Name) == null)
                     {
                         liveStreams.Add(channel);
@@ -1824,7 +1791,7 @@ namespace MTD.CouchBot
 
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
                 {
-                    var channel = JsonConvert.DeserializeObject<LiveChannel>(live);
+                    var channel = JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live));
                     if (liveStreams.Where(x => x.Name == channel.Name) == null)
                     {
                         liveStreams.Add(channel);
