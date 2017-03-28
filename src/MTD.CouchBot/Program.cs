@@ -1722,7 +1722,7 @@ namespace MTD.CouchBot
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
                 {
                     var channel = JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live));
-                    if (liveStreams.Where(x => x.Name == channel.Name) == null)
+                    if (liveStreams.FirstOrDefault(x => x.Name == channel.Name) == null)
                     {
                         liveStreams.Add(channel);
                     }
@@ -1736,9 +1736,9 @@ namespace MTD.CouchBot
 
                         if (liveStream == null || liveStream.stream == null)
                         {
-                            await CleanupMessages(stream.ChannelMessages);
+                            //await CleanupMessages(stream.ChannelMessages);
 
-                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream + ".json");
+                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream.Name + ".json");
                         }
                     }
                     catch (Exception wex)
@@ -1756,7 +1756,7 @@ namespace MTD.CouchBot
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
                 {
                     var channel = JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live));
-                    if (liveStreams.Where(x => x.Name == channel.Name) == null)
+                    if (liveStreams.FirstOrDefault(x => x.Name == channel.Name) == null)
                     {
                         liveStreams.Add(channel);
                     }
@@ -1772,7 +1772,7 @@ namespace MTD.CouchBot
                         {
                             var file = Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + stream.Name + ".json";
 
-                            await CleanupMessages(stream.ChannelMessages);
+                            //await CleanupMessages(stream.ChannelMessages);
 
                             File.Delete(file);
                         }
@@ -1792,7 +1792,7 @@ namespace MTD.CouchBot
                 foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
                 {
                     var channel = JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live));
-                    if (liveStreams.Where(x => x.Name == channel.Name) == null)
+                    if (liveStreams.FirstOrDefault(x => x.Name == channel.Name) == null)
                     {
                         liveStreams.Add(channel);
                     }
@@ -1806,9 +1806,9 @@ namespace MTD.CouchBot
 
                         if (liveStream == null || liveStream.livestream == null || liveStream.livestream.Count < 1 || liveStream.livestream[0].media_is_live == "0")
                         {
-                            await CleanupMessages(stream.ChannelMessages);
+                            //await CleanupMessages(stream.ChannelMessages);
 
-                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + stream + ".json");
+                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + stream.Name + ".json");
                         }
                     }
                     catch (Exception wex)
