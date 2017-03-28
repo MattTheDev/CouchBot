@@ -161,19 +161,27 @@ namespace MTD.CouchBot.Modules
 
                 switch (option)
                 {
-                    case "golivechannel":
+                    case "live":
                         server.GoLiveChannel = 0;
-                        label = "Go Live Channel";
+                        label = "Live Channel";
                         break;
-                    case "announcechannel":
+                    case "ownerlive":
+                        server.OwnerLiveChannel = 0;
+                        label = "Owner Live Channel";
+                        break;
+                    case "announce":
                         server.AnnouncementsChannel = 0;
                         label = "Announcements";
                         break;
-                    case "greetingschannel":
+                    case "greetings":
                         server.GreetingsChannel = 0;
                         label = "Greetings";
                         break;
-                    case "publishedchannel":
+                    case "ownerpublished":
+                        server.OwnerPublishedChannel = 0;
+                        label = "Published";
+                        break;
+                    case "published":
                         server.PublishedChannel = 0;
                         label = "Published";
                         break;
@@ -182,6 +190,8 @@ namespace MTD.CouchBot.Modules
                         server.GoLiveChannel = 0;
                         server.GreetingsChannel = 0;
                         server.PublishedChannel = 0;
+                        server.OwnerPublishedChannel = 0;
+                        server.OwnerLiveChannel = 0;
                         label = "All";
                         break;
                     default:
