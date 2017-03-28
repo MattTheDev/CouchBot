@@ -1,11 +1,5 @@
 ﻿namespace MTD.CouchBot.Domain
 {
-    /*
-     * ame: CouchBot
-Identifier: d5b089df2f36d4a0a8cff945015a5a4456584f5
-Secret: d277157efb28735dccdc6783be21c10679a91d9
-Endpoint: http://multiyt.tv/CouchBot
-     */
     public static class Constants
     {
         public static readonly string ConfigRootDirectory = @"c:\programdata\CouchBot\";
