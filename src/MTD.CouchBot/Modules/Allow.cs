@@ -185,5 +185,34 @@ namespace MTD.CouchBot.Modules
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Allow published others has been set to: " + trueFalse);
         }
+
+        [Command("goals"), Summary("Sets broadcasting of sub goals being met.")]
+        public async Task Goals(string trueFalse)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            trueFalse = trueFalse.ToLower();
+            if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
+            {
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring BroadcastSubGoals. (ie: !cb config BroadcastSubGoals true)");
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.BroadcastSubGoals = bool.Parse(trueFalse);
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Allow sub goals has been set to: " + trueFalse);
+        }
     }
 }
