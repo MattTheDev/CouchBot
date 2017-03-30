@@ -40,7 +40,7 @@ namespace MTD.CouchBot.Bot
             while (true)
             {
                 var result = await client.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
+                var connectionStatus = client.State;
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
                     var data = Encoding.UTF8.GetString(buffer, 0, result.Count);
