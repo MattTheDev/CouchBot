@@ -1278,6 +1278,8 @@ namespace MTD.CouchBot
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
             var liveChannels = new List<LiveChannel>();
+            var now = DateTime.UtcNow;
+            var then = now.AddMinutes(-15);
 
             // Check Users
             foreach (var user in users)
@@ -1314,8 +1316,6 @@ namespace MTD.CouchBot
                 foreach(var video in playlist.items)
                 {
                     var publishDate = DateTime.Parse(video.snippet.publishedAt,null, System.Globalization.DateTimeStyles.AdjustToUniversal);
-                    var now = DateTime.UtcNow;
-                    var then = now.AddMinutes(-15);
 
                     if (!(publishDate > then && publishDate < now))
                     {
@@ -1496,8 +1496,6 @@ namespace MTD.CouchBot
                     foreach (var video in playlist.items)
                     {
                         var publishDate = DateTime.Parse(video.snippet.publishedAt, null, System.Globalization.DateTimeStyles.AdjustToUniversal);
-                        var now = DateTime.UtcNow;
-                        var then = now.AddMinutes(-15);
 
                         if (!(publishDate > then && publishDate < now))
                         {
