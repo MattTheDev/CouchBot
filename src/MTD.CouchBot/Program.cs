@@ -48,6 +48,7 @@ namespace MTD.CouchBot
         IYouTubeManager youtubeManager;
         ITwitchManager twitchManager;
         IHitboxManager hitboxManager;
+        IBeamManager beamManager;
 
         #endregion
 
@@ -64,6 +65,19 @@ namespace MTD.CouchBot
             statisticsManager.LogRestartTime();
             statisticsManager.ClearRandomInts();
 
+            //Validate BotSettings exists.
+            BotFiles.CheckConfiguration();
+
+            if ((Constants.DiscordToken == "" || Constants.DiscordToken == "DISCORDTOKEN")
+                || (Constants.YouTubeApiKey == "" || Constants.YouTubeApiKey == "YOUTUBEAPI")
+                || (Constants.TwitchClientId == "" || Constants.TwitchClientId == "TWITCHID"))
+            {
+                Console.WriteLine("Please configure the bot. The settings can be found at: " + Constants.ConfigRootDirectory + Constants.BotSettings);
+                Console.WriteLine("You need to have a Discord Token, YouTube API Key, and Twitch Client Id configured for the bot to function.");
+                Console.ReadLine();
+                return;
+            }
+
             // Setup file system
             BotFiles.CheckFolderStructure();
 
@@ -74,7 +88,6 @@ namespace MTD.CouchBot
             await ResubscribeToBeamEvents();
 
             // Queue up timer jobs.
-            //QueueBeamChecks();
             QueueTwitchChecks();
             QueueYouTubeChecks();
             QueueHitboxChecks();
@@ -1265,6 +1278,8 @@ namespace MTD.CouchBot
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
             var liveChannels = new List<LiveChannel>();
+            var now = DateTime.UtcNow;
+            var then = now.AddMinutes(-15);
 
             // Check Users
             foreach (var user in users)
@@ -1301,8 +1316,6 @@ namespace MTD.CouchBot
                 foreach(var video in playlist.items)
                 {
                     var publishDate = DateTime.Parse(video.snippet.publishedAt,null, System.Globalization.DateTimeStyles.AdjustToUniversal);
-                    var now = DateTime.UtcNow;
-                    var then = now.AddMinutes(-15);
 
                     if (!(publishDate > then && publishDate < now))
                     {
@@ -1483,8 +1496,6 @@ namespace MTD.CouchBot
                     foreach (var video in playlist.items)
                     {
                         var publishDate = DateTime.Parse(video.snippet.publishedAt, null, System.Globalization.DateTimeStyles.AdjustToUniversal);
-                        var now = DateTime.UtcNow;
-                        var then = now.AddMinutes(-15);
 
                         if (!(publishDate > then && publishDate < now))
                         {
@@ -2038,278 +2049,5 @@ namespace MTD.CouchBot
         //}
 
         #endregion
-
-        #region : ToRemove :
-
-        IBeamManager beamManager;
-        private static Timer beamTimer;
-        private static Timer beamServerTimer;
-
-        public async Task CheckBeamLive()
-        {
-            var servers = BotFiles.GetConfiguredServers();
-            var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveBeamChannels();
-
-            foreach (var user in users)
-            {
-                if (!string.IsNullOrEmpty(user.BeamName))
-                {
-                    BeamChannel stream = null;
-
-                    try
-                    {
-                        stream = await beamManager.GetBeamChannelByName(user.BeamName);
-                    }
-                    catch (Exception ex)
-                    {
-
-                        Logging.LogError("Beam Error: " + ex.Message + " for user: " + user.BeamName + " in Discord Id: " + user.Id);
-                        continue;
-                    }
-
-                    if (stream != null && stream.online == true)
-                    {
-                        foreach (var server in servers)
-                        {
-                            if (server.Id == 0 || server.GoLiveChannel == 0)
-                            { continue; }
-
-                            var chat = await DiscordHelper.GetMessageChannel(server.Id, server.GoLiveChannel);
-
-                            if (chat == null)
-                            {
-                                continue;
-                            }
-
-                            if (server.BroadcasterWhitelist == null)
-                                server.BroadcasterWhitelist = new List<string>();
-
-                            // Check to see if user has been broadcasted already.
-                            bool allowEveryone = server.AllowEveryone;
-
-                            var channel = liveChannels.FirstOrDefault(x => x.Name.ToLower() == user.BeamName.ToLower());
-                            bool checkChannelBroadcastStatus = channel == null || !channel.Servers.Contains(server.Id);
-                            bool checkUserInServer = server.Users.Contains(user.Id.ToString());
-                            bool checkBroadcastOthers = (!server.BroadcastOthers && server.OwnerId == user.Id) || server.BroadcastOthers;
-                            bool checkWhiteList = !server.UseWhitelist || (server.UseWhitelist && server.BroadcasterWhitelist.Contains(user.Id.ToString()));
-
-                            if (checkChannelBroadcastStatus)
-                            {
-                                if (checkUserInServer)
-                                {
-                                    if (checkBroadcastOthers)
-                                    {
-                                        if (checkWhiteList)
-                                        {
-                                            if (channel == null)
-                                            {
-                                                channel = new LiveChannel()
-                                                {
-                                                    Name = user.BeamName,
-                                                    Servers = new List<ulong>()
-                                                };
-
-                                                channel.Servers.Add(server.Id);
-
-                                                liveChannels.Add(channel);
-                                            }
-                                            else
-                                            {
-                                                channel.Servers.Add(server.Id);
-                                            }
-
-                                            string gameName = stream.type == null ? "a game" : stream.type.name;
-                                            string url = "http://beam.pro/" + user.BeamName;
-
-                                            EmbedBuilder embed = new EmbedBuilder();
-                                            EmbedAuthorBuilder author = new EmbedAuthorBuilder();
-                                            EmbedFooterBuilder footer = new EmbedFooterBuilder();
-
-                                            if (server.LiveMessage == null)
-                                            {
-                                                server.LiveMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
-                                            }
-
-                                            Color blue = new Color(76, 144, 243);
-                                            author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                                            author.Name = "CouchBot";
-                                            author.Url = url;
-                                            footer.Text = "[Beam] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                                            footer.IconUrl = "http://couchbot.io/img/beam.jpg";
-                                            embed.Author = author;
-                                            embed.Color = blue;
-                                            embed.Description = server.LiveMessage.Replace("%CHANNEL%", user.BeamName).Replace("%GAME%", gameName).Replace("%TITLE%", stream.name).Replace("%URL%", url);
-                                            embed.Title = user.BeamName + " has gone live!";
-                                            embed.ThumbnailUrl = stream.user.avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                                            embed.ImageUrl = server.AllowThumbnails ? "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
-                                            embed.Footer = footer;
-
-                                            var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
-
-                                            if (server.UseTextAnnouncements)
-                                            {
-                                                if (!server.AllowThumbnails)
-                                                {
-                                                    url = "<" + url + ">";
-                                                }
-
-                                                message += "**[Beam]** " + server.LiveMessage.Replace("%CHANNEL%", user.BeamName).Replace("%GAME%", gameName).Replace("%TITLE%", stream.name).Replace("%URL%", url);
-                                            }
-
-                                            await SendMessage(new BroadcastMessage()
-                                            {
-                                                GuildId = server.Id,
-                                                ChannelId = server.GoLiveChannel,
-                                                UserId = user.BeamId,
-                                                Message = message,
-                                                Platform = "Beam",
-                                                Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-                                            });
-
-                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory + user.BeamName + ".json", JsonConvert.SerializeObject(channel));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        public async Task CheckServerBeamLive()
-        {
-            var servers = BotFiles.GetConfiguredServers();
-            var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = BotFiles.GetCurrentlyLiveBeamChannels();
-
-            // Loop through servers to broadcast.
-            foreach (var server in servers)
-            {
-                if (server.Id == 0 || server.GoLiveChannel == 0)
-                { continue; }
-
-                if (server.ServerBeamChannels != null)
-                {
-                    foreach (var beamChannel in server.ServerBeamChannels)
-                    {
-                        var channel = liveChannels.FirstOrDefault(x => x.Name.ToLower() == beamChannel.ToLower());
-
-                        BeamChannel stream = null;
-
-                        try
-                        {
-                            // Query Beam for our stream.
-                            stream = await beamManager.GetBeamChannelByName(beamChannel);
-                        }
-                        catch (Exception wex)
-                        {
-                            // Log our error and move to the next user.
-
-                            Logging.LogError("Beam Error: " + wex.Message + " for user: " + beamChannel + " in Discord Server Id: " + server.Id);
-                            continue;
-                        }
-
-                        // if our stream isnt null, and we have a return from beam.
-                        if (stream != null && stream.online == true)
-                        {
-
-                            if (server.BroadcasterWhitelist == null)
-                                server.BroadcasterWhitelist = new List<string>();
-
-                            bool allowEveryone = server.AllowEveryone;
-                            var chat = await DiscordHelper.GetMessageChannel(server.Id, server.GoLiveChannel);
-
-                            if (chat == null)
-                            {
-                                continue;
-                            }
-                            bool checkChannelBroadcastStatus = channel == null || !channel.Servers.Contains(server.Id);
-                            bool checkGoLive = !string.IsNullOrEmpty(server.GoLiveChannel.ToString()) && server.GoLiveChannel != 0;
-
-                            if (checkChannelBroadcastStatus)
-                            {
-                                if (checkGoLive)
-                                {
-                                    if (chat != null)
-                                    {
-                                        if (channel == null)
-                                        {
-                                            channel = new LiveChannel()
-                                            {
-                                                Name = beamChannel,
-                                                Servers = new List<ulong>()
-                                            };
-
-                                            channel.Servers.Add(server.Id);
-
-                                            liveChannels.Add(channel);
-                                        }
-                                        else
-                                        {
-                                            channel.Servers.Add(server.Id);
-                                        }
-
-                                        string gameName = stream.type == null ? "a game" : stream.type.name;
-                                        string url = "http://beam.pro/" + beamChannel;
-
-                                        EmbedBuilder embed = new EmbedBuilder();
-                                        EmbedAuthorBuilder author = new EmbedAuthorBuilder();
-                                        EmbedFooterBuilder footer = new EmbedFooterBuilder();
-
-                                        if (server.LiveMessage == null)
-                                        {
-                                            server.LiveMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
-                                        }
-
-                                        Color blue = new Color(76, 144, 243);
-                                        author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                                        author.Name = "CouchBot";
-                                        author.Url = url;
-                                        footer.Text = "[Beam] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                                        footer.IconUrl = "http://couchbot.io/img/beam.jpg";
-                                        embed.Author = author;
-                                        embed.Color = blue;
-                                        embed.Description = server.LiveMessage.Replace("%CHANNEL%", beamChannel).Replace("%GAME%", gameName).Replace("%TITLE%", stream.name).Replace("%URL%", url);
-                                        embed.Title = beamChannel + " has gone live!";
-                                        embed.ThumbnailUrl = stream.user.avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                                        embed.ImageUrl = server.AllowThumbnails ? "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
-                                        embed.Footer = footer;
-
-                                        var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
-
-                                        if (server.UseTextAnnouncements)
-                                        {
-                                            if (!server.AllowThumbnails)
-                                            {
-                                                url = "<" + url + ">";
-                                            }
-
-                                            message += "**[Beam]** " + server.LiveMessage.Replace("%CHANNEL%", beamChannel).Replace("%GAME%", gameName).Replace("%TITLE%", stream.name).Replace("%URL%", url);
-                                        }
-
-                                        await SendMessage(new BroadcastMessage()
-                                        {
-                                            GuildId = server.Id,
-                                            ChannelId = server.GoLiveChannel,
-                                            UserId = beamChannel,
-                                            Message = message,
-                                            Platform = "Beam",
-                                            Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-                                        });
-
-                                        File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory + beamChannel + ".json", JsonConvert.SerializeObject(channel));
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        #endregion
-
     }
 }
