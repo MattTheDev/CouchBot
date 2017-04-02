@@ -1,4 +1,5 @@
-﻿using MTD.DiscordBot.Domain.Models;
+﻿using MTD.CouchBot.Domain.Utilities;
+using MTD.DiscordBot.Domain.Models;
 using Newtonsoft.Json;
 using System.IO;
 
@@ -12,6 +13,7 @@ namespace MTD.CouchBot.Domain
         {
             get
             {
+                BotFiles.CheckConfiguration();
                 return JsonConvert.DeserializeObject<BotSettings>(File.ReadAllText(Constants.ConfigRootDirectory + Constants.BotSettings));
             }
 
