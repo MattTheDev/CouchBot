@@ -61,8 +61,50 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync("Live Message has been set.");
         }
 
-        [Command("test")]
-        public async Task Test()
+        [Command("testlive")]
+        public async Task TestLive(string platform)
+        {
+            if(platform.ToLower() != "beam" || platform.ToLower() != "youtube" || platform.ToLower() != "twitch" || platform.ToLower() != "hitbox")
+            {
+                await Context.Channel.SendMessageAsync("Please pass in beam, youtube, twitch, or hitbox when requesting a test message. (ie: !cb message test youtube)");
+                return;
+            }
+
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var message = await MessagingHelper.BuildTestMessage((SocketUser) Context.User, Context.Guild.Id, Context.Channel.Id, platform.ToLower());
+
+            if (message != null)
+            {
+                try
+                {
+                    if (message.Embed != null)
+                    {
+                        RequestOptions options = new RequestOptions();
+                        options.RetryMode = RetryMode.AlwaysRetry;
+                        var msg = await Context.Channel.SendMessageAsync(message.Message, false, message.Embed, options);
+                    }
+                    else
+                    {
+                        var msg = await Context.Channel.SendMessageAsync(message.Message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logging.LogError("Error in Message.Test Command: " + ex.Message);
+                }
+            }
+        }
+
+        [Command("testpublished")]
+        public async Task TestPublished(string platform)
         {
             var guild = ((IGuildUser)Context.Message.Author).Guild;
 
@@ -73,7 +115,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var message = await MessagingHelper.BuildTestMessage((SocketUser) Context.User, Context.Guild.Id, Context.Channel.Id);
+            var message = await MessagingHelper.BuildTestPublishedMessage((SocketUser)Context.User, Context.Guild.Id, Context.Channel.Id);
 
             if (message != null)
             {
