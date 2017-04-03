@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using MTD.CouchBot.Bot;
-using MTD.CouchBot.Bot.Utilities;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Domain.Utilities;

@@ -1,6 +1,6 @@
 ﻿using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Json;
-using MTD.DiscordBot.Domain.Models;
+using MTD.CouchBot.Domain.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MTD.DiscordBot.Domain.Models
+namespace MTD.CouchBot.Domain.Models
 {
     public class BotSettings
     {

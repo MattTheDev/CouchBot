@@ -1,9 +1,10 @@
 ﻿using Discord;
+using MTD.CouchBot;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Bot.Utilities
+namespace MTD.CouchBot.Bot
 {
     public static class DiscordHelper
     {
