@@ -502,7 +502,14 @@ namespace MTD.CouchBot
                                             embed.ImageUrl = server.AllowThumbnails ? stream.stream.preview.large + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                             embed.Footer = footer;
 
-                                            var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+                                            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                                            if (role == null)
+                                            {
+                                                server.MentionRole = 0;
+                                            }
+
+                                            var message = (allowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
                                             if (server.UseTextAnnouncements)
                                             {
@@ -650,7 +657,14 @@ namespace MTD.CouchBot
                                         embed.ImageUrl = server.AllowThumbnails ? stream.preview.large + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                         embed.Footer = footer;
 
-                                        var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+                                        var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                                        if (role == null)
+                                        {
+                                            server.MentionRole = 0;
+                                        }
+
+                                        var message = (allowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
                                         if (server.UseTextAnnouncements)
                                         {
@@ -800,7 +814,14 @@ namespace MTD.CouchBot
                                             embed.ImageUrl = server.AllowThumbnails ? stream.snippet.thumbnails.high.url + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                             embed.Footer = footer;
 
-                                            var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+                                            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                                            if (role == null)
+                                            {
+                                                server.MentionRole = 0;
+                                            }
+
+                                            var message = (allowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
                                             if (server.UseTextAnnouncements)
                                             {
@@ -942,7 +963,14 @@ namespace MTD.CouchBot
                                         embed.ImageUrl = server.AllowThumbnails ? stream.snippet.thumbnails.high.url + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                         embed.Footer = footer;
 
-                                        var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+                                        var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                                        if (role == null)
+                                        {
+                                            server.MentionRole = 0;
+                                        }
+
+                                        var message = (allowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
                                         if (server.UseTextAnnouncements)
                                         {
@@ -1087,7 +1115,14 @@ namespace MTD.CouchBot
                                                 embed.ImageUrl = server.AllowThumbnails ? "http://edge.sf.hitbox.tv" + stream.livestream[0].media_thumbnail_large + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                                 embed.Footer = footer;
 
-                                                var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+                                                var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                                                if (role == null)
+                                                {
+                                                    server.MentionRole = 0;
+                                                }
+
+                                                var message = (allowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
                                                 if (server.UseTextAnnouncements)
                                                 {
@@ -1231,7 +1266,14 @@ namespace MTD.CouchBot
                                             embed.ImageUrl = server.AllowThumbnails ? "http://edge.sf.hitbox.tv" + stream.livestream[0].media_thumbnail_large + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                                             embed.Footer = footer;
 
-                                            var message = (allowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+                                            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                                            if (role == null)
+                                            {
+                                                server.MentionRole = 0;
+                                            }
+
+                                            var message = (allowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
                                             if (server.UseTextAnnouncements)
                                             {
@@ -1405,7 +1447,14 @@ namespace MTD.CouchBot
                         if (lc == null || lc.Servers.Count < 1 || (!lc.Servers.Contains(server.Id) && !lc.Name.Equals(user.YouTubeChannelId + "|" + video.snippet.resourceId.videoId)))
                         {
 
-                            var message = (server.AllowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+                            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                            if (role == null)
+                            {
+                                server.MentionRole = 0;
+                            }
+
+                            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
                             if (server.UseTextAnnouncements)
                             {
@@ -1538,7 +1587,14 @@ namespace MTD.CouchBot
 
                         if (lc == null || lc.Servers.Count < 1 || (!lc.Servers.Contains(server.Id) && !lc.Name.Equals(user + "|" + video.snippet.resourceId.videoId)))
                         {
-                            var message = (server.AllowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+                            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                            if (role == null)
+                            {
+                                server.MentionRole = 0;
+                            }
+
+                            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
                             if (server.UseTextAnnouncements)
                             {

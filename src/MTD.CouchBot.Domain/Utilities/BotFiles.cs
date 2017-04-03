@@ -11,6 +11,7 @@ namespace MTD.CouchBot.Domain.Utilities
     {
         public static void CheckConfiguration()
         {
+            BotFiles.CheckFolderStructure();
             if(!File.Exists(Constants.ConfigRootDirectory + Constants.BotSettings))
             {
                 BotSettings settings = new BotSettings();
