@@ -146,7 +146,14 @@ namespace MTD.CouchBot.Bot
             embed.ImageUrl = server.AllowThumbnails ? "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
 
-            var message = (server.AllowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+            if (role == null)
+            {
+                server.MentionRole = 0;
+            }
+
+            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
             if (server.UseTextAnnouncements)
             {

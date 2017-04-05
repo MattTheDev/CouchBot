@@ -43,10 +43,17 @@ namespace MTD.CouchBot.Bot
 
             embed.Title = "Test Channel published a new video!";
             embed.ThumbnailUrl = "http://couchbot.io/img/bot/vader.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-            embed.ImageUrl = server.AllowThumbnails ? "https://couchbot.io/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
+            embed.ImageUrl = server.AllowThumbnails ? "http://couchbot.io/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
 
-            var message = (server.AllowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+            if (role == null)
+            {
+                server.MentionRole = 0;
+            }
+
+            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
             if (server.UseTextAnnouncements)
             {
@@ -124,10 +131,17 @@ namespace MTD.CouchBot.Bot
             embed.Description = server.LiveMessage.Replace("%CHANNEL%", "Test Channel").Replace("%GAME%", gameName).Replace("%TITLE%", "Test Title").Replace("%URL%", url);
             embed.Title = "Test Channel has gone live!";
             embed.ThumbnailUrl = "http://couchbot.io/img/bot/vader.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-            embed.ImageUrl = server.AllowThumbnails ? "https://couchbot.io/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
+            embed.ImageUrl = server.AllowThumbnails ? "http://couchbot.io/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
 
-            var message = (server.AllowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+            if (role == null)
+            {
+                server.MentionRole = 0;
+            }
+
+            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
             if (server.UseTextAnnouncements)
             {
