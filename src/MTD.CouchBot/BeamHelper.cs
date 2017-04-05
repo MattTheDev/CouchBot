@@ -1,5 +1,4 @@
 ﻿using Discord;
-using MTD.CouchBot.Bot.Utilities;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Domain.Utilities;
@@ -7,6 +6,7 @@ using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models;
+using MTD.CouchBot;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -146,7 +146,14 @@ namespace MTD.CouchBot.Bot
             embed.ImageUrl = server.AllowThumbnails ? "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
 
-            var message = (server.AllowEveryone ? server.MentionRole != 0 ? (await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole)).Mention : "@everyone " : "");
+            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+            if (role == null)
+            {
+                server.MentionRole = 0;
+            }
+
+            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
 
             if (server.UseTextAnnouncements)
             {

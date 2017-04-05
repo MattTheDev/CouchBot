@@ -1,6 +1,6 @@
 ﻿using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Json;
-using MTD.DiscordBot.Domain.Models;
+using MTD.CouchBot.Domain.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +11,7 @@ namespace MTD.CouchBot.Domain.Utilities
     {
         public static void CheckConfiguration()
         {
+            BotFiles.CheckFolderStructure();
             if(!File.Exists(Constants.ConfigRootDirectory + Constants.BotSettings))
             {
                 BotSettings settings = new BotSettings();

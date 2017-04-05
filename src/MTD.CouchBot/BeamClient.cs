@@ -25,6 +25,11 @@ namespace MTD.CouchBot.Bot
             _statisticsManager = new StatisticsManager();
         }
 
+        public WebSocketState Status()
+        {
+            return client.State;
+        }
+
         public async Task RunWebSockets()
         {
             client.Options.SetRequestHeader("x-is-bot", "true");
@@ -44,8 +49,6 @@ namespace MTD.CouchBot.Bot
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
                     var data = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
-
 
                     if (data.ToLower().Contains("{\"online\": true}"))
                     {
