@@ -786,7 +786,7 @@ namespace MTD.CouchBot
                                                 channel.Servers.Add(server.Id);
                                             }
 
-                                            string url = "http://gaming.youtube.com/watch?v=" + stream.id;
+                                            string url = "http://" + (server.UseYouTubeGamingPublished ? "gaming" : "www") + ".youtube.com/watch?v=" + stream.id;
 
                                             EmbedBuilder embed = new EmbedBuilder();
                                             EmbedAuthorBuilder author = new EmbedAuthorBuilder();
@@ -935,7 +935,7 @@ namespace MTD.CouchBot
                                             channel.Servers.Add(server.Id);
                                         }
 
-                                        string url = "http://gaming.youtube.com/watch?v=" + stream.id;
+                                        string url = "http://" + (server.UseYouTubeGamingPublished ? "gaming" : "www") + ".youtube.com/watch?v=" + stream.id;
 
                                         EmbedBuilder embed = new EmbedBuilder();
                                         EmbedAuthorBuilder author = new EmbedAuthorBuilder();

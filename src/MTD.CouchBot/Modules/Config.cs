@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Json;
 using Newtonsoft.Json;
@@ -112,6 +113,13 @@ namespace MTD.CouchBot.Modules
                 var vod = await guild.GetChannelAsync(server.PublishedChannel);
                 var vodChannel = vod != null ? vod.Name : "Not Set";
 
+                var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                if (role == null)
+                {
+                    server.MentionRole = 0;
+                }
+
                 string info = "```Markdown\r\n" +
                               "# " + server.Name + " Configuration Settings\r\n" +
                               "- Announcements Channel: " + announceChannel + "\r\n" +
@@ -133,9 +141,10 @@ namespace MTD.CouchBot.Modules
                               "- Published Message: " + (string.IsNullOrEmpty(server.PublishedMessage) ? "Default" : server.PublishedMessage) + "\r\n" +
                               "- Greeting Message: " + (string.IsNullOrEmpty(server.GreetingMessage) ? "Default" : server.GreetingMessage) + "\r\n" +
                               "- Goodbye Message: " + (string.IsNullOrEmpty(server.GoodbyeMessage) ? "Default" : server.GoodbyeMessage) + "\r\n" +
+                              "- Mention Role: " + ((server.MentionRole == 0 ) ? "Everyone" : role.Name.Replace("@","")) + "\r\n" +
+                              "- Time Zone Offset: " + server.TimeZoneOffset + "\r\n" +
                               "---- [Unused At The Moment] ----\r\n" +
                               "- Broadcast Sub Goals: " + server.BroadcastSubGoals + "\r\n" +
-                              "- Time Zone Offset: " + server.TimeZoneOffset + "\r\n" +
                               "```\r\n";
 
                 await Context.Channel.SendMessageAsync(info);
