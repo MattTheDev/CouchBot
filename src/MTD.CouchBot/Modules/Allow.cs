@@ -183,7 +183,7 @@ namespace MTD.CouchBot.Modules
 
             server.BroadcastOthers = bool.Parse(trueFalse);
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Allow published others has been set to: " + trueFalse);
+            await Context.Channel.SendMessageAsync("Allow live others has been set to: " + trueFalse);
         }
 
         [Command("goals"), Summary("Sets broadcasting of sub goals being met.")]

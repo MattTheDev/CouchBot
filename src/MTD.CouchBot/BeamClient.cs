@@ -69,6 +69,7 @@ namespace MTD.CouchBot.Bot
                 else if (result.MessageType == WebSocketMessageType.Close)
                 {
                     await client.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                    
                     break;
                 }
             }

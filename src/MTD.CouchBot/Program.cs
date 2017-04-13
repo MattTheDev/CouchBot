@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,6 +42,7 @@ namespace MTD.CouchBot
         private static Timer hitboxTimer;
         private static Timer hitboxServerTimer;
         private static Timer birthdayTimer;
+        private static Timer beamClientTimer;
         private bool initialServicesRan = false;
 
         IStatisticsManager statisticsManager;
@@ -93,6 +95,7 @@ namespace MTD.CouchBot
 
             QueueCleanUp();
             QueueUptimeCheckIn();
+            QueueBeamClientCheck();
             
             await Task.Delay(-1);
         }    
@@ -237,27 +240,26 @@ namespace MTD.CouchBot
             }
         }
 
-        public void QueueBeamChecks()
+        public void QueueBeamClientCheck()
         {
-            //beamTimer = new Timer(async (e) =>
-            //{
-            //    Stopwatch sw = new Stopwatch();
-            //    sw.Start();
-            //    Logging.LogBeam("Checking Beam");
-            //    await CheckBeamLive();
-            //    sw.Stop();
-            //    Logging.LogBeam("Beam Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
-            //}, null, 0, 300000);
+            beamClientTimer = new Timer(async (e) =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Logging.LogBeam("Checking Beam Constellation");
 
-            //beamServerTimer = new Timer(async (e) =>
-            //{
-            //    Stopwatch sw = new Stopwatch();
-            //    sw.Start();
-            //    Logging.LogBeam("Checking Server Beam");
-            //    await CheckServerBeamLive();
-            //    sw.Stop();
-            //    Logging.LogBeam("Server Beam Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
-            //}, null, 0, 300000);
+                if (beamClient.Status() != WebSocketState.Open)
+                {
+                    await ResubscribeToBeamEvents();
+                }
+                else
+                {
+                    Logging.LogBeam("[BEAM CONSTELLATION STATE] " + beamClient.Status());
+                }
+
+                sw.Stop();
+                Logging.LogBeam("Beam Constellation Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
+            }, null, 0, 60000);
         }
 
         public void QueueHitboxChecks()
