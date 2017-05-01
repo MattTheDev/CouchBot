@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using MTD.CouchBot.Domain.Utilities;
-using MTD.CouchBot.Json;
 using MTD.CouchBot.Models;
 using System;
 using System.Linq;

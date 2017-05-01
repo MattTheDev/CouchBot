@@ -1,11 +1,5 @@
 ﻿using Discord.Commands;
-using MTD.CouchBot.Domain;
-using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
-using MTD.CouchBot.Managers.Implementations;
-using Newtonsoft.Json;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
 {

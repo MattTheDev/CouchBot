@@ -6,7 +6,6 @@ using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models;
-using MTD.CouchBot;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,9 +20,6 @@ namespace MTD.CouchBot.Bot
         public static async Task AnnounceLiveChannel(string beamId)
         {
             IBeamManager beamManager = new BeamManager();
-
-            var beamUsers = BotFiles.GetConfiguredUsers()
-                .Where(x => !string.IsNullOrEmpty(x.BeamId) && x.BeamId == beamId);
             var servers = BotFiles.GetConfiguredServers();
 
             var beamServers = new List<DiscordServer>();
@@ -46,42 +42,7 @@ namespace MTD.CouchBot.Bot
                 }
             }
 
-            List<BroadcastMessage> messages = new List<BroadcastMessage>();
-
-            foreach (var user in beamUsers)
-            {
-                var userServers = new List<DiscordServer>();
-
-                foreach(var server in BotFiles.GetConfiguredServers())
-                {
-                    if(server.Users != null && server.Users.Contains(user.Id.ToString()))
-                    {
-                        if (server.GoLiveChannel != 0 && server.Id != 0)
-                        {
-                            if ((!server.BroadcastOthers && server.OwnerId == user.Id) || server.BroadcastOthers)
-                            {
-                                if (server.BroadcasterWhitelist == null)
-                                    server.BroadcasterWhitelist = new List<string>();
-
-                                if (!server.UseWhitelist || (server.UseWhitelist && server.BroadcasterWhitelist.Contains(user.Id.ToString())))
-                                {
-                                    userServers.Add(server);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                var stream = await beamManager.GetBeamChannelByName(beamId);
-
-                if (userServers != null && userServers.Count > 0)
-                {
-                    foreach (var server in userServers)
-                    {
-                        messages.Add(await BuildMessage(stream, server));
-                    }
-                }
-            }
+            List<BroadcastMessage> messages = new List<BroadcastMessage>();           
 
             foreach (var server in beamServers)
             {

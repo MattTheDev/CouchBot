@@ -2,9 +2,7 @@
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Schema;
 using System;
-using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;

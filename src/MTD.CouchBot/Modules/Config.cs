@@ -4,7 +4,6 @@ using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Json;
 using Newtonsoft.Json;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -83,24 +82,6 @@ namespace MTD.CouchBot.Modules
 
             if (server != null)
             {
-                string whitelist = "";
-                
-                if(server.BroadcasterWhitelist == null || server.BroadcasterWhitelist.Count < 1)
-                {
-                    whitelist = "Empty";
-                }
-                else
-                {
-                    foreach(var broadcaster in server.BroadcasterWhitelist)
-                    {
-                        var u = await guild.GetUserAsync(ulong.Parse(broadcaster));
-
-                        whitelist += u.Username + ",";
-                    }
-
-                    whitelist = whitelist.TrimEnd(',');
-                }
-
                 var announce = await guild.GetChannelAsync(server.AnnouncementsChannel);
                 var announceChannel = announce != null ? announce.Name : "Not Set";
 
@@ -128,15 +109,11 @@ namespace MTD.CouchBot.Modules
                               "- Published/VOD Channel: " + vodChannel + "\r\n" +
                               "- Allow @ Everyone: " + server.AllowEveryone + "\r\n" +
                               "- Allow Thumbnails: " + server.AllowThumbnails + "\r\n" +
-                              "- Allow Broadcast Others: " + server.BroadcastOthers + "\r\n" +
                               "- Allow Greetings: " + server.Greetings + "\r\n" +
                               "- Allow Goodbyes: "  + server.Goodbyes + "\r\n" +
                               "- Allow VOD Content: " + server.AllowPublished + "\r\n" +
-                              "- Allow Others VOD Content: " + server.AllowPublishedOthers + "\r\n" +
                               "- Use Text Announcements: " + server.UseTextAnnouncements + "\r\n" +
                               "- Use YTG URLS For VOD Content: " + server.UseYouTubeGamingPublished + "\r\n" +
-                              "- Use Whitelist: " + server.UseWhitelist + "\r\n" +
-                              "- Current Whitelist: " + whitelist + "\r\n" +
                               "- Live Message: " + (string.IsNullOrEmpty(server.LiveMessage) ? "Default" : server.LiveMessage) + "\r\n" +
                               "- Published Message: " + (string.IsNullOrEmpty(server.PublishedMessage) ? "Default" : server.PublishedMessage) + "\r\n" +
                               "- Greeting Message: " + (string.IsNullOrEmpty(server.GreetingMessage) ? "Default" : server.GreetingMessage) + "\r\n" +

@@ -1,5 +1,4 @@
-﻿using System;
-using MTD.CouchBot.Dals;
+﻿using MTD.CouchBot.Dals;
 using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models;
 

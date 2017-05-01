@@ -10,7 +10,6 @@ namespace MTD.CouchBot.Dals.Implementations
     {
         public async Task<BeamChannel> GetBeamChannelByName(string name)
         {
-
             var baseUrl = "https://beam.pro/api/v1";
 
             var request = (HttpWebRequest)WebRequest.Create(baseUrl + "/channels/" + name);

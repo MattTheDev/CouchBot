@@ -6,10 +6,8 @@ using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MTD.DiscordBot.Modules
