@@ -33,7 +33,15 @@ namespace MTD.CouchBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            server.LiveMessage = message;
+            if (message.ToLower().Equals("clear"))
+            {
+                server.LiveMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
+            }
+            else
+            {
+                server.LiveMessage = message;
+            }
+
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Live Message has been set.");
         }
@@ -56,7 +64,15 @@ namespace MTD.CouchBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            server.PublishedMessage = message;
+            if (message.ToLower().Equals("clear"))
+            {
+                server.PublishedMessage = "%CHANNEL% just published a new video - %TITLE% - %URL%";
+            }
+            else
+            {
+                server.PublishedMessage = message;
+            }
+
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Live Message has been set.");
         }
