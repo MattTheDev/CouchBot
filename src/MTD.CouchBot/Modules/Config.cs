@@ -203,7 +203,15 @@ namespace MTD.CouchBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            server.MentionRole = role.Id;
+            if (role.Name.ToLower().Contains("everyone"))
+            {
+                server.MentionRole = 0;
+            }
+            else
+            {
+                server.MentionRole = role.Id;
+            }
+
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Mention Role has been set to: " + role.Name);
         }
