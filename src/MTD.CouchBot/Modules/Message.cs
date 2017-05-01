@@ -36,14 +36,15 @@ namespace MTD.CouchBot.Modules
             if (message.ToLower().Equals("clear"))
             {
                 server.LiveMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
+                await Context.Channel.SendMessageAsync("Live Message has been reset to the default message.");
             }
             else
             {
                 server.LiveMessage = message;
+                await Context.Channel.SendMessageAsync("Live Message has been set.");
             }
 
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Live Message has been set.");
         }
 
         [Command("published")]
@@ -67,14 +68,15 @@ namespace MTD.CouchBot.Modules
             if (message.ToLower().Equals("clear"))
             {
                 server.PublishedMessage = "%CHANNEL% just published a new video - %TITLE% - %URL%";
+                await Context.Channel.SendMessageAsync("Published Message has been reset to the default message.");
             }
             else
             {
                 server.PublishedMessage = message;
+                await Context.Channel.SendMessageAsync("Published Message has been set.");
             }
 
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Live Message has been set.");
         }
 
         [Command("testlive")]

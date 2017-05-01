@@ -6,38 +6,73 @@ namespace MTD.CouchBot.Domain.Utilities
     {
         public static void LogError(string message)
         {
-            string prefix = "[" + DateTime.UtcNow + "] ";
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("[" + DateTime.UtcNow + "] - ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("[Error]");
+            Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(prefix + message);
+            Console.WriteLine(" " + message);
             Console.ResetColor();
         }
 
         public static void LogInfo(string message)
         {
-            string prefix = "[" + DateTime.UtcNow + "] ";
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("[" + DateTime.UtcNow + "] - ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("[Info]");
+            Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(prefix + message);
+            Console.WriteLine(" " + message);
             Console.ResetColor();
         }
 
         public static void LogBeam(string message)
         {
-            string prefix = "[" + DateTime.UtcNow + "] ";
-            Console.WriteLine(prefix + message);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("[" + DateTime.UtcNow + "] - ");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("[Beam]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(" " + message);
             Console.ResetColor();
         }
 
         public static void LogTwitch(string message)
         {
-            string prefix = "[" + DateTime.UtcNow + "] ";
-            Console.WriteLine(prefix + message);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("[" + DateTime.UtcNow + "] - ");
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.Write("[Twitch]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(" " + message);
             Console.ResetColor();
         }
 
         public static void LogYouTube(string message)
         {
-            string prefix = "[" + DateTime.UtcNow + "] ";
-            Console.WriteLine(prefix + message);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("[" + DateTime.UtcNow + "] - ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("[YouTube]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(" " + message);
+            Console.ResetColor();
+        }
+
+        public static void LogYouTubeGaming(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("[" + DateTime.UtcNow + "] - ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("[YouTube]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(" " + message);
             Console.ResetColor();
         }
     }
