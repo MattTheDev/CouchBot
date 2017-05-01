@@ -83,8 +83,8 @@ namespace MTD.CouchBot
             BotFiles.CheckFolderStructure();
 
             await DoBotStuff();
-            await ValidateGuildData();
-            await ValidateUserData();
+            //await ValidateGuildData();
+            //await ValidateUserData();
 
             await ResubscribeToBeamEvents();
 
@@ -96,7 +96,7 @@ namespace MTD.CouchBot
             QueueCleanUp();
             QueueUptimeCheckIn();
             QueueBeamClientCheck();
-            
+
             await Task.Delay(-1);
         }    
 
@@ -109,6 +109,8 @@ namespace MTD.CouchBot
             await InstallCommands();
             await client.LoginAsync(TokenType.Bot, Constants.DiscordToken);
             await client.StartAsync();
+
+            var test = client.Guilds;
 
             ConfigureEventHandlers();
         }
