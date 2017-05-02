@@ -51,17 +51,23 @@ namespace MTD.CouchBot.Bot
 
                     if (data.ToLower().Contains("{\"online\": true}"))
                     {
-                        Logging.LogBeam(data);
                         var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
-                        var id = (payload.data.channel.Split(':'))[1];
-                        await BeamHelper.AnnounceLiveChannel(id);
+                        var channelData = payload.data.channel.Split(':');
+                        var channelId = channelData[1];
+                        var channel = await _beamManager.GetBeamChannelById(channelId);
+
+                        Logging.LogBeam(channel.token + " has gone online.");
+                        await BeamHelper.AnnounceLiveChannel(channelId);
                     }
                     else if(data.ToLower().Contains("{\"online\": false}"))
                     {
-                        Logging.LogBeam(data);
                         var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
-                        var id = (payload.data.channel.Split(':'))[1];
-                        await BeamHelper.StreamOffline(id);
+                        var channelData = payload.data.channel.Split(':');
+                        var channelId = channelData[1];
+                        var channel = await _beamManager.GetBeamChannelById(channelId);
+
+                        Logging.LogBeam(channel.token + " has gone offline.");
+                        await BeamHelper.StreamOffline(channelId);
                     }
                 }
 

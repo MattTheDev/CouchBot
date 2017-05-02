@@ -6,5 +6,6 @@ namespace MTD.CouchBot.Dals
     public interface IBeamDal
     {
         Task<BeamChannel> GetBeamChannelByName(string name);
+        Task<BeamChannel> GetBeamChannelById(string beamId);
     }
 }

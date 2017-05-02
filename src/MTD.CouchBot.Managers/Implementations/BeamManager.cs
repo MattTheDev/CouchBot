@@ -2,6 +2,7 @@
 using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models;
 using System.Threading.Tasks;
+using System;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
@@ -14,6 +15,11 @@ namespace MTD.CouchBot.Managers.Implementations
         {
             beamDal = new BeamDal();
             _statisticsDal = new StatisticsDal();
+        }
+
+        public async Task<BeamChannel> GetBeamChannelById(string beamId)
+        {
+            return await beamDal.GetBeamChannelById(beamId);
         }
 
         public async Task<BeamChannel> GetBeamChannelByName(string name)

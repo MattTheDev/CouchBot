@@ -88,7 +88,7 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("[" + DateTime.UtcNow + "] - ");
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("[YouTube]");
+                Console.Write("[YouTube Gaming]");
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(" " + message);

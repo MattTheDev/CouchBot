@@ -6,5 +6,6 @@ namespace MTD.CouchBot.Managers
     public interface IBeamManager
     {
         Task<BeamChannel> GetBeamChannelByName(string name);
+        Task<BeamChannel> GetBeamChannelById(string beamId);
     }
 }

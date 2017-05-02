@@ -23,7 +23,11 @@ namespace MTD.CouchBot.Dals.Implementations
             }
 
             return JsonConvert.DeserializeObject<BeamChannel>(responseText);
-            
+        }
+
+        public async Task<BeamChannel> GetBeamChannelById(string beamId)
+        {
+            return await GetBeamChannelByName(beamId);
         }
     }
 }
