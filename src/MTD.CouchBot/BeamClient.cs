@@ -1,4 +1,5 @@
 ﻿using MTD.CouchBot.Domain.Models;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using Newtonsoft.Json;
@@ -50,14 +51,14 @@ namespace MTD.CouchBot.Bot
 
                     if (data.ToLower().Contains("{\"online\": true}"))
                     {
-                        Console.WriteLine("BEAM DATA: " + data);
+                        Logging.LogBeam(data);
                         var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
                         var id = (payload.data.channel.Split(':'))[1];
                         await BeamHelper.AnnounceLiveChannel(id);
                     }
                     else if(data.ToLower().Contains("{\"online\": false}"))
                     {
-                        Console.WriteLine("BEAM DATA: " + data);
+                        Logging.LogBeam(data);
                         var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
                         var id = (payload.data.channel.Split(':'))[1];
                         await BeamHelper.StreamOffline(id);

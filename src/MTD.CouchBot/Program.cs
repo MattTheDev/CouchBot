@@ -57,6 +57,8 @@ namespace MTD.CouchBot
 
         public async Task Start()
         {
+            Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+
             Logging.LogInfo("Starting CouchBot.");
             Logging.LogInfo("Initializing Managers.");
 
