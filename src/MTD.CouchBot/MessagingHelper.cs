@@ -122,7 +122,7 @@ namespace MTD.CouchBot.Bot
                     break;
             }
 
-            author.IconUrl = user.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+            author.IconUrl = (user.GetAvatarUrl() != null ? user.GetAvatarUrl() : "http://couchbot.io/img/bot/discord.png") + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
             author.Name = "CouchBot";
             author.Url = url;
             embed.Author = author;

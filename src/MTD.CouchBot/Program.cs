@@ -177,7 +177,7 @@ namespace MTD.CouchBot
             }
 
             sw.Stop();
-            Logging.LogBeam("Subscription Loop Complete. Processed " + count + " servers in " + sw.ElapsedMilliseconds + " milliseconds.");
+            Logging.LogBeam("Subscription Loop Complete. Processed " + count + " channels in " + sw.ElapsedMilliseconds + " milliseconds.");
             Logging.LogBeam("Beam Resubscription Complete - All Set.");
         }
 
@@ -236,10 +236,10 @@ namespace MTD.CouchBot
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Logging.LogYouTube("Checking YouTube Channels.");
+                Logging.LogYouTubeGaming("Checking YouTube Gaming Channels.");
                 await CheckServerYouTubeLive();
                 sw.Stop();
-                Logging.LogYouTube("YouTube Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                Logging.LogYouTubeGaming("YouTube Gaming Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 300000);
 
             youtubePublishedTimer = new Timer(async (e) =>
