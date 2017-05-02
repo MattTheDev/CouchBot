@@ -57,16 +57,26 @@ namespace MTD.CouchBot
 
         public async Task Start()
         {
+            Logging.LogInfo("Starting CouchBot.");
+            Logging.LogInfo("Initializing Managers.");
+
             statisticsManager = new StatisticsManager();
             youtubeManager = new YouTubeManager();
             twitchManager = new TwitchManager();
             beamManager = new BeamManager();
             hitboxManager = new HitboxManager();
 
+            Logging.LogInfo("Managers Initialized.");
+            Logging.LogInfo("Log Last Restart Time and Date.");
+
             statisticsManager.LogRestartTime();
+
+            Logging.LogInfo("Clear randomly seeded Beam task Ids.");
+
             statisticsManager.ClearRandomInts();
 
-            //Validate BotSettings exists.
+            Logging.LogInfo("Check Bot Configuration.");
+
             BotFiles.CheckConfiguration();
 
             if ((Constants.DiscordToken == "" || Constants.DiscordToken == "DISCORDTOKEN")
@@ -79,16 +89,24 @@ namespace MTD.CouchBot
                 return;
             }
 
-            // Setup file system
+            Logging.LogInfo("Bot Configuration - All Set.");
+            Logging.LogInfo("Check Folder Structure.");
+
             BotFiles.CheckFolderStructure();
 
+            Logging.LogInfo("Folder Structure - All Set.");
+            Logging.LogInfo("Do Bot Things.");
+
             await DoBotStuff();
-            //await ValidateGuildData();
-            //await ValidateUserData();
+
+            Logging.LogInfo("Bot Things Done.");
+            Logging.LogInfo("Resubscribe to Beam Events.");
 
             await ResubscribeToBeamEvents();
 
-            // Queue up timer jobs.
+            Logging.LogInfo("Subscribed to Beam Events - All Set.");
+            Logging.LogInfo("Queue Timer Jobs.");
+
             QueueTwitchChecks();
             QueueYouTubeChecks();
             QueueHitboxChecks();
@@ -96,6 +114,8 @@ namespace MTD.CouchBot
             QueueCleanUp();
             QueueUptimeCheckIn();
             QueueBeamClientCheck();
+
+            Logging.LogInfo("Timer Jobs Queued - All Set.");
 
             await Task.Delay(-1);
         }    
@@ -106,90 +126,59 @@ namespace MTD.CouchBot
             client = new DiscordSocketClient();
             commands = new CommandService();
 
+            Logging.LogInfo("Installing Commands, Logging into Discord, and Starting Client.");
+
             await InstallCommands();
             await client.LoginAsync(TokenType.Bot, Constants.DiscordToken);
             await client.StartAsync();
 
-            var test = client.Guilds;
+            Logging.LogInfo("Commands Installed, Discord Logged Into, and Client Started - All Set.");
+            Logging.LogInfo("Configuring Event Handlers.");
 
             ConfigureEventHandlers();
-        }
 
-        public async Task ValidateGuildData()
-        {
-            var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-            var totalServers = 0;
-            var removedServers = 0;
-
-            //foreach (var serverFile in serverFiles)
-            //{
-            //    totalServers++;
-            //    var serverId = Path.GetFileNameWithoutExtension(serverFile);
-
-            //    var serverJson = File.ReadAllText(serverFile);
-            //    var server = JsonConvert.DeserializeObject<DiscordServer>(serverJson);
-
-            //    var guild = client.GetGuild(ulong.Parse(serverId));
-
-            //    if (guild == null)
-            //    {
-            //        File.Delete(Constants.ConfigRootDirectory + Constants.GuildDirectory + serverId + ".json");
-            //        removedServers++;
-            //    }
-
-            //    if (guild != null)
-            //    {
-            //        server.Name = guild.Name;
-            //        var owner = guild.Owner;
-                    
-            //        // Validate Guild Owner Name
-            //        if (owner != null)
-            //        {
-            //            server.OwnerName = owner.Username;
-            //        }
-
-            //        // Validate Messaging
-            //        if(string.IsNullOrEmpty(server.LiveMessage))
-            //        {
-            //            server.LiveMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
-            //        }
-
-            //        if(string.IsNullOrEmpty(server.PublishedMessage))
-            //        {
-            //            server.PublishedMessage = "%CHANNEL% just published a new video - %TITLE% - %URL%";
-            //        }
-
-            //        serverJson = JsonConvert.SerializeObject(server);
-
-            //        File.Delete(serverFile);
-            //        File.WriteAllText(serverFile, serverJson);
-            //    }
-            //}
-
-            Logging.LogInfo("Server Validating Complete. " + totalServers + " servers validated. " + removedServers + " servers removed.");
-        }
+            Logging.LogInfo("Event Handlers Configured - All Set.");
+        }      
         
         public async Task ResubscribeToBeamEvents()
         {
+            var count = 0;
             beamClient = new BeamClient();
+
+            Logging.LogBeam("Staritng Beam Resubscription.");
+            Logging.LogBeam("Getting Server Files.");
+
             var servers = BotFiles.GetConfiguredServers().Where(x => x.ServerBeamChannelIds != null && x.ServerBeamChannelIds.Count > 0);
 
             await Task.Run(async () =>
              {
+                 Logging.LogBeam("Connecting to Beam Constellation.");
+
                  await beamClient.RunWebSockets();
+
+                 Logging.LogBeam("Connected to Beam Constellation.");
              });
 
-            if(servers != null && servers.Count() > 0)
+
+            Logging.LogBeam("Initiating Subscription Loop.");
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            if (servers != null && servers.Count() > 0)
             {
                 foreach(var s in servers)
                 {
                     foreach(var b in s.ServerBeamChannelIds)
                     {
-                        Console.WriteLine("Resub to: " + b);
                         await beamClient.SubscribeToLiveAnnouncements(b);
+                        count++;
                     }
                 }
             }
+
+            sw.Stop();
+            Logging.LogBeam("Subscription Loop Complete. Processed " + count + " servers in " + sw.ElapsedMilliseconds + " milliseconds.");
+            Logging.LogBeam("Beam Resubscription Complete - All Set.");
         }
 
         public void QueueBeamClientCheck()
@@ -198,7 +187,7 @@ namespace MTD.CouchBot
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Logging.LogBeam("Checking Beam Constellation");
+                Logging.LogBeam("Beam Constellation Health Check Started.");
 
                 if (beamClient.Status() != WebSocketState.Open)
                 {
@@ -206,11 +195,11 @@ namespace MTD.CouchBot
                 }
                 else
                 {
-                    Logging.LogBeam("[BEAM CONSTELLATION STATE] " + beamClient.Status());
+                    Logging.LogBeam("" + beamClient.Status());
                 }
 
                 sw.Stop();
-                Logging.LogBeam("Beam Constellation Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
+                Logging.LogBeam("Beam Constellation Health Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 60000);
         }
 
@@ -220,10 +209,10 @@ namespace MTD.CouchBot
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Logging.LogBeam("Checking Server Hitbox");
+                Logging.LogHitbox("Checking Hitbox Channels.");
                 await CheckServerHitboxLive();
                 sw.Stop();
-                Logging.LogBeam("Server Hitbox Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
+                Logging.LogHitbox("Hitbox Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 120000);
         }
 
@@ -233,10 +222,10 @@ namespace MTD.CouchBot
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Logging.LogTwitch("Checking Server Twitch");
+                Logging.LogTwitch("Checking Twitch Channels.");
                 await CheckServerTwitchLive();
                 sw.Stop();
-                Logging.LogTwitch("Server Twitch Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
+                Logging.LogTwitch("Twitch Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
                 initialServicesRan = true;
             }, null, 0, 300000);
         }
@@ -247,10 +236,10 @@ namespace MTD.CouchBot
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Logging.LogYouTube("Checking Server YouTube");
+                Logging.LogYouTube("Checking YouTube Channels.");
                 await CheckServerYouTubeLive();
                 sw.Stop();
-                Logging.LogYouTube("Server YouTube Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
+                Logging.LogYouTube("YouTube Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 300000);
 
             youtubePublishedTimer = new Timer(async (e) =>
@@ -260,7 +249,7 @@ namespace MTD.CouchBot
                 Logging.LogYouTube("Checking YouTube Published");
                 await CheckPublishedYouTube();
                 sw.Stop();
-                Logging.LogYouTube("YouTube Published Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds / 1000);
+                Logging.LogYouTube("YouTube Published Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 900000);
         }
 

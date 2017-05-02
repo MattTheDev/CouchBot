@@ -75,5 +75,17 @@ namespace MTD.CouchBot.Domain.Utilities
             Console.WriteLine(" " + message);
             Console.ResetColor();
         }
+
+        public static void LogHitbox(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("[" + DateTime.UtcNow + "] - ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("[Hitbox]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(" " + message);
+            Console.ResetColor();
+        }
     }
 }
