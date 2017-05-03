@@ -82,5 +82,49 @@ namespace MTD.DiscordBot.Modules
                 await Context.Channel.SendMessageAsync(channel + " wasn't on the server Hitbox streamer list.");
             }
         }
+
+        [Command("owner")]
+        public async Task Owner(string channel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+
+            server.OwnerHitboxChannel = channel;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Owner Hitbox Channel has been set to " + channel + ".");
+
+        }
+
+        [Command("resetowner")]
+        public async Task ResetOwner(string channel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.OwnerHitboxChannel = null;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Owner Hitbox Channel has been reset.");
+        }
     }
 }

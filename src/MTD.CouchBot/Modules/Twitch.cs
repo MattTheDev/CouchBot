@@ -91,5 +91,58 @@ namespace MTD.DiscordBot.Modules
                 await Context.Channel.SendMessageAsync(channel + " wasn't on the server Twitch streamer list.");
             }
         }
+
+        [Command("owner")]
+        public async Task Owner(string channel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            var twitchChannelId = await _twitchManager.GetTwitchIdByLogin(channel);
+
+            if (string.IsNullOrEmpty(twitchChannelId))
+            {
+                await Context.Channel.SendMessageAsync("Twitch Channel " + channel + " does not exist.");
+            }
+            else
+            {
+                server.OwnerTwitchChannel = channel;
+                server.OwnerTwitchChannelId = twitchChannelId;
+                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await Context.Channel.SendMessageAsync("Owner Twitch Channel has been set to " + channel + ".");
+            }
+        }
+
+        [Command("resetowner")]
+        public async Task ResetOwner(string channel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.OwnerTwitchChannel = null;
+            server.OwnerTwitchChannelId = null;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Owner Twitch Channel has been reset.");
+        }
     }
 }

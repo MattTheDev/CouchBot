@@ -88,5 +88,50 @@ namespace MTD.DiscordBot.Modules
                 await Context.Channel.SendMessageAsync(channel + " wasn't on the server YouTube streamer list.");
             }
         }
+
+        [Command("owner")]
+        public async Task Owner(string channel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            if (!channel.ToLower().StartsWith("uc") || channel.Length != 24)
+            {
+                await Context.Channel.SendMessageAsync("Incorrect YouTube Channel ID Provided. Channel ID's start with UC and have 24 characters.");
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            server.OwnerYouTubeChannelId = channel;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Owner YouTube Channel ID has been set to " + channel + ".");
+        }
+
+        [Command("resetowner")]
+        public async Task ResetOwner(string channel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.OwnerYouTubeChannelId = null;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Owner YouTube Channel ID has been reset.");
+        }
     }
 }

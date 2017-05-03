@@ -76,10 +76,10 @@ namespace MTD.CouchBot.Modules
                           "- Guilds: " + serverFiles.Length + "\r\n" +
                           "- Users: " + userFiles.Length + "\r\n" +
                           "Platforms: \r\n" +
-                          "-- Server Configured Beam: " + serverBeamCount + "\r\n" +
-                          "-- Server Configured Hitbox: " + serverHitboxCount + "\r\n" +
-                          "-- Server Configured Twitch: " + serverTwitchCount + "\r\n" +
-                          "-- Server Configured YouTube: " + serverYouTubeCount + "\r\n" +
+                          "-- Beam: " + serverBeamCount + "\r\n" +
+                          "-- Hitbox: " + serverHitboxCount + "\r\n" +
+                          "-- Twitch: " + serverTwitchCount + "\r\n" +
+                          "-- YouTube: " + serverYouTubeCount + "\r\n" +
                           "-- Total Channels Checked: " + (serverYouTubeCount + serverTwitchCount + serverBeamCount + serverHitboxCount) + "\r\n" +
                           "- Current Memory Usage: " + ((System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024) / 1024) + "MB \r\n" +
                           "- Built on Discord.Net - (https://github.com/RogueException/Discord.Net)\r\n" +

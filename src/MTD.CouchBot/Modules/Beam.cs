@@ -97,5 +97,59 @@ namespace MTD.DiscordBot.Modules
                 await Context.Channel.SendMessageAsync(channel + " wasn't on the server Beam streamer list.");
             }
         }
+
+        [Command("owner")]
+        public async Task Owner(string channel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            var beamChannel = await _beamManager.GetBeamChannelByName(channel);
+
+            if (beamChannel == null)
+            {
+                await Context.Channel.SendMessageAsync("Beam Channel " + channel + " does not exist.");
+            }
+            else
+            {
+                server.OwnerBeamChannel = channel;
+                server.OwnerBeamChannelId = beamChannel.id.Value.ToString();
+                await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
+                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await Context.Channel.SendMessageAsync("Owner Beam Channel has been set to " + channel + ".");
+            }
+        }
+
+        [Command("resetowner")]
+        public async Task ResetOwner(string channel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.OwnerBeamChannel = null;
+            server.OwnerBeamChannelId = null;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Owner Beam Channel has been reset.");
+        }
     }
 }

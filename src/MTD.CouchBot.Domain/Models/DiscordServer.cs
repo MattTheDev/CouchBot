@@ -37,5 +37,11 @@ namespace MTD.CouchBot.Json
         public bool DeleteWhenOffline { get; set; }
         public ulong MentionRole { get; set; }
         public bool AllowLive { get; set; }
+        public string OwnerBeamChannel { get; set; }
+        public string OwnerBeamChannelId { get; set; }
+        public string OwnerHitboxChannel { get; set; }
+        public string OwnerTwitchChannel { get; set; }
+        public string OwnerTwitchChannelId { get; set; }
+        public string OwnerYouTubeChannelId { get; set; }
     }
 }

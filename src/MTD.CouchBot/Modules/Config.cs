@@ -88,11 +88,17 @@ namespace MTD.CouchBot.Modules
                 var golive = await guild.GetChannelAsync(server.GoLiveChannel);
                 var goliveChannel = golive != null ? golive.Name : "Not Set";
 
+                var ownerGolive = await guild.GetChannelAsync(server.OwnerLiveChannel);
+                var ownerGoliveChannel = ownerGolive != null ? ownerGolive.Name : "Not Set";
+
                 var greetings = await guild.GetChannelAsync(server.GreetingsChannel);
                 var greetingsChannel = greetings != null ? greetings.Name : "Not Set";
 
                 var vod = await guild.GetChannelAsync(server.PublishedChannel);
                 var vodChannel = vod != null ? vod.Name : "Not Set";
+
+                var ownerVod = await guild.GetChannelAsync(server.OwnerPublishedChannel);
+                var ownerVodChannel = ownerVod != null ? ownerVod.Name : "Not Set";
 
                 var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
 
@@ -104,9 +110,15 @@ namespace MTD.CouchBot.Modules
                 string info = "```Markdown\r\n" +
                               "# " + server.Name + " Configuration Settings\r\n" +
                               "- Announcements Channel: " + announceChannel + "\r\n" +
+                              "- Owner Go Live Channel: " + ownerGoliveChannel + "\r\n" +
                               "- Go Live Channel: " + goliveChannel + "\r\n" +
                               "- Greetings Channel: " + greetingsChannel + "\r\n" +
+                              "- Owner Published/VOD Channel: " + ownerVodChannel + "\r\n" +
                               "- Published/VOD Channel: " + vodChannel + "\r\n" +
+                              "- Owner Beam Channel: " + (string.IsNullOrEmpty(server.OwnerBeamChannel) ? "Not Set" : server.OwnerBeamChannel) + "\r\n" +
+                              "- Owner Hitbox Channel: " + (string.IsNullOrEmpty(server.OwnerHitboxChannel) ? "Not Set" : server.OwnerHitboxChannel) + "\r\n" +
+                              "- Owner Twitch Channel: " + (string.IsNullOrEmpty(server.OwnerTwitchChannel) ? "Not Set" : server.OwnerTwitchChannel) + "\r\n" +
+                              "- Owner YouTube Channel ID: " + (string.IsNullOrEmpty(server.OwnerYouTubeChannelId) ? "Not Set" : server.OwnerYouTubeChannelId) + "\r\n" +
                               "- Allow @ Everyone: " + server.AllowEveryone + "\r\n" +
                               "- Allow Thumbnails: " + server.AllowThumbnails + "\r\n" +
                               "- Allow Greetings: " + server.Greetings + "\r\n" +
@@ -120,8 +132,6 @@ namespace MTD.CouchBot.Modules
                               "- Goodbye Message: " + (string.IsNullOrEmpty(server.GoodbyeMessage) ? "Default" : server.GoodbyeMessage) + "\r\n" +
                               "- Mention Role: " + ((server.MentionRole == 0 ) ? "Everyone" : role.Name.Replace("@","")) + "\r\n" +
                               "- Time Zone Offset: " + server.TimeZoneOffset + "\r\n" +
-                              "---- [Unused At The Moment] ----\r\n" +
-                              "- Broadcast Sub Goals: " + server.BroadcastSubGoals + "\r\n" +
                               "```\r\n";
 
                 await Context.Channel.SendMessageAsync(info);
