@@ -84,7 +84,7 @@ namespace MTD.CouchBot.Modules
             trueFalse = trueFalse.ToLower();
             if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
             {
-                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowPublished. (ie: !cb config AllowPublished true)");
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring allow live. (ie: !cb allow live true)");
                 return;
             }
 
@@ -96,7 +96,7 @@ namespace MTD.CouchBot.Modules
 
             server.AllowLive = bool.Parse(trueFalse);
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Allow published has been set to: " + trueFalse);
+            await Context.Channel.SendMessageAsync("Allow live has been set to: " + trueFalse);
         }
 
         [Command("published"), Summary("Sets announcing of published content.")]
@@ -113,7 +113,7 @@ namespace MTD.CouchBot.Modules
             trueFalse = trueFalse.ToLower();
             if (!trueFalse.Equals("true") && !trueFalse.Equals("false"))
             {
-                await Context.Channel.SendMessageAsync("Pass true or false when configuring AllowPublished. (ie: !cb config AllowPublished true)");
+                await Context.Channel.SendMessageAsync("Pass true or false when configuring allow published. (ie: !cb allow published true)");
                 return;
             }
 
