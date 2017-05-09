@@ -53,11 +53,16 @@ namespace MTD.CouchBot.Bot
                     if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
                     {
                         var stream = await beamManager.GetBeamChannelByName(beamId);
+                        string gameName = stream.type == null ? "a game" : stream.type.name;
+                        string url = "http://beam.pro/" + stream.token;
+                        string avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
+                        string thumbnailUrl = "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg";
+                        string channelId = stream.id.Value.ToString();
 
-                        messages.Add(await BuildMessage(stream, server));
+                        messages.Add(await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url, avatarUrl, thumbnailUrl,
+                            Constants.Beam, channelId, server));
                     }
                 }
-
             }
 
             if (messages.Count > 0)
@@ -67,7 +72,7 @@ namespace MTD.CouchBot.Bot
                 {
                     Name = beamId,
                     Servers = new List<ulong>(),
-                    ChannelMessages = await SendMessages(messages)
+                    ChannelMessages = await MessagingHelper.SendMessages(Constants.Beam, messages)
                 };
 
                 File.WriteAllText(
@@ -77,119 +82,7 @@ namespace MTD.CouchBot.Bot
                     beamId + ".json",
                     JsonConvert.SerializeObject(channel));
             }
-        }
-
-        public static async Task<BroadcastMessage> BuildMessage(BeamChannel stream, DiscordServer server)
-        {
-            string gameName = stream.type == null ? "a game" : stream.type.name;
-            string url = "http://beam.pro/" + stream.token;
-
-            EmbedBuilder embed = new EmbedBuilder();
-            EmbedAuthorBuilder author = new EmbedAuthorBuilder();
-            EmbedFooterBuilder footer = new EmbedFooterBuilder();
-
-            if (server.LiveMessage == null)
-            {
-                server.LiveMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
-            }
-
-            Color blue = new Color(76, 144, 243);
-            author.IconUrl = Program.client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-            author.Name = "CouchBot";
-            author.Url = url;
-            footer.Text = "[Beam] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-            footer.IconUrl = "http://couchbot.io/img/beam.jpg";
-            embed.Author = author;
-            embed.Color = blue;
-            embed.Description = server.LiveMessage.Replace("%CHANNEL%", stream.token).Replace("%GAME%", gameName).Replace("%TITLE%", stream.name).Replace("%URL%", url);
-            embed.Title = stream.token + " has gone live!";
-            embed.ThumbnailUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
-            embed.ImageUrl = server.AllowThumbnails ? "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
-            embed.Footer = footer;
-
-            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
-
-            if (role == null)
-            {
-                server.MentionRole = 0;
-            }
-
-            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
-
-            if (server.UseTextAnnouncements)
-            {
-                if (!server.AllowThumbnails)
-                {
-                    url = "<" + url + ">";
-                }
-
-                message += "**[Beam]** " + server.LiveMessage.Replace("%CHANNEL%", stream.token).Replace("%GAME%", gameName).Replace("%TITLE%", stream.name).Replace("%URL%", url);
-            }
-
-            var broadcastMessage = new BroadcastMessage()
-            {
-                GuildId = server.Id,
-                ChannelId = server.GoLiveChannel,
-                UserId = stream.id.Value.ToString(),
-                Message = message,
-                Platform = "Beam",
-                Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-            };
-
-            return broadcastMessage;
-        }
-
-        public static async Task<List<ChannelMessage>> SendMessages(List<BroadcastMessage> messages)
-        {
-            IStatisticsManager statisticsManager = new StatisticsManager();
-            var channelMessages = new List<ChannelMessage>();
-
-            foreach (var message in messages)
-            {
-                var chat = await DiscordHelper.GetMessageChannel(message.GuildId, message.ChannelId);
-
-                if (chat != null)
-                {
-                    try
-                    {
-                        ChannelMessage channelMessage = new ChannelMessage();
-                        channelMessage.ChannelId = message.ChannelId;
-                        channelMessage.GuildId = message.GuildId;
-                        channelMessage.DeleteOffline = message.DeleteOffline;
-
-                        if (message.Embed != null)
-                        {
-                            RequestOptions options = new RequestOptions();
-                            options.RetryMode = RetryMode.AlwaysRetry;
-                            var msg = await chat.SendMessageAsync(message.Message, false, message.Embed, options);
-
-                            if (msg != null || msg.Id != 0)
-                            {
-                                channelMessage.MessageId = msg.Id;
-                            }
-                        }
-                        else
-                        {
-                            var msg = await chat.SendMessageAsync(message.Message);
-
-                            if (msg != null || msg.Id != 0)
-                            {
-                                channelMessage.MessageId = msg.Id;
-                            }
-                        }
-
-                        channelMessages.Add(channelMessage);
-                        statisticsManager.AddToBeamAlertCount();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logging.LogError("Send Message Error: " + ex.Message + " in server " + message.GuildId);
-                    }
-                }
-            }
-
-            return channelMessages;
-        }
+        }      
 
         public static async Task StreamOffline(string beamId)
         {

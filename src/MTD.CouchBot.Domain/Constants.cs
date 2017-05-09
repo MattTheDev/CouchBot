@@ -2,6 +2,7 @@
 using MTD.CouchBot.Domain.Models;
 using Newtonsoft.Json;
 using System.IO;
+using Discord;
 
 namespace MTD.CouchBot.Domain
 {
@@ -22,6 +23,7 @@ namespace MTD.CouchBot.Domain
                 _settings = value;
             }
         }
+
         public static readonly string ConfigRootDirectory = @"c:\programdata\CouchBot\";
         public static readonly string GuildDirectory = @"Guilds\";
         public static readonly string UserDirectory = @"Users\";
@@ -36,5 +38,17 @@ namespace MTD.CouchBot.Domain
         public static readonly string TwitchClientId = Settings.TwitchClientId;
         public static readonly string YouTubeApiKey = Settings.YouTubeApiKey;
         public static readonly ulong CouchBotId = Settings.CouchBotId;
+
+        public static readonly Color Blue = new Color(76, 144, 243);
+        public static readonly Color Red = new Color(179, 18, 23);
+        public static readonly Color Purple = new Color(100, 65, 164);
+        public static readonly Color Green = new Color(153, 204, 0);
+
+        public static readonly string Beam = "Beam";
+        public static readonly string Hitbox = "Hitbox";
+        public static readonly string Twitch = "Twitch";
+        public static readonly string YouTubeGaming = "YouTube Gaming";
+        public static readonly string YouTube = "YouTube";
+
     }
 }

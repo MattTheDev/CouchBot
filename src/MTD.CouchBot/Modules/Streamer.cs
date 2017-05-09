@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using MTD.CouchBot.Domain;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
@@ -14,6 +15,9 @@ namespace MTD.CouchBot.Modules
     public class Streamer : ModuleBase
     {
         IYouTubeManager youtubeManager;
+        IBeamManager beamManager;
+        IHitboxManager hitboxManager;
+        ITwitchManager twitchManager;
 
         public Streamer()
         {
@@ -112,6 +116,102 @@ namespace MTD.CouchBot.Modules
               "- Twitch: " + twitch + "\r\n" +
               "- Beam: " + beam + "\r\n" +
               "- Hitbox: " + hitbox + "\r\n" +
+              "```\r\n";
+
+            await Context.Channel.SendMessageAsync(info);
+        }
+
+        [Command("live"), Summary("Display who is currently live in a server.")]
+        public async Task Live()
+        {
+            var beam = BotFiles.GetCurrentlyLiveBeamChannels();
+            var hitbox = BotFiles.GetCurrentlyLiveHitboxChannels();
+            var twitch = BotFiles.GetCurrentlyLiveTwitchChannels();
+            var youtube = BotFiles.GetCurrentlyLiveYouTubeChannels();
+
+            var guildId = Context.Guild.Id;
+
+            var beamLive = "";
+            var hitboxLive = "";
+            var twitchLive = "";
+            var youtubeLive = "";
+
+            foreach(var b in beam)
+            {
+                foreach(var cm in b.ChannelMessages)
+                {
+                    if(cm.GuildId == guildId)
+                    {
+                        var channel = await beamManager.GetBeamChannelById(b.Name);
+
+                        if(channel != null && channel.online)
+                        beamLive += channel.token + ", ";
+
+                        break;
+                    }
+                }
+            }
+
+            foreach (var h in hitbox)
+            {
+                foreach (var cm in h.ChannelMessages)
+                {
+                    if (cm.GuildId == guildId)
+                    {
+                        hitboxLive += h.Name + ", ";
+
+                        break;
+                    }
+                }
+            }
+
+            foreach (var t in twitch)
+            {
+                foreach (var cm in t.ChannelMessages)
+                {
+                    if (cm.GuildId == guildId)
+                    {
+                        var channel = await twitchManager.GetStreamById(t.Name);
+
+                        if (channel != null && channel.stream != null)
+                        {
+                            twitchLive += channel.stream.channel.name + ", ";
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            foreach (var yt in youtube)
+            {
+                foreach (var cm in yt.ChannelMessages)
+                {
+                    if (cm.GuildId == guildId)
+                    {
+                        var channel = await youtubeManager.GetLiveVideoByChannelId(yt.Name);
+
+                        if (channel != null && channel.items != null && channel.items.Count > 0)
+                        {
+                            youtubeLive += channel.items[0].snippet.channelTitle + ", ";
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            beamLive = beamLive.Trim().TrimEnd(',');
+            hitboxLive = hitboxLive.Trim().TrimEnd(',');
+            twitchLive = twitchLive.Trim().TrimEnd(',');
+            youtubeLive = youtubeLive.Trim().TrimEnd(',');
+
+            string info = "```Markdown\r\n" +
+              "# Currently Live\r\n" +
+              "- Beam: " + beamLive + "\r\n" +
+              "- Hitbox: " + hitboxLive + "\r\n" +
+              "- Twitch: " + twitchLive + "\r\n" +
+              "- YouTube Gaming: " + youtubeLive + "\r\n" +
               "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);

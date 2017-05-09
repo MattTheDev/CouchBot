@@ -50,6 +50,14 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerBeamChannelIds == null)
                 server.ServerBeamChannelIds = new List<string>();
 
+            if (server.OwnerBeamChannel.ToLower().Equals(channel.ToLower()))
+            {
+                await Context.Channel.SendMessageAsync("The channel " + channel + " is configured as the Owner Beam channel. " +
+                    "Please remove it with the '!cb beam resetowner' command and then try re-adding it.");
+
+                return;
+            }
+
             if (!server.ServerBeamChannels.Contains(channel.ToLower()))
             {
                 var beamChannel = await _beamManager.GetBeamChannelByName(channel);
@@ -122,6 +130,14 @@ namespace MTD.DiscordBot.Modules
             }
             else
             {
+                if (server.ServerBeamChannels.Contains(channel.ToLower()))
+                {
+                    await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Beam Channels. " +
+                        "Please remove it with '!cb beam remove " + channel + "' and then retry setting your owner channel.");
+
+                    return;
+                }
+
                 server.OwnerBeamChannel = channel;
                 server.OwnerBeamChannelId = beamChannel.id.Value.ToString();
                 await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());

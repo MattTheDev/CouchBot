@@ -1,8 +1,14 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using MTD.CouchBot.Domain;
+using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Domain.Utilities;
+using MTD.CouchBot.Json;
+using MTD.CouchBot.Managers;
+using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -163,6 +169,164 @@ namespace MTD.CouchBot.Bot
             };
 
             return broadcastMessage;
+        }
+
+        public static async Task<BroadcastMessage> BuildMessage(string channel, 
+            string gameName, string title, string url, string avatarUrl, string thumbnailUrl, string platform, 
+            string channelId, DiscordServer server)
+        {
+            EmbedBuilder embed = new EmbedBuilder();
+            EmbedAuthorBuilder author = new EmbedAuthorBuilder();
+            EmbedFooterBuilder footer = new EmbedFooterBuilder();
+
+            if (server.LiveMessage == null)
+            {
+                server.LiveMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
+            }
+
+            author.IconUrl = Program.client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+            author.Name = "CouchBot";
+            author.Url = url;
+            footer.Text = "[" + platform + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+            embed.Author = author;
+
+            if (platform.Equals(Constants.Beam))
+            {
+                embed.Color = Constants.Blue;
+                embed.ThumbnailUrl = avatarUrl != null ?
+                        avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
+                        "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
+                footer.IconUrl = "http://couchbot.io/img/beam.jpg";
+            }
+            else if (platform.Equals(Constants.YouTubeGaming))
+            {
+                embed.Color = Constants.Red;
+                embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
+            }
+            else if (platform.Equals(Constants.Twitch))
+            {
+                embed.Color = Constants.Purple;
+                embed.ThumbnailUrl = avatarUrl != null ?
+                        avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
+                        "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
+                footer.IconUrl = "http://couchbot.io/img/twitch.jpg";
+            }
+            else if (platform.Equals(Constants.Hitbox))
+            {
+                embed.Color = Constants.Green;
+                embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                footer.IconUrl = "http://couchbot.io/img/hitbox.jpg";
+            }
+            
+            embed.Description = server.LiveMessage
+                .Replace("%CHANNEL%", channel)
+                .Replace("%GAME%", gameName)
+                .Replace("%TITLE%", title)
+                .Replace("%URL%", url);
+            embed.Title = channel + " has gone live!";
+            embed.ImageUrl = server.AllowThumbnails ? thumbnailUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
+            embed.Footer = footer;
+
+            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+            if (role == null)
+            {
+                server.MentionRole = 0;
+            }
+
+            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
+
+            if (server.UseTextAnnouncements)
+            {
+                if (!server.AllowThumbnails)
+                {
+                    url = "<" + url + ">";
+                }
+
+                message += "**[" + platform + "]** " + server.LiveMessage.Replace("%CHANNEL%", channel).Replace("%GAME%", gameName).Replace("%TITLE%", title).Replace("%URL%", url);
+            }
+
+            var broadcastMessage = new BroadcastMessage()
+            {
+                GuildId = server.Id,
+                ChannelId = server.GoLiveChannel,
+                UserId = channelId,
+                Message = message,
+                Platform = platform,
+                Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
+            };
+
+            return broadcastMessage;
+        }
+
+        public static async Task<List<ChannelMessage>> SendMessages(string platform, List<BroadcastMessage> messages)
+        {
+            IStatisticsManager statisticsManager = new StatisticsManager();
+            var channelMessages = new List<ChannelMessage>();
+
+            foreach (var message in messages)
+            {
+                var chat = await DiscordHelper.GetMessageChannel(message.GuildId, message.ChannelId);
+
+                if (chat != null)
+                {
+                    try
+                    {
+                        ChannelMessage channelMessage = new ChannelMessage();
+                        channelMessage.ChannelId = message.ChannelId;
+                        channelMessage.GuildId = message.GuildId;
+                        channelMessage.DeleteOffline = message.DeleteOffline;
+
+                        if (message.Embed != null)
+                        {
+                            RequestOptions options = new RequestOptions();
+                            options.RetryMode = RetryMode.AlwaysRetry;
+                            var msg = await chat.SendMessageAsync(message.Message, false, message.Embed, options);
+
+                            if (msg != null || msg.Id != 0)
+                            {
+                                channelMessage.MessageId = msg.Id;
+                            }
+                        }
+                        else
+                        {
+                            var msg = await chat.SendMessageAsync(message.Message);
+
+                            if (msg != null || msg.Id != 0)
+                            {
+                                channelMessage.MessageId = msg.Id;
+                            }
+                        }
+
+                        channelMessages.Add(channelMessage);
+
+                        if (platform.Equals(Constants.Beam))
+                        {
+                            statisticsManager.AddToBeamAlertCount();
+                        }
+                        else if (platform.Equals(Constants.Hitbox))
+                        {
+                            statisticsManager.AddToHitboxAlertCount();
+                        }
+                        else if (platform.Equals(Constants.Twitch))
+                        {
+                            statisticsManager.AddToTwitchAlertCount();
+                        }
+                        else if (platform.Equals(Constants.YouTubeGaming))
+                        {
+                            statisticsManager.AddToYouTubeAlertCount();
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Logging.LogError("Send Message Error: " + ex.Message + " in server " + message.GuildId);
+                    }
+                }
+            }
+
+            return channelMessages;
         }
     }
 }

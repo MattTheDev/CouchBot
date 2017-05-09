@@ -43,6 +43,14 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerTwitchChannelIds == null)
                 server.ServerTwitchChannelIds = new List<string>();
 
+            if (server.OwnerHitboxChannel.ToLower().Equals(channel.ToLower()))
+            {
+                await Context.Channel.SendMessageAsync("The channel " + channel + " is configured as the Owner Twitch channel. " +
+                    "Please remove it with the '!cb twitch resetowner' command and then try re-adding it.");
+
+                return;
+            }
+
             if (!server.ServerTwitchChannels.Contains(channel.ToLower()))
             {
                 server.ServerTwitchChannels.Add(channel.ToLower());
@@ -116,6 +124,14 @@ namespace MTD.DiscordBot.Modules
             }
             else
             {
+                if (server.ServerTwitchChannels.Contains(channel.ToLower()))
+                {
+                    await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Twitch Channels. " +
+                        "Please remove it with '!cb twitch remove " + channel + "' and then retry setting your owner channel.");
+
+                    return;
+                }
+
                 server.OwnerTwitchChannel = channel;
                 server.OwnerTwitchChannelId = twitchChannelId;
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));

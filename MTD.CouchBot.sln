@@ -1,22 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{07372122-F996-42B3-9106-1F3C6CA4E479}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51726EF3-08C9-4CB9-8ED0-5AD5EA03A3B2}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MTD.CouchBot.Bot", "src\MTD.CouchBot\MTD.CouchBot.Bot.xproj", "{8260D448-D3E8-4204-B8FF-861A4C1A7360}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTD.CouchBot", "src\MTD.CouchBot\MTD.CouchBot.csproj", "{8260D448-D3E8-4204-B8FF-861A4C1A7360}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MTD.CouchBot.Managers", "src\MTD.CouchBot.Managers\MTD.CouchBot.Managers.xproj", "{8E06E051-E805-47ED-A28F-2AFEA8221F0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTD.CouchBot.Managers", "src\MTD.CouchBot.Managers\MTD.CouchBot.Managers.csproj", "{8E06E051-E805-47ED-A28F-2AFEA8221F0A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MTD.CouchBot.Domain", "src\MTD.CouchBot.Domain\MTD.CouchBot.Domain.xproj", "{99B4E4E1-07CC-49FF-B1B6-581DE445D0B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTD.CouchBot.Domain", "src\MTD.CouchBot.Domain\MTD.CouchBot.Domain.csproj", "{99B4E4E1-07CC-49FF-B1B6-581DE445D0B7}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MTD.CouchBot.Dals", "src\MTD.CouchBot.Dals\MTD.CouchBot.Dals.xproj", "{07F24EF4-0D2A-47D0-A7DD-74F60D8B5F75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTD.CouchBot.Dals", "src\MTD.CouchBot.Dals\MTD.CouchBot.Dals.csproj", "{07F24EF4-0D2A-47D0-A7DD-74F60D8B5F75}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MTD.CouchBot.Data", "MTD.CouchBot.Data\MTD.CouchBot.Data.sqlproj", "{24F5946D-C19B-48A2-A2E9-460EE5A71897}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +39,12 @@ Global
 		{07F24EF4-0D2A-47D0-A7DD-74F60D8B5F75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07F24EF4-0D2A-47D0-A7DD-74F60D8B5F75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07F24EF4-0D2A-47D0-A7DD-74F60D8B5F75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24F5946D-C19B-48A2-A2E9-460EE5A71897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24F5946D-C19B-48A2-A2E9-460EE5A71897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24F5946D-C19B-48A2-A2E9-460EE5A71897}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{24F5946D-C19B-48A2-A2E9-460EE5A71897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24F5946D-C19B-48A2-A2E9-460EE5A71897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24F5946D-C19B-48A2-A2E9-460EE5A71897}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,5 +54,6 @@ Global
 		{8E06E051-E805-47ED-A28F-2AFEA8221F0A} = {07372122-F996-42B3-9106-1F3C6CA4E479}
 		{99B4E4E1-07CC-49FF-B1B6-581DE445D0B7} = {07372122-F996-42B3-9106-1F3C6CA4E479}
 		{07F24EF4-0D2A-47D0-A7DD-74F60D8B5F75} = {07372122-F996-42B3-9106-1F3C6CA4E479}
+		{24F5946D-C19B-48A2-A2E9-460EE5A71897} = {07372122-F996-42B3-9106-1F3C6CA4E479}
 	EndGlobalSection
 EndGlobal

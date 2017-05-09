@@ -290,5 +290,39 @@ namespace MTD.CouchBot.Modules
                 await Context.Channel.SendMessageAsync(channelInfo);
             }
         }
+
+        [Command("permissions"), Summary("Check bot permissions.")]
+        public async Task Permissions(IGuildChannel channel)
+        {
+            var botUser = await Context.Guild.GetCurrentUserAsync();
+            var channelPermissions = botUser.GetPermissions(channel);
+
+            string info = "```Markdown\r\n" +
+              "# CouchBot Permissions in " + botUser.Username + "\r\n" +
+              "- Add Reactions: " + channelPermissions.AddReactions + "\r\n" +
+              "- Attach Files: " + channelPermissions.AttachFiles + "\r\n" +
+              "- Connect: " + channelPermissions.Connect + "\r\n" +
+              "- Create Invite: " + channelPermissions.CreateInstantInvite + "\r\n" +
+              "- Deafen: " + channelPermissions.DeafenMembers + "\r\n" +
+              "- **Embed**: " + channelPermissions.EmbedLinks + "\r\n" +
+              "- Manage Channel: " + channelPermissions.ManageChannel + "\r\n" +
+              "- Manage Messages: " + channelPermissions.ManageMessages + "\r\n" +
+              "- Manage Permissions: " + channelPermissions.ManagePermissions + "\r\n" +
+              "- Manage Webhooks: " + channelPermissions.ManageWebhooks + "\r\n" +
+              "- **Mention Everyone**: " + channelPermissions.MentionEveryone + "\r\n" +
+              "- Move: " + channelPermissions.MoveMembers + "\r\n" +
+              "- Mute: " + channelPermissions.MuteMembers + "\r\n" +
+              "- **Read History**: " + channelPermissions.ReadMessageHistory + "\r\n" +
+              "- **Read**: " + channelPermissions.ReadMessages + "\r\n" +
+              "- **Send**: " + channelPermissions.SendMessages + "\r\n" +
+              "- Send TTS: " + channelPermissions.SendTTSMessages + "\r\n" +
+              "- Speak: " + channelPermissions.Speak + "\r\n" +
+              "- External Emojis: " + channelPermissions.UseExternalEmojis + "\r\n" +
+              "- Use VAD: " + channelPermissions.UseVAD + "\r\n" +
+              "**Required Permissions are Bold.**\r\n" +
+              "```";
+
+            await Context.Channel.SendMessageAsync(info);
+        }
     }
 }
