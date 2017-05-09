@@ -40,6 +40,14 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerHitboxChannels == null)
                 server.ServerHitboxChannels = new List<string>();
 
+            if (server.OwnerHitboxChannel.ToLower().Equals(channel.ToLower()))
+            {
+                await Context.Channel.SendMessageAsync("The channel " + channel + " is configured as the Owner Hitbox channel. " +
+                    "Please remove it with the '!cb hitbox resetowner' command and then try re-adding it.");
+
+                return;
+            }
+
             if (!server.ServerHitboxChannels.Contains(channel.ToLower()))
             {
                 server.ServerHitboxChannels.Add(channel.ToLower());
@@ -99,6 +107,13 @@ namespace MTD.DiscordBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
+            if (server.ServerHitboxChannels.Contains(channel.ToLower()))
+            {
+                await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Hitbox Channels. " +
+                    "Please remove it with '!cb hitbox remove " + channel + "' and then retry setting your owner channel.");
+
+                return;
+            }
 
             server.OwnerHitboxChannel = channel;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));

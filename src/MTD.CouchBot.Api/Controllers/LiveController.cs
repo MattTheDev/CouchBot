@@ -11,8 +11,9 @@ namespace MTD.CouchBot.Api.Controllers
     {
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromQuery]string Name, [FromQuery]int platformId)
         {
+
         }
     }
 }

@@ -46,6 +46,14 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerYouTubeChannelIds == null)
                 server.ServerYouTubeChannelIds = new List<string>();
 
+            if (server.OwnerYouTubeChannelId.Equals(channel))
+            {
+                await Context.Channel.SendMessageAsync("The channel " + channel + " is configured as the Owner YouTube channel. " +
+                    "Please remove it with the '!cb youtube resetowner' command and then try re-adding it.");
+
+                return;
+            }
+
             if (!server.ServerYouTubeChannelIds.Contains(channel))
             {
                 server.ServerYouTubeChannelIds.Add(channel);
@@ -107,6 +115,14 @@ namespace MTD.DiscordBot.Modules
 
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
             var server = new DiscordServer();
+
+            if (server.ServerYouTubeChannelIds.Contains(channel.ToLower()))
+            {
+                await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server YouTube Channels. " +
+                    "Please remove it with '!cb youtube remove " + channel + "' and then retry setting your owner channel.");
+
+                return;
+            }
 
             server.OwnerYouTubeChannelId = channel;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));

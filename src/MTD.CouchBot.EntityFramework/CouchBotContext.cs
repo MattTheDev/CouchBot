@@ -1,8 +1,10 @@
-﻿namespace MTD.CouchBot.EntityFramework
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace MTD.CouchBot.EntityFramework
 {
-    public class CouchBotContext
+    public class CouchBotContext : DbContext
     {
-        public CouchBotContext()
+        public CouchBotContext() : base()
         {
         }
     }
