@@ -77,7 +77,7 @@ namespace MTD.CouchBot.Modules
                           "- Users: " + userFiles.Length + "\r\n" +
                           "Platforms: \r\n" +
                           "-- Beam: " + serverBeamCount + "\r\n" +
-                          "-- Hitbox: " + serverHitboxCount + "\r\n" +
+                          "-- Smashcast: " + serverHitboxCount + "\r\n" +
                           "-- Twitch: " + serverTwitchCount + "\r\n" +
                           "-- YouTube: " + serverYouTubeCount + "\r\n" +
                           "-- Total Channels Checked: " + (serverYouTubeCount + serverTwitchCount + serverBeamCount + serverHitboxCount) + "\r\n" +
@@ -192,7 +192,7 @@ namespace MTD.CouchBot.Modules
                     "YouTube - " + botStats.YouTubeAlertCount + "\r\n" +
                     "Twitch - " + botStats.TwitchAlertCount + "\r\n" +
                     "Beam - " + botStats.BeamAlertCount + "\r\n" +
-                    "Hitbox - " + botStats.HitboxAlertCount + "\r\n" +
+                    "Smashcast - " + botStats.HitboxAlertCount + "\r\n" +
                     "Total Alerts Sent - " + (botStats.YouTubeAlertCount + botStats.BeamAlertCount + botStats.TwitchAlertCount + botStats.HitboxAlertCount) + "\r\n" +
                     "```\r\n";
 

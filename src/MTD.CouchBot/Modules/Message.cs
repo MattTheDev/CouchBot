@@ -82,9 +82,9 @@ namespace MTD.CouchBot.Modules
         [Command("testlive")]
         public async Task TestLive(string platform)
         {
-            if(platform.ToLower() != "beam" && platform.ToLower() != "youtube" && platform.ToLower() != "twitch" && platform.ToLower() != "hitbox")
+            if(platform.ToLower() != "beam" && platform.ToLower() != "youtube" && platform.ToLower() != "twitch" && platform.ToLower() != "smashcast")
             {
-                await Context.Channel.SendMessageAsync("Please pass in beam, youtube, twitch, or hitbox when requesting a test message. (ie: !cb message test youtube)");
+                await Context.Channel.SendMessageAsync("Please pass in beam, youtube, twitch, or smashcast when requesting a test message. (ie: !cb message test youtube)");
                 return;
             }
 

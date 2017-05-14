@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
-    public class HitboxManager : IHitboxManager
+    public class SmashcastManager : ISmashcastManager
     {
-        IHitboxDal hitboxDal;
+        ISmashcastDal smashcastDal;
 
-        public HitboxManager()
+        public SmashcastManager()
         {
-            hitboxDal = new HitboxDal();
+            smashcastDal = new SmashcastDal();
         }
 
         public async Task<HitboxChannel> GetChannelByName(string name)
         {
-            return await hitboxDal.GetChannelByName(name);
+            return await smashcastDal.GetChannelByName(name);
         }
     }
 }

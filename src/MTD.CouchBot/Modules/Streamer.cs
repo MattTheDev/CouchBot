@@ -16,7 +16,7 @@ namespace MTD.CouchBot.Modules
     {
         IYouTubeManager youtubeManager;
         IBeamManager beamManager;
-        IHitboxManager hitboxManager;
+        ISmashcastManager smashcastManager;
         ITwitchManager twitchManager;
 
         public Streamer()
@@ -112,10 +112,10 @@ namespace MTD.CouchBot.Modules
 
             string info = "```Markdown\r\n" +
               "# Server Configured Channels\r\n" +
-              "- YouTube Gaming: " + youtube + "\r\n" +
-              "- Twitch: " + twitch + "\r\n" +
               "- Beam: " + beam + "\r\n" +
-              "- Hitbox: " + hitbox + "\r\n" +
+              "- Smashcast: " + hitbox + "\r\n" +
+              "- Twitch: " + twitch + "\r\n" +
+              "- YouTube Gaming: " + youtube + "\r\n" +
               "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);
@@ -209,7 +209,7 @@ namespace MTD.CouchBot.Modules
             string info = "```Markdown\r\n" +
               "# Currently Live\r\n" +
               "- Beam: " + beamLive + "\r\n" +
-              "- Hitbox: " + hitboxLive + "\r\n" +
+              "- Smashcast: " + hitboxLive + "\r\n" +
               "- Twitch: " + twitchLive + "\r\n" +
               "- YouTube Gaming: " + youtubeLive + "\r\n" +
               "```\r\n";

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Dals.Implementations
 {
-    public class HitboxDal : IHitboxDal
+    public class SmashcastDal : ISmashcastDal
     {
         public async Task<HitboxChannel> GetChannelByName(string name)
         {
-            var baseUrl = "https://api.hitbox.tv/media/live/";
+            var baseUrl = "https://api.smashcast.tv/media/live/";
 
             var request = (HttpWebRequest)WebRequest.Create(baseUrl + name);
             var response = await request.GetResponseAsync();

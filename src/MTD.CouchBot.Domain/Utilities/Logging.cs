@@ -103,7 +103,7 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("[" + DateTime.UtcNow + "] - ");
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("[Hitbox]");
+                Console.Write("[Smashcast]");
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(" " + message);

@@ -116,7 +116,7 @@ namespace MTD.CouchBot.Modules
                               "- Owner Published/VOD Channel: " + ownerVodChannel + "\r\n" +
                               "- Published/VOD Channel: " + vodChannel + "\r\n" +
                               "- Owner Beam Channel: " + (string.IsNullOrEmpty(server.OwnerBeamChannel) ? "Not Set" : server.OwnerBeamChannel) + "\r\n" +
-                              "- Owner Hitbox Channel: " + (string.IsNullOrEmpty(server.OwnerHitboxChannel) ? "Not Set" : server.OwnerHitboxChannel) + "\r\n" +
+                              "- Owner Smashcast Channel: " + (string.IsNullOrEmpty(server.OwnerHitboxChannel) ? "Not Set" : server.OwnerHitboxChannel) + "\r\n" +
                               "- Owner Twitch Channel: " + (string.IsNullOrEmpty(server.OwnerTwitchChannel) ? "Not Set" : server.OwnerTwitchChannel) + "\r\n" +
                               "- Owner YouTube Channel ID: " + (string.IsNullOrEmpty(server.OwnerYouTubeChannelId) ? "Not Set" : server.OwnerYouTubeChannelId) + "\r\n" +
                               "- Allow @ Everyone: " + server.AllowEveryone + "\r\n" +

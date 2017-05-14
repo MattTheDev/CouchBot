@@ -1,9 +1,9 @@
 ﻿using MTD.CouchBot.Domain.Models;
 using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Dals
+namespace MTD.CouchBot.Managers
 {
-    public interface IHitboxDal
+    public interface ISmashcastManager
     {
         Task<HitboxChannel> GetChannelByName(string name);
     }

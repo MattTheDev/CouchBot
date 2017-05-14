@@ -48,7 +48,7 @@ namespace MTD.CouchBot
         IStatisticsManager statisticsManager;
         IYouTubeManager youtubeManager;
         ITwitchManager twitchManager;
-        IHitboxManager hitboxManager;
+        ISmashcastManager smashcastManager;
         IBeamManager beamManager;
 
         #endregion
@@ -66,7 +66,7 @@ namespace MTD.CouchBot
             youtubeManager = new YouTubeManager();
             twitchManager = new TwitchManager();
             beamManager = new BeamManager();
-            hitboxManager = new HitboxManager();
+            smashcastManager = new SmashcastManager();
 
             Logging.LogInfo("Managers Initialized.");
             Logging.LogInfo("Log Last Restart Time and Date.");
@@ -211,10 +211,10 @@ namespace MTD.CouchBot
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Logging.LogHitbox("Checking Hitbox Channels.");
+                Logging.LogHitbox("Checking Smashcast Channels.");
                 await CheckServerHitboxLive();
                 sw.Stop();
-                Logging.LogHitbox("Hitbox Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                Logging.LogHitbox("Smashcast Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 120000);
         }
 
@@ -544,13 +544,13 @@ namespace MTD.CouchBot
 
                         try
                         {
-                            stream = await hitboxManager.GetChannelByName(hitboxChannel);
+                            stream = await smashcastManager.GetChannelByName(hitboxChannel);
                         }
                         catch (Exception wex)
                         {
                             // Log our error and move to the next user.
 
-                            Logging.LogError("Hitbox Error: " + wex.Message + " for user: " + hitboxChannel + " in Discord Server Id: " + server.Id);
+                            Logging.LogError("Smashcast Error: " + wex.Message + " for user: " + hitboxChannel + " in Discord Server Id: " + server.Id);
                             continue;
                         }
 
@@ -594,14 +594,14 @@ namespace MTD.CouchBot
                                             }
 
                                             string gameName = stream.livestream[0].category_name == null ? "a game" : stream.livestream[0].category_name;
-                                            string url = "http://hitbox.tv/" + hitboxChannel;
+                                            string url = "http://smashcast.tv/" + hitboxChannel;
 
                                             Logging.LogHitbox(hitboxChannel + " has gone online.");
 
                                             var message = await MessagingHelper.BuildMessage(
                                                 hitboxChannel, gameName, stream.livestream[0].media_status, url, "http://edge.sf.hitbox.tv" + 
                                                 stream.livestream[0].channel.user_logo, "http://edge.sf.hitbox.tv" + 
-                                                stream.livestream[0].media_thumbnail_large, Constants.Hitbox, hitboxChannel, server);
+                                                stream.livestream[0].media_thumbnail_large, Constants.Smashcast, hitboxChannel, server);
 
                                             var finalCheck = BotFiles.GetCurrentlyLiveHitboxChannels().FirstOrDefault(x => x.Name == hitboxChannel);
 
@@ -610,7 +610,7 @@ namespace MTD.CouchBot
                                                 if (channel.ChannelMessages == null)
                                                     channel.ChannelMessages = new List<ChannelMessage>();
 
-                                                channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Hitbox, new List<BroadcastMessage>() { message }));
+                                                channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Smashcast, new List<BroadcastMessage>() { message }));
 
                                                 File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + hitboxChannel + ".json", JsonConvert.SerializeObject(channel));
                                             }
@@ -786,7 +786,7 @@ namespace MTD.CouchBot
                         Logging.LogInfo("Cleaning Up Live Files.");
                         await CleanUpLiveStreams("youtube");
                         await CleanUpLiveStreams("twitch");
-                        await CleanUpLiveStreams("hitbox");
+                        await CleanUpLiveStreams(Constants.Smashcast);
                         Logging.LogInfo("Cleaning Up Live Files Complete.");
                     }
                 }
@@ -1000,7 +1000,7 @@ namespace MTD.CouchBot
                 }
             }
 
-            if (platform == "hitbox")
+            if (platform == Constants.Smashcast)
             {
                 var liveStreams = new List<LiveChannel>();
 
@@ -1029,7 +1029,7 @@ namespace MTD.CouchBot
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up Hitbox Error: " + wex.Message + " for user: " + stream.Name);
+                        Logging.LogError("Clean Up Smashcast Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
@@ -1104,7 +1104,7 @@ namespace MTD.CouchBot
                         statisticsManager.AddToBeamAlertCount();
                     }
 
-                    if (message.Platform.Equals("Hitbox"))
+                    if (message.Platform.Equals("Smashcast"))
                     {
                         statisticsManager.AddToHitboxAlertCount();
                     }

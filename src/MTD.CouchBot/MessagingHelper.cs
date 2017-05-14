@@ -116,10 +116,10 @@ namespace MTD.CouchBot.Bot
                     footer.Text = "[YouTube Gaming] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                     footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
                     break;
-                case "hitbox":
+                case "smashcast":
                     color = new Color(153, 204, 0);
-                    footer.Text = "[Hitbox] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                    footer.IconUrl = "http://couchbot.io/img/hitbox.jpg";
+                    footer.Text = "[Smashcast] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                    footer.IconUrl = "http://couchbot.io/img/smashcast.png";
                     break;
                 case "beam":
                     color = new Color(76, 144, 243);
@@ -212,11 +212,11 @@ namespace MTD.CouchBot.Bot
                         "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                 footer.IconUrl = "http://couchbot.io/img/twitch.jpg";
             }
-            else if (platform.Equals(Constants.Hitbox))
+            else if (platform.Equals(Constants.Smashcast))
             {
                 embed.Color = Constants.Green;
                 embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                footer.IconUrl = "http://couchbot.io/img/hitbox.jpg";
+                footer.IconUrl = "http://couchbot.io/img/smashcast.png";
             }
             
             embed.Description = server.LiveMessage

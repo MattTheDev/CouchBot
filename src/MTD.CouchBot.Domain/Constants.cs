@@ -45,7 +45,7 @@ namespace MTD.CouchBot.Domain
         public static readonly Color Green = new Color(153, 204, 0);
 
         public static readonly string Beam = "Beam";
-        public static readonly string Hitbox = "Hitbox";
+        public static readonly string Smashcast = "Smashcast";
         public static readonly string Twitch = "Twitch";
         public static readonly string YouTubeGaming = "YouTube Gaming";
         public static readonly string YouTube = "YouTube";
