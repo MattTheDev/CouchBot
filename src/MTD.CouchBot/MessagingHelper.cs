@@ -40,7 +40,7 @@ namespace MTD.CouchBot.Bot
             author.IconUrl = user.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
             author.Name = "CouchBot";
             author.Url = url;
-            footer.Text = "[YouTube] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+            footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
             footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
             embed.Author = author;
             embed.Color = red;
@@ -104,28 +104,29 @@ namespace MTD.CouchBot.Bot
             }
 
             Color color = new Color(76, 144, 243);
-            switch(platform)
+            if (platform.Equals(Constants.Twitch))
             {
-                case "twitch":
-                    color = new Color(100, 65, 164);
-                    footer.Text = "[Twitch] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                    footer.IconUrl = "http://couchbot.io/img/twitch.jpg";
-                    break;
-                case "youtube":
-                    color = new Color(179, 18, 23);
-                    footer.Text = "[YouTube Gaming] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                    footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
-                    break;
-                case "smashcast":
-                    color = new Color(153, 204, 0);
-                    footer.Text = "[Smashcast] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                    footer.IconUrl = "http://couchbot.io/img/smashcast.png";
-                    break;
-                case "beam":
+                color = new Color(100, 65, 164);
+                footer.Text = "[" + Constants.Twitch + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                footer.IconUrl = "http://couchbot.io/img/twitch.jpg";
+            }
+            else if (platform.Equals(Constants.YouTube) || platform.Equals(Constants.YouTubeGaming))
+            {
+                color = new Color(179, 18, 23);
+                footer.Text = "[" + Constants.YouTubeGaming + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
+            }
+            else if (platform.Equals(Constants.Smashcast))
+            {
+                color = new Color(153, 204, 0);
+                footer.Text = "[" + Constants.Smashcast + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                footer.IconUrl = "http://couchbot.io/img/smashcast.png";
+            }
+            else if(platform.Equals(Constants.Beam))
+            { 
                     color = new Color(76, 144, 243);
-                    footer.Text = "[Beam] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                    footer.Text = "[" + Constants.Beam + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                     footer.IconUrl = "http://couchbot.io/img/beam.jpg";
-                    break;
             }
 
             author.IconUrl = (user.GetAvatarUrl() != null ? user.GetAvatarUrl() : "http://couchbot.io/img/bot/discord.png") + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
@@ -305,7 +306,7 @@ namespace MTD.CouchBot.Bot
                         {
                             statisticsManager.AddToBeamAlertCount();
                         }
-                        else if (platform.Equals(Constants.Hitbox))
+                        else if (platform.Equals(Constants.Smashcast))
                         {
                             statisticsManager.AddToHitboxAlertCount();
                         }

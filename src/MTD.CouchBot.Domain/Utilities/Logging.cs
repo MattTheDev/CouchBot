@@ -43,7 +43,7 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("[" + DateTime.UtcNow + "] - ");
                 Console.ForegroundColor = ConsoleColor.Blue;
-                Console.Write("[Beam]");
+                Console.Write("[" + Constants.Beam + "]");
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(" " + message);
@@ -58,7 +58,7 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("[" + DateTime.UtcNow + "] - ");
                 Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                Console.Write("[Twitch]");
+                Console.Write("[" + Constants.Twitch + "]");
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(" " + message);
@@ -73,7 +73,7 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("[" + DateTime.UtcNow + "] - ");
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("[YouTube]");
+                Console.Write("[" + Constants.YouTube + "]");
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(" " + message);
@@ -88,7 +88,7 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("[" + DateTime.UtcNow + "] - ");
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("[YouTube Gaming]");
+                Console.Write("" + Constants.YouTubeGaming + "]");
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(" " + message);
@@ -103,7 +103,7 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("[" + DateTime.UtcNow + "] - ");
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("[Smashcast]");
+                Console.Write("[" + Constants.Smashcast + "]");
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(" " + message);

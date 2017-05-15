@@ -715,7 +715,7 @@ namespace MTD.CouchBot
                         author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
                         author.Name = "CouchBot";
                         author.Url = url;
-                        footer.Text = "[YouTube] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                        footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                         footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
                         embed.Author = author;
                         embed.Color = red;
@@ -750,7 +750,7 @@ namespace MTD.CouchBot
                                     url = "<" + url + ">";
                                 }
 
-                                message += "**[YouTube]** " + server.PublishedMessage.Replace("%CHANNEL%", video.snippet.channelTitle).Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
+                                message += "**[" + Constants.YouTube + "]** " + server.PublishedMessage.Replace("%CHANNEL%", video.snippet.channelTitle).Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
                             }
 
                             Logging.LogYouTube(video.snippet.channelTitle + " has published a new video.");
@@ -761,7 +761,7 @@ namespace MTD.CouchBot
                                 ChannelId = server.PublishedChannel,
                                 UserId = user,
                                 Message = message,
-                                Platform = "YouTube",
+                                Platform = Constants.YouTube,
                                 Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
                             });
                         }
@@ -784,8 +784,8 @@ namespace MTD.CouchBot
                     if (initialServicesRan)
                     {
                         Logging.LogInfo("Cleaning Up Live Files.");
-                        await CleanUpLiveStreams("youtube");
-                        await CleanUpLiveStreams("twitch");
+                        await CleanUpLiveStreams(Constants.YouTubeGaming);
+                        await CleanUpLiveStreams(Constants.Twitch);
                         await CleanUpLiveStreams(Constants.Smashcast);
                         Logging.LogInfo("Cleaning Up Live Files Complete.");
                     }
@@ -930,7 +930,7 @@ namespace MTD.CouchBot
 
         public async Task CleanUpLiveStreams(string platform)
         {
-            if (platform == "twitch")
+            if (platform == Constants.Twitch)
             {
                 var liveStreams = new List<LiveChannel>();
 
@@ -964,7 +964,7 @@ namespace MTD.CouchBot
                 }
             }
 
-            if (platform == "youtube")
+            if (platform == Constants.YouTubeGaming)
             {
                 var liveStreams = new List<LiveChannel>();
 
@@ -1017,7 +1017,7 @@ namespace MTD.CouchBot
                 {
                     try
                     {
-                        var liveStream = await hitboxManager.GetChannelByName(stream.Name);
+                        var liveStream = await smashcastManager.GetChannelByName(stream.Name);
 
                         if (liveStream == null || liveStream.livestream == null || liveStream.livestream.Count < 1 || liveStream.livestream[0].media_is_live == "0")
                         {
@@ -1089,22 +1089,22 @@ namespace MTD.CouchBot
                         }
                     }
 
-                    if (message.Platform.Equals("YouTube"))
+                    if (message.Platform.Equals(Constants.YouTube))
                     {
                         statisticsManager.AddToYouTubeAlertCount();
                     }
 
-                    if (message.Platform.Equals("Twitch"))
+                    if (message.Platform.Equals(Constants.Twitch))
                     {
                         statisticsManager.AddToTwitchAlertCount();
                     }
 
-                    if (message.Platform.Equals("Beam"))
+                    if (message.Platform.Equals(Constants.Beam))
                     {
                         statisticsManager.AddToBeamAlertCount();
                     }
 
-                    if (message.Platform.Equals("Smashcast"))
+                    if (message.Platform.Equals(Constants.Smashcast))
                     {
                         statisticsManager.AddToHitboxAlertCount();
                     }
@@ -1117,141 +1117,5 @@ namespace MTD.CouchBot
 
             return null; // we never get here :(
         }
-
-        #region TODO
-
-        //public void QueueSubGoalCheck()
-        //{
-        //    uptimeTimer = new Timer(async (e) =>
-        //    {
-        //        using (var httpClient = new HttpClient())
-        //        {
-        //            Logging.LogInfo("Checking Sub/Follower Goals.");
-        //            await CheckSubGoals();
-        //            Logging.LogInfo("Checking Sub/Follower Goals Complete.");
-        //        }
-        //    }, null, 0, 120000);
-        //}
-
-        //public async Task CheckSubGoals()
-        //{
-        //    var userFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory);
-
-        //    foreach (var file in userFiles)
-        //    {
-        //        var user = JsonConvert.DeserializeObject<User>(File.ReadAllText(file));
-
-        //        if (!string.IsNullOrEmpty(user.TwitchFollowerGoal)
-        //            || !string.IsNullOrEmpty(user.BeamFollowerGoal)
-        //            || !string.IsNullOrEmpty(user.YouTubeSubGoal))
-        //        {
-
-        //            var twitchName = user.TwitchName;
-        //            var youtubeId = user.YouTubeChannelId;
-        //            var beamName = user.BeamName;
-
-        //            TwitchFollowers twitch = null;
-        //            YouTubeChannelStatistics youtube = null;
-        //            BeamChannel beam = null;
-
-        //            if (twitchName != null)
-        //            {
-        //                twitch = await twitchManager.GetFollowersByName(twitchName);
-        //            }
-
-        //            if (!string.IsNullOrEmpty(youtubeId))
-        //            {
-        //                youtube = await youtubeManager.GetChannelStatisticsById(youtubeId);
-        //            }
-
-        //            if (!string.IsNullOrEmpty(beamName))
-        //            {
-        //                beam = await beamManager.GetBeamChannelByName(beamName);
-        //            }
-
-        //            var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-
-        //            foreach (var serverFile in serverFiles)
-        //            {
-        //                var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(serverFile));
-
-        //                if (((!server.BroadcastOthers && user.Id == server.OwnerId) || server.BroadcastOthers) && server.BroadcastSubGoals && server.Users.Contains(user.Id.ToString()))
-        //                {
-        //                    if (twitch != null && !string.IsNullOrEmpty(user.TwitchFollowerGoal))
-        //                    {
-        //                        if (twitch._total >= (int.Parse(user.TwitchFollowerGoal)) && !user.TwitchFollowerGoalMet)
-        //                        {
-        //                            user.TwitchFollowerGoalMet = true;
-        //                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.UserDirectory + user.Id + ".json", JsonConvert.SerializeObject(user));
-
-        //                            var discordUser = client.GetUser(user.Id);
-
-        //                            if (messages.Where(x => x.GuildId == server.Id).FirstOrDefault() == null)
-        //                            {
-        //                                messages.Add(new BroadcastMessage()
-        //                                {
-        //                                    GuildId = server.Id,
-        //                                    ChannelId = server.AnnouncementsChannel,
-        //                                    UserId = user.Id,
-        //                                    Message = (server.AllowEveryone ? "@everyone " : "") + "**[Twitch]** " + user.TwitchName + " (" + discordUser.Username + ") has broken their sub goal of " + user.TwitchFollowerGoal + "!! Congrats! <3",
-        //                                    Platform = "Twitch"
-        //                                });
-        //                            }
-        //                        }
-        //                    }
-
-        //                    if (youtube != null && !string.IsNullOrEmpty(user.YouTubeSubGoal))
-        //                    {
-        //                        if (youtube.items.Count > 0 && int.Parse(youtube.items[0].statistics.subscriberCount) > int.Parse(user.YouTubeSubGoal) && !user.YouTubeSubGoalMet)
-        //                        {
-        //                            user.YouTubeSubGoalMet = true;
-        //                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.UserDirectory + user.Id + ".json", JsonConvert.SerializeObject(user));
-
-        //                            var discordUser = client.GetUser(user.Id);
-
-        //                            if (chat != null)
-        //                            {
-        //                                await chat.SendMessageAsync((server.AllowEveryone ? "@everyone " : "") + "**[YouTube]** " + user.TwitchName + " (" + discordUser.Username + ") has broken their sub goal of " + user.YouTubeSubGoal + "!! Congrats! <3");
-        //                            }
-        //                        }
-        //                    }
-
-        //                    if (beam != null && !string.IsNullOrEmpty(user.BeamFollowerGoal))
-        //                    {
-        //                        if (beam.numFollowers > int.Parse(user.BeamFollowerGoal) && !user.YouTubeSubGoalMet)
-        //                        {
-        //                            user.BeamFollowerGoalMet = true;
-        //                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.UserDirectory + user.Id + ".json", JsonConvert.SerializeObject(user));
-
-        //                            var discordUser = client.GetUser(user.Id);
-
-        //                            if (chat != null)
-        //                            {
-        //                                await chat.SendMessageAsync((server.AllowEveryone ? "@everyone " : "") + "**[Beam]** " + user.TwitchName + " (" + discordUser.Username + ") has broken their sub goal of " + user.BeamFollowerGoal + "!! Congrats! <3");
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-        //public void QueueBirthdays()
-        //{
-        //    birthdayTimer = new Timer(async (e) =>
-        //    {
-        //        var userFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-        //        foreach(var serverFile in serverFiles)
-        //        {
-        //            var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(serverFile));
-
-
-        //        }
-        //        await client.GetGuildAsync(1234);
-        //    }, null, 0, 60000);
-        //}
-
-        #endregion
     }
 }
