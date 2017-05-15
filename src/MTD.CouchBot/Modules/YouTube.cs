@@ -22,7 +22,7 @@ namespace MTD.DiscordBot.Modules
         }
         
         [Command("add")]
-        public async Task Add(string channel)
+        public async Task Add(string channelId)
         {
             var user = ((IGuildUser)Context.Message.Author);
 
@@ -31,9 +31,17 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            if (!channel.ToLower().StartsWith("uc") || channel.Length != 24)
+            if (!channelId.ToLower().StartsWith("uc") || channelId.Length != 24)
             {
                 await Context.Channel.SendMessageAsync("Incorrect YouTube Channel ID Provided. Channel ID's start with UC and have 24 characters.");
+                return;
+            }
+
+            var channel = await _youTubeManager.GetYouTubeChannelSnippetById(channelId);
+
+            if(channel == null || channel.items == null || channel.items.Count == 0)
+            {
+                await Context.Channel.SendMessageAsync("No channel exists with the ID " + channelId + ". You can use the command '!cb ytidlookup <QUERY>' to find the correct ID.");
                 return;
             }
 
@@ -46,23 +54,23 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerYouTubeChannelIds == null)
                 server.ServerYouTubeChannelIds = new List<string>();
 
-            if (server.OwnerYouTubeChannelId.Equals(channel))
+            if (server.OwnerYouTubeChannelId.Equals(channelId))
             {
-                await Context.Channel.SendMessageAsync("The channel " + channel + " is configured as the Owner YouTube channel. " +
+                await Context.Channel.SendMessageAsync("The channel " + channelId + " is configured as the Owner YouTube channel. " +
                     "Please remove it with the '!cb youtube resetowner' command and then try re-adding it.");
 
                 return;
             }
 
-            if (!server.ServerYouTubeChannelIds.Contains(channel))
+            if (!server.ServerYouTubeChannelIds.Contains(channelId))
             {
-                server.ServerYouTubeChannelIds.Add(channel);
+                server.ServerYouTubeChannelIds.Add(channelId);
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
-                await Context.Channel.SendMessageAsync("Added " + channel + " to the server YouTube streamer list.");
+                await Context.Channel.SendMessageAsync("Added " + channelId + " to the server YouTube streamer list.");
             }
             else
             {
-                await Context.Channel.SendMessageAsync(channel + " is already on the server YouTube streamer list.");
+                await Context.Channel.SendMessageAsync(channelId + " is already on the server YouTube streamer list.");
             }
         }
 

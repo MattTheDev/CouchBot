@@ -22,7 +22,7 @@ namespace MTD.DiscordBot.Modules
         }
         
         [Command("add")]
-        public async Task Add(string channel)
+        public async Task Add(string channelName)
         {
             var user = ((IGuildUser)Context.Message.Author);
 
@@ -43,25 +43,33 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerTwitchChannelIds == null)
                 server.ServerTwitchChannelIds = new List<string>();
 
-            if (server.OwnerHitboxChannel.ToLower().Equals(channel.ToLower()))
+            var channel = await _twitchManager.GetTwitchIdByLogin(channelName);
+
+            if (channel == null)
             {
-                await Context.Channel.SendMessageAsync("The channel " + channel + " is configured as the Owner Twitch channel. " +
+                await Context.Channel.SendMessageAsync("The Twitch channel, " + channelName + ", does not exist.");
+                return;
+            }
+
+            if (server.OwnerHitboxChannel.ToLower().Equals(channelName.ToLower()))
+            {
+                await Context.Channel.SendMessageAsync("The channel " + channelName + " is configured as the Owner Twitch channel. " +
                     "Please remove it with the '!cb twitch resetowner' command and then try re-adding it.");
 
                 return;
             }
 
-            if (!server.ServerTwitchChannels.Contains(channel.ToLower()))
+            if (!server.ServerTwitchChannels.Contains(channelName.ToLower()))
             {
-                server.ServerTwitchChannels.Add(channel.ToLower());
-                server.ServerTwitchChannelIds.Add(await _twitchManager.GetTwitchIdByLogin(channel));
+                server.ServerTwitchChannels.Add(channelName.ToLower());
+                server.ServerTwitchChannelIds.Add(await _twitchManager.GetTwitchIdByLogin(channelName));
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
 
-                await Context.Channel.SendMessageAsync("Added " + channel + " to the server Twitch streamer list.");
+                await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Twitch streamer list.");
             }
             else
             {
-                await Context.Channel.SendMessageAsync(channel + " is already on the server Twitch streamer list.");
+                await Context.Channel.SendMessageAsync(channelName + " is already on the server Twitch streamer list.");
             }
         }
 

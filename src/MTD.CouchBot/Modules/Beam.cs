@@ -29,7 +29,7 @@ namespace MTD.DiscordBot.Modules
         }
 
         [Command("add")]
-        public async Task Add(string channel)
+        public async Task Add(string channelName)
         {
             var user = ((IGuildUser)Context.Message.Author);
 
@@ -50,26 +50,34 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerBeamChannelIds == null)
                 server.ServerBeamChannelIds = new List<string>();
 
-            if (server.OwnerBeamChannel.ToLower().Equals(channel.ToLower()))
+            var channel = await _beamManager.GetBeamChannelByName(channelName);
+
+            if (channel == null)
             {
-                await Context.Channel.SendMessageAsync("The channel " + channel + " is configured as the Owner Beam channel. " +
+                await Context.Channel.SendMessageAsync("The Beam channel, " + channelName + ", does not exist.");
+                return;
+            }
+
+            if (server.OwnerBeamChannel.ToLower().Equals(channelName.ToLower()))
+            {
+                await Context.Channel.SendMessageAsync("The channel " + channelName + " is configured as the Owner Beam channel. " +
                     "Please remove it with the '!cb beam resetowner' command and then try re-adding it.");
 
                 return;
             }
 
-            if (!server.ServerBeamChannels.Contains(channel.ToLower()))
+            if (!server.ServerBeamChannels.Contains(channelName.ToLower()))
             {
-                var beamChannel = await _beamManager.GetBeamChannelByName(channel);
-                server.ServerBeamChannels.Add(channel.ToLower());
+                var beamChannel = await _beamManager.GetBeamChannelByName(channelName);
+                server.ServerBeamChannels.Add(channelName.ToLower());
                 server.ServerBeamChannelIds.Add(beamChannel.id.Value.ToString());
                 await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
-                await Context.Channel.SendMessageAsync("Added " + channel + " to the server Beam streamer list.");
+                await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Beam streamer list.");
             }
             else
             {
-                await Context.Channel.SendMessageAsync(channel + " is already on the server Beam streamer list.");
+                await Context.Channel.SendMessageAsync(channelName + " is already on the server Beam streamer list.");
             }
         }
 

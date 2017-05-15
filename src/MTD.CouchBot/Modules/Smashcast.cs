@@ -22,7 +22,7 @@ namespace MTD.DiscordBot.Modules
         }
         
         [Command("add")]
-        public async Task Add(string channel)
+        public async Task Add(string channelName)
         {
             var user = ((IGuildUser)Context.Message.Author);
 
@@ -40,23 +40,31 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerHitboxChannels == null)
                 server.ServerHitboxChannels = new List<string>();
 
-            if (server.OwnerHitboxChannel.ToLower().Equals(channel.ToLower()))
+            var channel = await _smashcastManager.GetChannelByName(channelName);
+
+            if (channel == null)
             {
-                await Context.Channel.SendMessageAsync("The channel " + channel + " is configured as the Owner Smashcast channel. " +
+                await Context.Channel.SendMessageAsync("The Smashcast channel, " + channelName + ", does not exist.");
+                return;
+            }
+
+            if (server.OwnerHitboxChannel.ToLower().Equals(channelName.ToLower()))
+            {
+                await Context.Channel.SendMessageAsync("The channel " + channelName + " is configured as the Owner Smashcast channel. " +
                     "Please remove it with the '!cb smashcast resetowner' command and then try re-adding it.");
 
                 return;
             }
 
-            if (!server.ServerHitboxChannels.Contains(channel.ToLower()))
+            if (!server.ServerHitboxChannels.Contains(channelName.ToLower()))
             {
-                server.ServerHitboxChannels.Add(channel.ToLower());
+                server.ServerHitboxChannels.Add(channelName.ToLower());
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
-                await Context.Channel.SendMessageAsync("Added " + channel + " to the server Smashcast streamer list.");
+                await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Smashcast streamer list.");
             }
             else
             {
-                await Context.Channel.SendMessageAsync(channel + " is already on the server Smashcast streamer list.");
+                await Context.Channel.SendMessageAsync(channelName + " is already on the server Smashcast streamer list.");
             }
         }
 
