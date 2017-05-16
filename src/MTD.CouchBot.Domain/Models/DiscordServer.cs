@@ -43,5 +43,7 @@ namespace MTD.CouchBot.Json
         public string OwnerTwitchChannel { get; set; }
         public string OwnerTwitchChannelId { get; set; }
         public string OwnerYouTubeChannelId { get; set; }
+        public ulong OwnerTwitchFeedChannel { get; set; }
+        public ulong TwitchFeedChannel { get; set; }
     }
 }

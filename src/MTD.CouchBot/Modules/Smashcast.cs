@@ -31,15 +31,6 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
-            var server = new DiscordServer();
-
-            if (File.Exists(file))
-                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-            if (server.ServerHitboxChannels == null)
-                server.ServerHitboxChannels = new List<string>();
-
             var channel = await _smashcastManager.GetChannelByName(channelName);
 
             if (channel == null)
@@ -48,7 +39,16 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            if (server.OwnerHitboxChannel.ToLower().Equals(channelName.ToLower()))
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            if (server.ServerHitboxChannels == null)
+                server.ServerHitboxChannels = new List<string>();
+                        
+            if (!string.IsNullOrEmpty(server.OwnerHitboxChannel) && server.OwnerHitboxChannel.ToLower().Equals(channelName.ToLower()))
             {
                 await Context.Channel.SendMessageAsync("The channel " + channelName + " is configured as the Owner Smashcast channel. " +
                     "Please remove it with the '!cb smashcast resetowner' command and then try re-adding it.");
@@ -100,12 +100,20 @@ namespace MTD.DiscordBot.Modules
         }
 
         [Command("owner")]
-        public async Task Owner(string channel)
+        public async Task Owner(string channelName)
         {
             var user = ((IGuildUser)Context.Message.Author);
 
             if (!user.GuildPermissions.ManageGuild)
             {
+                return;
+            }
+
+            var channel = await _smashcastManager.GetChannelByName(channelName);
+
+            if (channel == null)
+            {
+                await Context.Channel.SendMessageAsync("The Smashcast channel, " + channelName + ", does not exist.");
                 return;
             }
 
@@ -115,7 +123,7 @@ namespace MTD.DiscordBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            if (server.ServerHitboxChannels.Contains(channel.ToLower()))
+            if (server.ServerHitboxChannels != null && server.ServerHitboxChannels.Contains(channelName.ToLower()))
             {
                 await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Smashcast Channels. " +
                     "Please remove it with '!cb smashcast remove " + channel + "' and then retry setting your owner channel.");
@@ -123,14 +131,14 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            server.OwnerHitboxChannel = channel;
+            server.OwnerHitboxChannel = channelName;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Owner Smashcast Channel has been set to " + channel + ".");
 
         }
 
         [Command("resetowner")]
-        public async Task ResetOwner(string channel)
+        public async Task ResetOwner()
         {
             var user = ((IGuildUser)Context.Message.Author);
 

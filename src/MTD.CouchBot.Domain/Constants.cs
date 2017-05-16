@@ -38,6 +38,7 @@ namespace MTD.CouchBot.Domain
         public static readonly string TwitchClientId = Settings.TwitchClientId;
         public static readonly string YouTubeApiKey = Settings.YouTubeApiKey;
         public static readonly ulong CouchBotId = Settings.CouchBotId;
+        public static readonly string Prefix = Settings.Prefix;
 
         public static readonly Color Blue = new Color(76, 144, 243);
         public static readonly Color Red = new Color(179, 18, 23);

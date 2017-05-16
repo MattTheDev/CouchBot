@@ -137,6 +137,48 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync("The Owner Published Channel has been set.");
         }
 
+        [Command("ownertwitchfeed"), Summary("Sets owner twitch channel feed channel.")]
+        public async Task OwnerTwitchFeedChannel(IGuildChannel guildChannel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.OwnerTwitchFeedChannel = guildChannel.Id;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("The Owner Twitch Channel Feed Channel has been set.");
+        }
+
+        [Command("twitchfeed"), Summary("Sets twitch channel feed channel.")]
+        public async Task TwitchFeedChannel(IGuildChannel guildChannel)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildChannel.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.TwitchFeedChannel = guildChannel.Id;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("The Twitch Channel Feed Channel has been set.");
+        }
+
         [Command("clear"), Summary("Clears channels settings for a guild.")]
         public async Task Clear(string option)
         {
@@ -179,11 +221,19 @@ namespace MTD.CouchBot.Modules
                         break;
                     case "ownerpublished":
                         server.OwnerPublishedChannel = 0;
-                        label = "Published";
+                        label = "Owner Published";
                         break;
                     case "published":
                         server.PublishedChannel = 0;
                         label = "Published";
+                        break;
+                    case "ownertwitchfeed":
+                        server.OwnerTwitchFeedChannel = 0;
+                        label = "Owner Twitch Feed";
+                        break;
+                    case "twitchfeed":
+                        server.TwitchFeedChannel = 0;
+                        label = "Twitch Feed";
                         break;
                     case "all":
                         server.AnnouncementsChannel = 0;
@@ -192,6 +242,8 @@ namespace MTD.CouchBot.Modules
                         server.PublishedChannel = 0;
                         server.OwnerPublishedChannel = 0;
                         server.OwnerLiveChannel = 0;
+                        server.OwnerTwitchFeedChannel = 0;
+                        server.TwitchFeedChannel = 0;
                         label = "All";
                         break;
                     default:

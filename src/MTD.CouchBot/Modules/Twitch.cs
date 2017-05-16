@@ -31,6 +31,15 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
+            var twitchChannelId = await _twitchManager.GetTwitchIdByLogin(channelName);
+
+            if (string.IsNullOrEmpty(twitchChannelId))
+            {
+                await Context.Channel.SendMessageAsync("Twitch Channel " + channelName + " does not exist.");
+
+                return;
+            }
+
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
             var server = new DiscordServer();
 
@@ -43,15 +52,7 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerTwitchChannelIds == null)
                 server.ServerTwitchChannelIds = new List<string>();
 
-            var channel = await _twitchManager.GetTwitchIdByLogin(channelName);
-
-            if (channel == null)
-            {
-                await Context.Channel.SendMessageAsync("The Twitch channel, " + channelName + ", does not exist.");
-                return;
-            }
-
-            if (server.OwnerHitboxChannel.ToLower().Equals(channelName.ToLower()))
+            if (!string.IsNullOrEmpty(server.OwnerTwitchChannel) && server.OwnerTwitchChannel.ToLower().Equals(channelName.ToLower()))
             {
                 await Context.Channel.SendMessageAsync("The channel " + channelName + " is configured as the Owner Twitch channel. " +
                     "Please remove it with the '!cb twitch resetowner' command and then try re-adding it.");
@@ -118,37 +119,37 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
+            var twitchChannelId = await _twitchManager.GetTwitchIdByLogin(channel);
+
+            if (string.IsNullOrEmpty(twitchChannelId))
+            {
+                await Context.Channel.SendMessageAsync("Twitch Channel " + channel + " does not exist.");
+
+                return;
+            }
+
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            var twitchChannelId = await _twitchManager.GetTwitchIdByLogin(channel);
-
-            if (string.IsNullOrEmpty(twitchChannelId))
+            if (server.ServerTwitchChannels != null && server.ServerTwitchChannels.Contains(channel.ToLower()))
             {
-                await Context.Channel.SendMessageAsync("Twitch Channel " + channel + " does not exist.");
-            }
-            else
-            {
-                if (server.ServerTwitchChannels.Contains(channel.ToLower()))
-                {
-                    await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Twitch Channels. " +
-                        "Please remove it with '!cb twitch remove " + channel + "' and then retry setting your owner channel.");
+                await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Twitch Channels. " +
+                    "Please remove it with '!cb twitch remove " + channel + "' and then retry setting your owner channel.");
 
-                    return;
-                }
-
-                server.OwnerTwitchChannel = channel;
-                server.OwnerTwitchChannelId = twitchChannelId;
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
-                await Context.Channel.SendMessageAsync("Owner Twitch Channel has been set to " + channel + ".");
+                return;
             }
+
+            server.OwnerTwitchChannel = channel;
+            server.OwnerTwitchChannelId = twitchChannelId;
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Owner Twitch Channel has been set to " + channel + ".");
         }
 
         [Command("resetowner")]
-        public async Task ResetOwner(string channel)
+        public async Task ResetOwner()
         {
             var user = ((IGuildUser)Context.Message.Author);
 

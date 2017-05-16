@@ -38,6 +38,14 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
+            var channel = await _beamManager.GetBeamChannelByName(channelName);
+
+            if (channel == null)
+            {
+                await Context.Channel.SendMessageAsync("The Beam channel, " + channelName + ", does not exist.");
+                return;
+            }
+
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
             var server = new DiscordServer();
 
@@ -50,15 +58,7 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerBeamChannelIds == null)
                 server.ServerBeamChannelIds = new List<string>();
 
-            var channel = await _beamManager.GetBeamChannelByName(channelName);
-
-            if (channel == null)
-            {
-                await Context.Channel.SendMessageAsync("The Beam channel, " + channelName + ", does not exist.");
-                return;
-            }
-
-            if (server.OwnerBeamChannel.ToLower().Equals(channelName.ToLower()))
+            if (!string.IsNullOrEmpty(server.OwnerBeamChannel) && server.OwnerBeamChannel.ToLower().Equals(channelName.ToLower()))
             {
                 await Context.Channel.SendMessageAsync("The channel " + channelName + " is configured as the Owner Beam channel. " +
                     "Please remove it with the '!cb beam resetowner' command and then try re-adding it.");
@@ -68,10 +68,9 @@ namespace MTD.DiscordBot.Modules
 
             if (!server.ServerBeamChannels.Contains(channelName.ToLower()))
             {
-                var beamChannel = await _beamManager.GetBeamChannelByName(channelName);
                 server.ServerBeamChannels.Add(channelName.ToLower());
-                server.ServerBeamChannelIds.Add(beamChannel.id.Value.ToString());
-                await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
+                server.ServerBeamChannelIds.Add(channel.id.Value.ToString());
+                await Program.beamClient.SubscribeToLiveAnnouncements(channel.id.Value.ToString());
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
                 await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Beam streamer list.");
             }
@@ -124,38 +123,38 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
+            var beamChannel = await _beamManager.GetBeamChannelByName(channel);
+
+            if (beamChannel == null)
+            {
+                await Context.Channel.SendMessageAsync("Beam Channel " + channel + " does not exist.");
+
+                return;
+            }
+
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            var beamChannel = await _beamManager.GetBeamChannelByName(channel);
-
-            if (beamChannel == null)
+            if (server.ServerBeamChannels != null && server.ServerBeamChannels.Contains(channel.ToLower()))
             {
-                await Context.Channel.SendMessageAsync("Beam Channel " + channel + " does not exist.");
-            }
-            else
-            {
-                if (server.ServerBeamChannels.Contains(channel.ToLower()))
-                {
-                    await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Beam Channels. " +
-                        "Please remove it with '!cb beam remove " + channel + "' and then retry setting your owner channel.");
+                await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Beam Channels. " +
+                    "Please remove it with '!cb beam remove " + channel + "' and then retry setting your owner channel.");
 
-                    return;
-                }
-
-                server.OwnerBeamChannel = channel;
-                server.OwnerBeamChannelId = beamChannel.id.Value.ToString();
-                await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
-                await Context.Channel.SendMessageAsync("Owner Beam Channel has been set to " + channel + ".");
+                return;
             }
+
+            server.OwnerBeamChannel = channel;
+            server.OwnerBeamChannelId = beamChannel.id.Value.ToString();
+            await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await Context.Channel.SendMessageAsync("Owner Beam Channel has been set to " + channel + ".");
         }
 
         [Command("resetowner")]
-        public async Task ResetOwner(string channel)
+        public async Task ResetOwner()
         {
             var user = ((IGuildUser)Context.Message.Author);
 

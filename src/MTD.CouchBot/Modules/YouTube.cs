@@ -54,7 +54,7 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerYouTubeChannelIds == null)
                 server.ServerYouTubeChannelIds = new List<string>();
 
-            if (server.OwnerYouTubeChannelId.Equals(channelId))
+            if (!string.IsNullOrEmpty(server.OwnerYouTubeChannelId) && server.OwnerYouTubeChannelId.Equals(channelId))
             {
                 await Context.Channel.SendMessageAsync("The channel " + channelId + " is configured as the Owner YouTube channel. " +
                     "Please remove it with the '!cb youtube resetowner' command and then try re-adding it.");
@@ -106,7 +106,7 @@ namespace MTD.DiscordBot.Modules
         }
 
         [Command("owner")]
-        public async Task Owner(string channel)
+        public async Task Owner(string channelId)
         {
             var user = ((IGuildUser)Context.Message.Author);
 
@@ -115,16 +115,24 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            if (!channel.ToLower().StartsWith("uc") || channel.Length != 24)
+            if (!channelId.ToLower().StartsWith("uc") || channelId.Length != 24)
             {
                 await Context.Channel.SendMessageAsync("Incorrect YouTube Channel ID Provided. Channel ID's start with UC and have 24 characters.");
+                return;
+            }
+
+            var channel = await _youTubeManager.GetYouTubeChannelSnippetById(channelId);
+
+            if (channel == null || channel.items == null || channel.items.Count == 0)
+            {
+                await Context.Channel.SendMessageAsync("No channel exists with the ID " + channelId + ". You can use the command '!cb ytidlookup <QUERY>' to find the correct ID.");
                 return;
             }
 
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
             var server = new DiscordServer();
 
-            if (server.ServerYouTubeChannelIds.Contains(channel.ToLower()))
+            if (server.ServerYouTubeChannelIds != null && server.ServerYouTubeChannelIds.Contains(channelId.ToLower()))
             {
                 await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server YouTube Channels. " +
                     "Please remove it with '!cb youtube remove " + channel + "' and then retry setting your owner channel.");
@@ -132,13 +140,13 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            server.OwnerYouTubeChannelId = channel;
+            server.OwnerYouTubeChannelId = channelId;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Owner YouTube Channel ID has been set to " + channel + ".");
         }
 
         [Command("resetowner")]
-        public async Task ResetOwner(string channel)
+        public async Task ResetOwner()
         {
             var user = ((IGuildUser)Context.Message.Author);
 
