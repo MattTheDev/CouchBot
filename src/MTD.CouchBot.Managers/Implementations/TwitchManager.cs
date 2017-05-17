@@ -3,6 +3,7 @@ using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
@@ -43,5 +44,9 @@ namespace MTD.CouchBot.Managers.Implementations
             return await twitchDal.GetStreamsByIdList(list);
         }
 
+        public async Task<TwitchChannelFeed> GetChannelFeedPosts(string twitchId)
+        {
+            return await twitchDal.GetChannelFeedPosts(twitchId);
+        }
     }
 }

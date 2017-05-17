@@ -9,5 +9,6 @@ namespace MTD.CouchBot.Dals
         Task<TwitchFollowers> GetFollowersByName(string name);
         Task<string> GetTwitchIdByLogin(string name);
         Task<TwitchStreamsV5> GetStreamsByIdList(string twitchIdList);
+        Task<TwitchChannelFeed> GetChannelFeedPosts(string twitchId);
     }
 }

@@ -65,7 +65,23 @@ namespace MTD.CouchBot.Dals.Implementations
                 return null;
             }
         }
-        
+
+        public async Task<TwitchChannelFeed> GetChannelFeedPosts(string twitchId)
+        {
+            var request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/feed/" + twitchId + "/posts?limit=5&api_version=5");
+            request.Headers["Client-Id"] = "g4lzetoz0ff2zkd46mduk03myr749uc";
+            request.Accept = "application/vnd.twitchtv.v5+json";
+            var response = await request.GetResponseAsync();
+            var responseText = "";
+
+            using (var sr = new StreamReader(response.GetResponseStream()))
+            {
+                responseText = sr.ReadToEnd();
+            }
+
+            return JsonConvert.DeserializeObject<TwitchChannelFeed>(responseText);
+        }
+
         // TODO: Implement followers by ID <<----
         public async Task<TwitchFollowers> GetFollowersByName(string name)
         {

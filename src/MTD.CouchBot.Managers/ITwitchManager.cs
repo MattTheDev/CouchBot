@@ -10,5 +10,6 @@ namespace MTD.CouchBot.Managers
         Task<TwitchFollowers> GetFollowersByName(string name);
         Task<string> GetTwitchIdByLogin(string name);
         Task<TwitchStreamsV5> GetStreamsByIdList(List<string> twitchIdList);
+        Task<TwitchChannelFeed> GetChannelFeedPosts(string twitchId);
     }
 }

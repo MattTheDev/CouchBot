@@ -41,6 +41,9 @@ namespace MTD.CouchBot
         private static Timer youtubeOwnerTimer;
         private static Timer youtubePublishedTimer;
         private static Timer youtubePublishedOwnerTimer;
+        private static Timer twitchFeedTimer;
+        private static Timer twitchFeedOwnerTimer;
+
         private static Timer cleanupTimer;
         private static Timer uptimeTimer;
         private bool initialServicesRan = false;
@@ -1081,7 +1084,7 @@ namespace MTD.CouchBot
 
                         if (server.PublishedMessage == null)
                         {
-                            server.PublishedMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
+                            server.PublishedMessage = "%CHANNEL% just published a new video - %TITLE% - %URL%";
                         }
 
                         Color red = new Color(179, 18, 23);
@@ -1229,7 +1232,7 @@ namespace MTD.CouchBot
 
                     if (server.PublishedMessage == null)
                     {
-                        server.PublishedMessage = "%CHANNEL% just went live with %GAME% - %TITLE% - %URL%";
+                        server.PublishedMessage = "%CHANNEL% just published a new video - %TITLE% - %URL%";
                     }
 
                     Color red = new Color(179, 18, 23);
@@ -1295,7 +1298,7 @@ namespace MTD.CouchBot
                         Logging.LogInfo("Cleaning Up Live Files Complete.");
                     }
                 }
-            }, null, 0, 600000);
+            }, null, 0, 300000);
         }
 
         public void QueueUptimeCheckIn()
@@ -1308,7 +1311,7 @@ namespace MTD.CouchBot
                     statisticsManager.AddUptimeMinutes();
                     Logging.LogInfo("Uptime Update Complete.");
                 }
-            }, null, 0, 300000);
+            }, null, 0, 60000);
         }
 
         public void ConfigureEventHandlers()
