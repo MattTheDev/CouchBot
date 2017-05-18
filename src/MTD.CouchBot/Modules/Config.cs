@@ -100,6 +100,9 @@ namespace MTD.CouchBot.Modules
                 var ownerVod = await guild.GetChannelAsync(server.OwnerPublishedChannel);
                 var ownerVodChannel = ownerVod != null ? ownerVod.Name : "Not Set";
 
+                var ownerTwitchFeed = await guild.GetChannelAsync(server.OwnerTwitchFeedChannel);
+                var ownerTwitchFeedChannel = ownerTwitchFeed != null ? ownerTwitchFeed.Name : "Not Set";
+
                 var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
 
                 if (role == null)
@@ -109,21 +112,20 @@ namespace MTD.CouchBot.Modules
 
                 string info = "```Markdown\r\n" +
                               "# " + server.Name + " Configuration Settings\r\n" +
-                              "- Announcements Channel: " + announceChannel + "\r\n" +
+                              //"- Announcements Channel: " + announceChannel + "\r\n" + Removed for now. TODO
                               "- Owner Go Live Channel: " + ownerGoliveChannel + "\r\n" +
+                              "- Owner Published Channel: " + ownerVodChannel + "\r\n" +
+                              "- Owner Twitch Channel Feed Channel: " + ownerTwitchFeedChannel + "\r\n" +
                               "- Go Live Channel: " + goliveChannel + "\r\n" +
+                              "- Published Channel: " + vodChannel + "\r\n" +
                               "- Greetings Channel: " + greetingsChannel + "\r\n" +
-                              "- Owner Published/VOD Channel: " + ownerVodChannel + "\r\n" +
-                              "- Published/VOD Channel: " + vodChannel + "\r\n" +
-                              "- Owner Beam Channel: " + (string.IsNullOrEmpty(server.OwnerBeamChannel) ? "Not Set" : server.OwnerBeamChannel) + "\r\n" +
-                              "- Owner Smashcast Channel: " + (string.IsNullOrEmpty(server.OwnerHitboxChannel) ? "Not Set" : server.OwnerHitboxChannel) + "\r\n" +
-                              "- Owner Twitch Channel: " + (string.IsNullOrEmpty(server.OwnerTwitchChannel) ? "Not Set" : server.OwnerTwitchChannel) + "\r\n" +
-                              "- Owner YouTube Channel ID: " + (string.IsNullOrEmpty(server.OwnerYouTubeChannelId) ? "Not Set" : server.OwnerYouTubeChannelId) + "\r\n" +
-                              "- Allow @ Everyone: " + server.AllowEveryone + "\r\n" +
+                              "- Allow @ Role: " + server.AllowEveryone + "\r\n" +
                               "- Allow Thumbnails: " + server.AllowThumbnails + "\r\n" +
                               "- Allow Greetings: " + server.Greetings + "\r\n" +
                               "- Allow Goodbyes: "  + server.Goodbyes + "\r\n" +
+                              "- Allow Live Content: " + server.AllowLive + "\r\n" +
                               "- Allow VOD Content: " + server.AllowPublished + "\r\n" +
+                              "- Allow Owner Twitch Channel Feed: " + server.AllowOwnerChannelFeed + "\r\n" +
                               "- Use Text Announcements: " + server.UseTextAnnouncements + "\r\n" +
                               "- Use YTG URLS For VOD Content: " + server.UseYouTubeGamingPublished + "\r\n" +
                               "- Live Message: " + (string.IsNullOrEmpty(server.LiveMessage) ? "Default" : server.LiveMessage) + "\r\n" +

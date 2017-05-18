@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace MTD.CouchBot.Json
 {
@@ -29,6 +31,9 @@ namespace MTD.CouchBot.Json
         public bool Goodbyes { get; set; }
         public string GreetingMessage { get; set; }
         public string GoodbyeMessage { get; set; }
+
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool AllowPublished { get; set; }
         public string PublishedMessage { get; set; }
         public string LiveMessage { get; set; }
@@ -36,6 +41,8 @@ namespace MTD.CouchBot.Json
         public bool UseTextAnnouncements { get; set; }
         public bool DeleteWhenOffline { get; set; }
         public ulong MentionRole { get; set; }
+        [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool AllowLive { get; set; }
         public string OwnerBeamChannel { get; set; }
         public string OwnerBeamChannelId { get; set; }
@@ -45,7 +52,13 @@ namespace MTD.CouchBot.Json
         public string OwnerYouTubeChannelId { get; set; }
         public ulong OwnerTwitchFeedChannel { get; set; }
         public ulong TwitchFeedChannel { get; set; }
-        public bool ChannelFeed { get; set; }
-        public bool OwnerChannelFeed { get; set; }
+
+        [DefaultValue(false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        public bool AllowChannelFeed { get; set; }
+
+        [DefaultValue(false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        public bool AllowOwnerChannelFeed { get; set; }
     }
 }

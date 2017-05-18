@@ -174,7 +174,7 @@ namespace MTD.CouchBot.Bot
 
         public static async Task<BroadcastMessage> BuildMessage(string channel, 
             string gameName, string title, string url, string avatarUrl, string thumbnailUrl, string platform, 
-            string channelId, DiscordServer server)
+            string channelId, DiscordServer server, ulong discordChannelId)
         {
             EmbedBuilder embed = new EmbedBuilder();
             EmbedAuthorBuilder author = new EmbedAuthorBuilder();
@@ -251,7 +251,7 @@ namespace MTD.CouchBot.Bot
             var broadcastMessage = new BroadcastMessage()
             {
                 GuildId = server.Id,
-                ChannelId = server.GoLiveChannel,
+                ChannelId = discordChannelId,
                 UserId = channelId,
                 Message = message,
                 Platform = platform,

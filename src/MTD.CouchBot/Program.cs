@@ -42,7 +42,7 @@ namespace MTD.CouchBot
         private static Timer youtubePublishedTimer;
         private static Timer youtubePublishedOwnerTimer;
         private static Timer twitchFeedTimer;
-        private static Timer twitchFeedOwnerTimer;
+        private static Timer twitchOwnerFeedTimer;
 
         private static Timer cleanupTimer;
         private static Timer uptimeTimer;
@@ -253,7 +253,26 @@ namespace MTD.CouchBot
                 await CheckOwnerTwitchLive();
                 sw.Stop();
                 Logging.LogTwitch("Owner Twitch Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-                initialServicesRan = true;
+            }, null, 0, 120000);
+
+            twitchFeedTimer = new Timer(async (e) =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Logging.LogTwitch("Checking Twitch Channel Feeds.");
+                await CheckTwitchChannelFeeds();
+                sw.Stop();
+                Logging.LogTwitch("Twitch Channel Feed Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+            }, null, 0, 120000);
+
+            twitchOwnerFeedTimer = new Timer(async (e) =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Logging.LogTwitch("Checking Owner Twitch Channel Feeds.");
+                await CheckTwitchOwnerChannelFeeds();
+                sw.Stop();
+                Logging.LogTwitch("Owner Twitch Channel Feed Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 120000);
         }
 
@@ -443,7 +462,7 @@ namespace MTD.CouchBot
                                     Logging.LogTwitch(channelName + " has gone online.");
 
                                     var message = await MessagingHelper.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
-                                        thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server);
+                                        thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel);
 
                                     var finalCheck = BotFiles.GetCurrentlyLiveTwitchChannels().FirstOrDefault(x => x.Name == stream.channel._id.ToString());
 
@@ -548,7 +567,7 @@ namespace MTD.CouchBot
                                 Logging.LogTwitch(channelName + " has gone online.");
 
                                 var message = await MessagingHelper.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
-                                    thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server);
+                                    thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.OwnerLiveChannel);
 
                                 var finalCheck = BotFiles.GetCurrentlyLiveTwitchChannels().FirstOrDefault(x => x.Name == stream.channel._id.ToString());
 
@@ -563,6 +582,73 @@ namespace MTD.CouchBot
                                         JsonConvert.SerializeObject(channel));
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task CheckTwitchChannelFeeds()
+        {
+            // Nothing.
+        }
+
+        public async Task CheckTwitchOwnerChannelFeeds()
+        {
+            var servers = BotFiles.GetConfiguredServers();
+
+            // Loop through servers to broadcast.
+            foreach (var server in servers)
+            {
+                if (!server.AllowOwnerChannelFeed)
+                {
+                    continue;
+                }
+
+                if (server.Id != 0 && server.OwnerTwitchFeedChannel != 0 &&
+                    !string.IsNullOrEmpty(server.OwnerTwitchChannel) && !string.IsNullOrEmpty(server.OwnerTwitchChannelId))
+                {
+                    TwitchChannelFeed feed = null;
+
+                    try
+                    {
+                        feed = await twitchManager.GetChannelFeedPosts(server.OwnerTwitchChannelId);
+                    }
+                    catch (Exception wex)
+                    {
+                        Logging.LogError("Twitch Server Error: " + wex.Message + " in Discord Server Id: " + server.Id);
+                        continue;
+                    }
+
+                    if (feed == null || feed.posts == null || feed.posts.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    var chat = await DiscordHelper.GetMessageChannel(server.Id, server.OwnerTwitchFeedChannel);
+
+                    if (chat == null)
+                    {
+                        continue;
+                    }
+
+                    foreach(var post in feed.posts)
+                    {
+                        DateTime now = DateTime.UtcNow;
+                        DateTime created = DateTime.Parse(post.created_at).ToUniversalTime();
+                        TimeSpan diff = now - created;
+
+
+
+                        if (diff.Minutes <= 2)
+                        {
+                            string message = "**[New Channel Feed Update - " + created.AddHours(server.TimeZoneOffset).ToString("MM/dd/yyyy hh:mm tt") + "]**\r\n" +
+                                post.body + "\r\n\r\n" +
+                                "<https://twitch.tv/" + server.OwnerTwitchChannel + "/p/" + post.id + ">";
+
+                            await chat.SendMessageAsync(message);
+
+                            Logging.LogTwitch(server.OwnerTwitchChannel + " posted a new channel feed message.");
                         }
                     }
                 }
@@ -656,7 +742,7 @@ namespace MTD.CouchBot
                                         Logging.LogYouTubeGaming(channelTitle + " has gone online.");
 
                                         var message = await MessagingHelper.BuildMessage(channelTitle, "a game", stream.snippet.title, url, avatarUrl, thumbnailUrl,
-                                            Constants.YouTubeGaming, youtubeChannelId, server);
+                                            Constants.YouTubeGaming, youtubeChannelId, server, server.GoLiveChannel);
 
                                         var finalCheck = BotFiles.GetCurrentlyLiveYouTubeChannels().FirstOrDefault(x => x.Name == youtubeChannelId);
 
@@ -764,7 +850,7 @@ namespace MTD.CouchBot
                                     Logging.LogYouTubeGaming(channelTitle + " has gone online.");
 
                                     var message = await MessagingHelper.BuildMessage(channelTitle, "a game", stream.snippet.title, url, avatarUrl, thumbnailUrl,
-                                        Constants.YouTubeGaming, server.OwnerYouTubeChannelId, server);
+                                        Constants.YouTubeGaming, server.OwnerYouTubeChannelId, server, server.OwnerLiveChannel);
 
                                     var finalCheck = BotFiles.GetCurrentlyLiveYouTubeChannels().FirstOrDefault(x => x.Name == server.OwnerYouTubeChannelId);
 
@@ -869,7 +955,7 @@ namespace MTD.CouchBot
                                             var message = await MessagingHelper.BuildMessage(
                                                 hitboxChannel, gameName, stream.livestream[0].media_status, url, "http://edge.sf.hitbox.tv" +
                                                 stream.livestream[0].channel.user_logo, "http://edge.sf.hitbox.tv" +
-                                                stream.livestream[0].media_thumbnail_large, Constants.Smashcast, hitboxChannel, server);
+                                                stream.livestream[0].media_thumbnail_large, Constants.Smashcast, hitboxChannel, server, server.GoLiveChannel);
 
                                             var finalCheck = BotFiles.GetCurrentlyLiveHitboxChannels().FirstOrDefault(x => x.Name == hitboxChannel);
 
@@ -973,7 +1059,7 @@ namespace MTD.CouchBot
                                         var message = await MessagingHelper.BuildMessage(
                                             server.OwnerHitboxChannel, gameName, stream.livestream[0].media_status, url, "http://edge.sf.hitbox.tv" +
                                             stream.livestream[0].channel.user_logo, "http://edge.sf.hitbox.tv" +
-                                            stream.livestream[0].media_thumbnail_large, Constants.Smashcast, server.OwnerHitboxChannel, server);
+                                            stream.livestream[0].media_thumbnail_large, Constants.Smashcast, server.OwnerHitboxChannel, server, server.OwnerLiveChannel);
 
                                         var finalCheck = BotFiles.GetCurrentlyLiveHitboxChannels().FirstOrDefault(x => x.Name == server.OwnerHitboxChannel);
 

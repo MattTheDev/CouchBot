@@ -60,7 +60,7 @@ namespace MTD.CouchBot.Bot
                         string channelId = stream.id.Value.ToString();
 
                         messages.Add(await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url, avatarUrl, thumbnailUrl,
-                            Constants.Beam, channelId, server));
+                            Constants.Beam, channelId, server, server.GoLiveChannel));
                     }
                 }
             }

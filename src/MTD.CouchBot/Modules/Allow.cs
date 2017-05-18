@@ -181,7 +181,7 @@ namespace MTD.CouchBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            server.ChannelFeed = bool.Parse(trueFalse);
+            server.AllowChannelFeed = bool.Parse(trueFalse);
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Allow channel feed has been set to: " + trueFalse);
         }
@@ -210,7 +210,7 @@ namespace MTD.CouchBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            server.OwnerChannelFeed = bool.Parse(trueFalse);
+            server.AllowOwnerChannelFeed = bool.Parse(trueFalse);
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Allow owner channel feed has been set to: " + trueFalse);
         }
