@@ -23,6 +23,7 @@ namespace MTD.CouchBot.Bot
             var servers = BotFiles.GetConfiguredServers();
 
             var beamServers = new List<DiscordServer>();
+            var ownerBeamServers = new List<DiscordServer>();
             var userSharedServers = new List<DiscordServer>();
 
             foreach(var server in servers)
@@ -38,6 +39,14 @@ namespace MTD.CouchBot.Bot
                                 beamServers.Add(server);
                             }
                         }
+                    }
+                }
+
+                if(!string.IsNullOrEmpty(server.OwnerBeamChannelId) && server.OwnerBeamChannelId.Equals(beamId))
+                {
+                    if(server.OwnerLiveChannel != 0)
+                    {
+                        ownerBeamServers.Add(server);
                     }
                 }
             }
@@ -61,6 +70,25 @@ namespace MTD.CouchBot.Bot
 
                         messages.Add(await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url, avatarUrl, thumbnailUrl,
                             Constants.Beam, channelId, server, server.GoLiveChannel));
+                    }
+                }
+            }
+
+            foreach(var server in ownerBeamServers)
+            {
+                if (server.OwnerLiveChannel != 0 && server.Id != 0)
+                {
+                    if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
+                    {
+                        var stream = await beamManager.GetBeamChannelByName(beamId);
+                        string gameName = stream.type == null ? "a game" : stream.type.name;
+                        string url = "http://beam.pro/" + stream.token;
+                        string avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
+                        string thumbnailUrl = "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg";
+                        string channelId = stream.id.Value.ToString();
+
+                        messages.Add(await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url, avatarUrl, thumbnailUrl,
+                            Constants.Beam, channelId, server, server.OwnerLiveChannel));
                     }
                 }
             }

@@ -1545,7 +1545,7 @@ namespace MTD.CouchBot
 
                         if (liveStream == null || liveStream.stream == null)
                         {
-                            //await CleanupMessages(stream.ChannelMessages);
+                            await CleanupMessages(stream.ChannelMessages);
 
                             File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream.Name + ".json");
                         }
@@ -1581,7 +1581,7 @@ namespace MTD.CouchBot
                         {
                             var file = Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + stream.Name + ".json";
 
-                            //await CleanupMessages(stream.ChannelMessages);
+                            await CleanupMessages(stream.ChannelMessages);
 
                             File.Delete(file);
                         }
@@ -1615,7 +1615,7 @@ namespace MTD.CouchBot
 
                         if (liveStream == null || liveStream.livestream == null || liveStream.livestream.Count < 1 || liveStream.livestream[0].media_is_live == "0")
                         {
-                            //await CleanupMessages(stream.ChannelMessages);
+                            await CleanupMessages(stream.ChannelMessages);
 
                             File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + stream.Name + ".json");
                         }
@@ -1633,18 +1633,21 @@ namespace MTD.CouchBot
         {
             if (channelMessages != null && channelMessages.Count > 0)
             {
-                foreach (var channelMessage in channelMessages)
+                foreach (var message in channelMessages)
                 {
-                    if (!channelMessage.DeleteOffline)
-                    {
-                        continue;
-                    }
+                    var serverFile = BotFiles.GetConfiguredServers().FirstOrDefault(x => x.Id == message.GuildId);
 
-                    var messageChannel = await DiscordHelper.GetMessageChannel(channelMessage.GuildId, channelMessage.ChannelId);
-                    var message = await messageChannel.GetMessageAsync(channelMessage.MessageId);
-                    IList<IMessage> msgs = new List<IMessage>();
-                    msgs.Add(message);
-                    await messageChannel.DeleteMessagesAsync(msgs);
+                    if (serverFile == null)
+                        continue;
+
+                    if (serverFile.DeleteWhenOffline)
+                    {
+                        await DiscordHelper.DeleteMessage(message.GuildId, message.ChannelId, message.MessageId);
+                    }
+                    else
+                    {
+                        await DiscordHelper.SetOfflineStream(message.GuildId, message.ChannelId, message.MessageId);
+                    }
                 }
             }
         }
