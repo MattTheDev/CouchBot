@@ -132,6 +132,12 @@ namespace MTD.DiscordBot.Modules
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
             var server = new DiscordServer();
 
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            if (server.Id == 0)
+                return;
+
             if (server.ServerYouTubeChannelIds != null && server.ServerYouTubeChannelIds.Contains(channelId.ToLower()))
             {
                 await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server YouTube Channels. " +
@@ -142,7 +148,7 @@ namespace MTD.DiscordBot.Modules
 
             server.OwnerYouTubeChannelId = channelId;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Owner YouTube Channel ID has been set to " + channel + ".");
+            await Context.Channel.SendMessageAsync("Owner YouTube Channel ID has been set to " + channelId + ".");
         }
 
         [Command("resetowner")]
