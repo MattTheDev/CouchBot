@@ -62,7 +62,7 @@ namespace MTD.CouchBot
         {
             Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
 
-            Logging.LogInfo("Starting CouchBot.");
+            Logging.LogInfo("Starting " + Constants.BotName + ".");
             Logging.LogInfo("Initializing Managers.");
 
             statisticsManager = new StatisticsManager();
