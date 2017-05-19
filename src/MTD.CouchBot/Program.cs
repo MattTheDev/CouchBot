@@ -151,7 +151,6 @@ namespace MTD.CouchBot
             var count = 0;
             beamClient = new BeamClient();
 
-            Logging.LogBeam("Staritng Beam Resubscription.");
             Logging.LogBeam("Getting Server Files.");
 
             var servers = BotFiles.GetConfiguredServers().Where(x => x.ServerBeamChannelIds != null && x.ServerBeamChannelIds.Count > 0);
@@ -184,7 +183,6 @@ namespace MTD.CouchBot
 
             sw.Stop();
             Logging.LogBeam("Subscription Loop Complete. Processed " + count + " channels in " + sw.ElapsedMilliseconds + " milliseconds.");
-            Logging.LogBeam("Beam Resubscription Complete - All Set.");
         }
 
         public void QueueBeamClientCheck()
@@ -1097,7 +1095,7 @@ namespace MTD.CouchBot
                 }
 
                 // If server isnt set or published channel isnt set, skip it.
-                if (server.Id == 0 || server.OwnerPublishedChannel == 0)
+                if (server.Id == 0 || server.PublishedChannel == 0)
                 {
                     continue;
                 }
@@ -1108,7 +1106,7 @@ namespace MTD.CouchBot
                     continue;
                 }
 
-                var chat = await DiscordHelper.GetMessageChannel(server.Id, server.OwnerPublishedChannel);
+                var chat = await DiscordHelper.GetMessageChannel(server.Id, server.PublishedChannel);
 
                 if (chat == null)
                 {
@@ -1175,7 +1173,7 @@ namespace MTD.CouchBot
 
                         Color red = new Color(179, 18, 23);
                         author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                        author.Name = "CouchBot";
+                        author.Name = Constants.BotName;
                         author.Url = url;
                         footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                         footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
@@ -1220,7 +1218,7 @@ namespace MTD.CouchBot
                             await SendMessage(new BroadcastMessage()
                             {
                                 GuildId = server.Id,
-                                ChannelId = server.OwnerPublishedChannel,
+                                ChannelId = server.PublishedChannel,
                                 UserId = user,
                                 Message = message,
                                 Platform = Constants.YouTube,
