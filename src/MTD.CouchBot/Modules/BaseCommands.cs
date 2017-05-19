@@ -212,7 +212,7 @@ namespace MTD.CouchBot.Modules
                           "- doradus\r\n" + 
                           "- ChunkyLover539\r\n" + 
                           "- Fire0x\r\n" +
-                          "- Victor\r\n" + 
+                          "- Ironside\r\n" + 
                           "- Saphrym\r\n" +
                           "- Your Name Could Be Here. Visit <http://patreon.com/dawgeth> today <3" +
                           "- Want to be a 1 time supporter? <http://paypal.me/dawgeth>" +

@@ -1173,7 +1173,7 @@ namespace MTD.CouchBot
 
                         Color red = new Color(179, 18, 23);
                         author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                        author.Name = Constants.BotName;
+                        author.Name = Program.client.CurrentUser.Username;
                         author.Url = url;
                         footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                         footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
