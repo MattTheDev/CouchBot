@@ -25,7 +25,7 @@ namespace MTD.DiscordBot.Modules
         [Command("status")]
         public async Task Status()
         {
-            await Context.Channel.SendMessageAsync("Current CouchBot Beam Constellation Connection Status: " + Program.beamClient.Status());
+            await Context.Channel.SendMessageAsync("Current " + Program.client.CurrentUser.Username + " Beam Constellation Connection Status: " + Program.beamClient.Status());
         }
 
         [Command("add")]

@@ -62,7 +62,7 @@ namespace MTD.CouchBot
         {
             Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
 
-            Logging.LogInfo("Starting " + Constants.BotName + ".");
+            Logging.LogInfo("Starting " + client.CurrentUser.Username + ".");
             Logging.LogInfo("Initializing Managers.");
 
             statisticsManager = new StatisticsManager();
@@ -335,7 +335,7 @@ namespace MTD.CouchBot
                     {
                         try
                         {
-                            await chat.SendMessageAsync("**[CouchBot]** " + message);
+                            await chat.SendMessageAsync("**[" + Program.client.CurrentUser.Username + "]** " + message);
                         }
                         catch (Exception ex)
                         {
@@ -1321,7 +1321,7 @@ namespace MTD.CouchBot
 
                     Color red = new Color(179, 18, 23);
                     author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                    author.Name = "CouchBot";
+                    author.Name = Program.client.CurrentUser.Username;
                     author.Url = url;
                     footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                     footer.IconUrl = "http://couchbot.io/img/ytg.jpg";

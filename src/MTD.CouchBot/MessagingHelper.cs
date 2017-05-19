@@ -38,7 +38,7 @@ namespace MTD.CouchBot.Bot
 
             Color red = new Color(179, 18, 23);
             author.IconUrl = user.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-            author.Name = "CouchBot";
+            author.Name = Program.client.CurrentUser.Username;
             author.Url = url;
             footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
             footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
@@ -130,7 +130,7 @@ namespace MTD.CouchBot.Bot
             }
 
             author.IconUrl = (user.GetAvatarUrl() != null ? user.GetAvatarUrl() : "http://couchbot.io/img/bot/discord.png") + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-            author.Name = "CouchBot";
+            author.Name = Program.client.CurrentUser.Username;
             author.Url = url;
             embed.Author = author;
             embed.Color = color;
@@ -186,7 +186,7 @@ namespace MTD.CouchBot.Bot
             }
 
             author.IconUrl = Program.client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-            author.Name = "CouchBot";
+            author.Name = Program.client.CurrentUser.Username;
             author.Url = url;
             footer.Text = "[" + platform + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
             embed.Author = author;

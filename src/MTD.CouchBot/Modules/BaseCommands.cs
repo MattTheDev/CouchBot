@@ -72,7 +72,7 @@ namespace MTD.CouchBot.Modules
             }
 
             string info = "```Markdown\r\n" +
-                          "# CouchBot v1.0\r\n" +
+                          "# " + Program.client.CurrentUser.Username + "\r\n" +
                           "- Guilds: " + serverFiles.Length + "\r\n" +
                           "- Users: " + userFiles.Length + "\r\n" +
                           "Platforms: \r\n" +
@@ -133,7 +133,7 @@ namespace MTD.CouchBot.Modules
             }
 
             string info = "```Markdown\r\n" +
-                          "# CouchBot v1.0\r\n" +
+                          "# " + Program.client.CurrentUser.Username + "\r\n" +
                           "- Joined Guilds: " + serverFiles.Length + "\r\n" +
                           "- Servers Announcing Livestreams: " + serversUsingGoLive.Count + "\r\n" +
                           "- Servers Announcing Announcements: " + serversUsingAnnouncements.Count + "\r\n" +
@@ -148,8 +148,8 @@ namespace MTD.CouchBot.Modules
         [Command("help"), Summary("Provides a link to the CouchBot Website.")]
         public async Task Help()
         {
-            string info = "```Markdown\r\n" + 
-                          "#CouchBot v2.0 Help\r\n\r\n" + 
+            string info = "```Markdown\r\n" +
+                          "#" + Program.client.CurrentUser.Username + "Help\r\n\r\n" + 
                           "We've got so many commands, we needed to move all of them to our website, http://couchbot.io!\r\n\r\n" +
                           "If you need any further help, join us on our Discord Server, http://discord.couchbot.io. Thanks!!\r\n" +
                           "```\r\n";
@@ -203,8 +203,8 @@ namespace MTD.CouchBot.Modules
         public async Task Supporters()
         {
             string info = "```Markdown\r\n" +
-                          "# CouchBot Supporters\r\n" +
-                          "I wanted to create a place to show my thanks to everyone that supports the development and growth of CouchBot, whether it be via <http://patreon.com/dawgeth>, or " +
+                          "# " + Program.client.CurrentUser.Username + " Supporters\r\n" +
+                          "I wanted to create a place to show my thanks to everyone that supports the development and growth of " + Program.client.CurrentUser.Username + ", whether it be via <http://patreon.com/dawgeth>, or " +
                           "just in it's use. Thanks to all those out there that have used it, provided feedback, found bugs, and supported me through Patreon.\r\n\r\n" +
                           "Patron List:\r\n" + 
                           "- GreatOrator\r\n" +
@@ -280,7 +280,7 @@ namespace MTD.CouchBot.Modules
                 foreach (var channel in channels.items)
                 {
                     channelInfo += "\r\n" +
-                        "Id (User This for CouchBot Settings): " + channel.snippet.channelId + "\r\n" +
+                        "Id (User This for " + Program.client.CurrentUser.Username + " Settings): " + channel.snippet.channelId + "\r\n" +
                         "Channel Name: " + channel.snippet.channelTitle + "\r\n" +
                         "Description: " + channel.snippet.description + "\r\n";
                 }
@@ -298,7 +298,7 @@ namespace MTD.CouchBot.Modules
             var channelPermissions = botUser.GetPermissions(channel);
 
             string info = "```Markdown\r\n" +
-              "# CouchBot Permissions in " + botUser.Username + "\r\n" +
+              "# " + Program.client.CurrentUser.Username + " Permissions in " + botUser.Username + "\r\n" +
               "- Add Reactions: " + channelPermissions.AddReactions + "\r\n" +
               "- Attach Files: " + channelPermissions.AttachFiles + "\r\n" +
               "- Connect: " + channelPermissions.Connect + "\r\n" +

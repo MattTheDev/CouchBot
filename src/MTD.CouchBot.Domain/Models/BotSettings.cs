@@ -1,8 +1,7 @@
 ﻿namespace MTD.CouchBot.Domain.Models
 {
     public class BotSettings
-    {
-        public string BotName { get; set; }
+    { 
         public string DiscordToken { get; set; }
         public string TwitchClientId { get; set; }
         public string YouTubeApiKey { get; set; }
