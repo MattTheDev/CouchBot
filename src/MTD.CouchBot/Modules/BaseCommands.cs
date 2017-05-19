@@ -202,21 +202,22 @@ namespace MTD.CouchBot.Modules
         [Command("supporters"), Summary("Get Supporter Information")]
         public async Task Supporters()
         {
+            var supporters = (File.ReadAllText(Constants.ConfigRootDirectory + "Supporters.txt")).Split(',');
+
             string info = "```Markdown\r\n" +
                           "# " + Program.client.CurrentUser.Username + " Supporters\r\n" +
                           "I wanted to create a place to show my thanks to everyone that supports the development and growth of " + Program.client.CurrentUser.Username + ", whether it be via <http://patreon.com/dawgeth>, or " +
                           "just in it's use. Thanks to all those out there that have used it, provided feedback, found bugs, and supported me through Patreon.\r\n\r\n" +
-                          "Patron List:\r\n" + 
-                          "- GreatOrator\r\n" +
-                          "- iopred\r\n" + 
-                          "- doradus\r\n" + 
-                          "- ChunkyLover539\r\n" + 
-                          "- Fire0x\r\n" +
-                          "- Ironside\r\n" + 
-                          "- Saphrym\r\n" +
-                          "- Your Name Could Be Here. Visit <http://patreon.com/dawgeth> today <3" +
-                          "- Want to be a 1 time supporter? <http://paypal.me/dawgeth>" +
-                          "```\r\n";
+                          "Patron List:\r\n";
+
+            foreach(var s in supporters)
+            {
+                info += "- " + s + "\r\n";
+            }
+
+            info +=  "- Your Name Could Be Here. Visit <http://patreon.com/dawgeth> today <3" +
+                     "- Want to be a 1 time supporter? <http://paypal.me/dawgeth>" +
+                     "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);
         }
