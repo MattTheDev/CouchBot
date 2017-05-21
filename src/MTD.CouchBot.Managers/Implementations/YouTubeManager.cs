@@ -2,6 +2,7 @@
 using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models;
 using System.Threading.Tasks;
+using System;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
@@ -17,6 +18,11 @@ namespace MTD.CouchBot.Managers.Implementations
         public async Task<YouTubeChannelStatistics> GetChannelStatisticsById(string id)
         {
             return await youtubeDal.GetChannelStatisticsById(id);
+        }
+
+        public async Task<YouTubeChannelUpcomingEvents> GetChannelUpcomingEventsAsync(string channelId)
+        {
+            return await youtubeDal.GetChannelUpcomingEvents(channelId);
         }
 
         public async Task<YouTubeChannelContentDetails> GetContentDetailsByChannelId(string channelId)
