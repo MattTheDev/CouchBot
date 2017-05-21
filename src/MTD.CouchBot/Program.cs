@@ -644,7 +644,14 @@ namespace MTD.CouchBot
                                 post.body + "\r\n\r\n" +
                                 "<https://twitch.tv/" + server.OwnerTwitchChannel + "/p/" + post.id + ">";
 
-                            await chat.SendMessageAsync(message);
+                            try
+                            {
+                                await chat.SendMessageAsync(message);
+                            }
+                            catch(Exception wex)
+                            {
+                                Logging.LogError("Twitch Channel Feed Error: " + wex.Message + " for user: " + server.OwnerTwitchChannel + " in server: " + server.Id);
+                            }
 
                             Logging.LogTwitch(server.OwnerTwitchChannel + " posted a new channel feed message.");
                         }
