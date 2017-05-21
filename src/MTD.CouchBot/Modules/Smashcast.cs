@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
@@ -156,6 +157,48 @@ namespace MTD.DiscordBot.Modules
             server.OwnerHitboxChannel = null;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Owner Smashcast Channel has been reset.");
+        }
+
+        [Command("announce")]
+        public async Task Announce(string channelName)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            var stream = await _smashcastManager.GetChannelByName(channelName);
+
+            if (stream == null)
+            {
+                await Context.Channel.SendMessageAsync(channelName + " doesn't exist on Smashcast.");
+
+                return;
+            }
+
+            if (stream.livestream[0].media_is_live == "1")
+            {
+                string gameName = stream.livestream[0].category_name == null ? "a game" : stream.livestream[0].category_name;
+                string url = "http://smashcast.tv/" + channelName;
+                string avatarUrl = "http://edge.sf.hitbox.tv" + stream.livestream[0].channel.user_logo;
+                string thumbnailUrl = "http://edge.sf.hitbox.tv" + stream.livestream[0].media_thumbnail_large;
+
+                var message = await MessagingHelper.BuildMessage(channelName, gameName, stream.livestream[0].media_status,
+                    url, avatarUrl, thumbnailUrl, Constants.Smashcast, channelName, server, server.GoLiveChannel);
+                await MessagingHelper.SendMessages(Constants.Beam, new List<CouchBot.Models.BroadcastMessage>() { message });
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync(channelName + " is offline.");
+            }
         }
     }
 }

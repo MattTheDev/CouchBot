@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
@@ -168,6 +169,51 @@ namespace MTD.DiscordBot.Modules
             server.OwnerTwitchChannelId = null;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Owner Twitch Channel has been reset.");
+        }
+
+        [Command("announce")]
+        public async Task Announce(string channelName)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            var twitchId = await _twitchManager.GetTwitchIdByLogin(channelName);
+
+            if (!string.IsNullOrEmpty(twitchId) && twitchId == "0")
+            {
+                await Context.Channel.SendMessageAsync(channelName + " doesn't exist on Twitch.");
+
+                return;
+            }
+
+            var streamResponse = await _twitchManager.GetStreamById(twitchId);
+            var stream = streamResponse.stream;
+
+            if (stream == null)
+            {
+                await Context.Channel.SendMessageAsync(channelName + " isn't online.");
+
+                return;
+            }
+            
+            string url = stream.channel.url;
+            string name = stream.channel.display_name.Replace("_", "").Replace("*", "");
+            string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
+            string thumbnailUrl = stream.preview.large;
+
+            var message = await MessagingHelper.BuildMessage(name, stream.game, stream.channel.status, url, avatarUrl,
+                                                    thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel);
+            await MessagingHelper.SendMessages(Constants.Beam, new List<CouchBot.Models.BroadcastMessage>() { message });
         }
     }
 }

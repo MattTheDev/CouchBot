@@ -63,7 +63,7 @@ namespace MTD.CouchBot.Dals.Implementations
         public void AddUptimeMinutes()
         {
             var stats = GetBotStats();
-            stats.UptimeMinutes += 5;
+            stats.UptimeMinutes += 1;
             SaveBotStats(stats);
         }
 
