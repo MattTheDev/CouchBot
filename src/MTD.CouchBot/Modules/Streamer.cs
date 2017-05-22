@@ -119,7 +119,7 @@ namespace MTD.CouchBot.Modules
               "- Owner Beam: " + (string.IsNullOrEmpty(guildObject.OwnerBeamChannel) ? "Not Set" : guildObject.OwnerBeamChannel) + "\r\n" +
               "- Owner Smashcast: " + (string.IsNullOrEmpty(guildObject.OwnerHitboxChannel) ? "Not Set" : guildObject.OwnerHitboxChannel) + "\r\n" +
               "- Owner Twitch: " + (string.IsNullOrEmpty(guildObject.OwnerTwitchChannel) ? "Not Set" : guildObject.OwnerTwitchChannel) + "\r\n" +
-              "- Owner YouTube: " + (string.IsNullOrEmpty(guildObject.OwnerYouTubeChannelId) ? "Not Set" : (await youtubeManager.GetYouTubeChannelSnippetById(guildObject.OwnerYouTubeChannelId)).items[0].snippet.title) + "\r\n" +
+              "- Owner YouTube: " + (string.IsNullOrEmpty(guildObject.OwnerYouTubeChannelId) ? "Not Set" : (await youtubeManager.GetYouTubeChannelSnippetById(guildObject.OwnerYouTubeChannelId)).items[0].snippet.title) + "(" + guildObject.OwnerYouTubeChannelId + ")\r\n" +
               "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);
