@@ -106,7 +106,7 @@ namespace MTD.CouchBot.Dals.Implementations
             using (StreamReader streamReader = new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()))
                 str = streamReader.ReadToEnd();
 
-            return JsonConvert.DeserializeObject<YouTubeChannelSnippet>(str);
+            return JsonConvert.DeserializeObject<YouTubeChannelUpcomingEvents>(str);
         }
     }
 }
