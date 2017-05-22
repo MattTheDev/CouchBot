@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using MTD.CouchBot;
+using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
@@ -173,6 +174,49 @@ namespace MTD.DiscordBot.Modules
             server.OwnerBeamChannelId = null;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Owner Beam Channel has been reset.");
+        }
+
+        [Command("announce")]
+        public async Task Announce(string channelName)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            var stream = await _beamManager.GetBeamChannelByName(channelName);
+
+            if (stream == null)
+            {
+                await Context.Channel.SendMessageAsync(channelName + " doesn't exist on Beam.");
+
+                return;
+            }
+
+            if (stream.online)
+            {
+                string gameName = stream.type == null ? "a game" : stream.type.name;
+                string url = "http://beam.pro/" + stream.token;
+                string avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
+                string thumbnailUrl = "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg";
+                string channelId = stream.id.Value.ToString();
+
+                var message = await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url,
+                    avatarUrl, thumbnailUrl, Constants.Beam, channelId, server, server.GoLiveChannel);
+                await MessagingHelper.SendMessages(Constants.Beam, new List<CouchBot.Models.BroadcastMessage>() { message });
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync(channelName + " is offline.");
+            }
         }
     }
 }

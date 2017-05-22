@@ -647,12 +647,13 @@ namespace MTD.CouchBot
                             try
                             {
                                 await chat.SendMessageAsync(message);
-                                Logging.LogTwitch(server.OwnerTwitchChannel + " posted a new channel feed message.");
                             }
-                            catch (Exception ex)
+                            catch(Exception wex)
                             {
-                                Logging.LogError("Send Message Error: " + ex.Message + " in server " + server.Id);
+                                Logging.LogError("Twitch Channel Feed Error: " + wex.Message + " for user: " + server.OwnerTwitchChannel + " in server: " + server.Id);
                             }
+
+                            Logging.LogTwitch(server.OwnerTwitchChannel + " posted a new channel feed message.");
                         }
                     }
                 }

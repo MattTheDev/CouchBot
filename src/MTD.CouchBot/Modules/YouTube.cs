@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
@@ -170,6 +171,44 @@ namespace MTD.DiscordBot.Modules
             server.OwnerYouTubeChannelId = null;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
             await Context.Channel.SendMessageAsync("Owner YouTube Channel ID has been reset.");
+        }
+
+        [Command("announce")]
+        public async Task Announce(string videoId)
+        {
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            var videoResponse = await _youTubeManager.GetVideoById(videoId);
+
+            if (videoResponse == null || videoResponse.items == null || videoResponse.items.Count == 0)
+            {
+                await Context.Channel.SendMessageAsync("A video with the ID " + videoId + " doesn't exist on YouTube.");
+
+                return;
+            }
+
+            var video = videoResponse.items[0];
+            var channelData = await _youTubeManager.GetYouTubeChannelSnippetById(video.snippet.channelId);
+
+            string url = "http://" + (server.UseYouTubeGamingPublished ? "gaming" : "www") + ".youtube.com/watch?v=" + videoId;
+            string channelTitle = video.snippet.channelTitle;
+            string avatarUrl = channelData.items.Count > 0 ? channelData.items[0].snippet.thumbnails.high.url : "";
+            string thumbnailUrl = video.snippet.thumbnails.high.url;
+
+            var message = await MessagingHelper.BuildMessage(channelTitle, "a game", video.snippet.title, url, avatarUrl, thumbnailUrl,
+                Constants.YouTubeGaming, video.snippet.channelId, server, server.GoLiveChannel);
+            await MessagingHelper.SendMessages(Constants.Beam, new List<CouchBot.Models.BroadcastMessage>() { message });
         }
     }
 }

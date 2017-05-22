@@ -94,5 +94,19 @@ namespace MTD.CouchBot.Dals.Implementations
 
             return JsonConvert.DeserializeObject<YouTubeChannelSnippet>(str);
         }
+
+        public async Task<YouTubeChannelUpcomingEvents> GetChannelUpcomingEvents(string channelId)
+        {
+            var webRequest = (HttpWebRequest)WebRequest.Create(
+                            "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=" + channelId +
+                            "&type=video&eventType=upcoming&maxResults=25&key=" + Constants.YouTubeApiKey);
+            webRequest.ContentType = "application/json; charset=utf-8";
+            string str = "";
+
+            using (StreamReader streamReader = new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()))
+                str = streamReader.ReadToEnd();
+
+            return JsonConvert.DeserializeObject<YouTubeChannelSnippet>(str);
+        }
     }
 }
