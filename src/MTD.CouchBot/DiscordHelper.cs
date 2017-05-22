@@ -83,7 +83,7 @@ namespace MTD.CouchBot.Bot
             }
         }
 
-        public static async Task SetOfflineStream(ulong guildId, ulong channelId, ulong messageId)
+        public static async Task SetOfflineStream(ulong guildId, string offlineMessage, ulong channelId, ulong messageId)
         {
             IGuild guild = null;
             IMessageChannel channel = null;
@@ -98,7 +98,7 @@ namespace MTD.CouchBot.Bot
                     {
                         channel = (IMessageChannel)await guild.GetChannelAsync(channelId);
                         var message = (IUserMessage) await channel.GetMessageAsync(messageId);
-                        await message.ModifyAsync(m => m.Content += "This stream is now offline.");
+                        await message.ModifyAsync(m => m.Content += offlineMessage);
                     }
                     catch (Exception ex)
                     {

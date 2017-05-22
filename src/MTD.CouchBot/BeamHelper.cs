@@ -134,7 +134,7 @@ namespace MTD.CouchBot.Bot
                 }
                 else
                 {
-                    await DiscordHelper.SetOfflineStream(message.GuildId, message.ChannelId, message.MessageId);
+                    await DiscordHelper.SetOfflineStream(message.GuildId, serverFile.StreamOfflineMessage, message.ChannelId, message.MessageId);
                 }
 
                 BotFiles.DeleteLiveBeamChannel(beamId);

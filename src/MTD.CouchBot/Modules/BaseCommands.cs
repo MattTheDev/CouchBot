@@ -73,8 +73,7 @@ namespace MTD.CouchBot.Modules
 
             string info = "```Markdown\r\n" +
                           "# " + Program.client.CurrentUser.Username + "\r\n" +
-                          "- Guilds: " + serverFiles.Length + "\r\n" +
-                          "- Users: " + userFiles.Length + "\r\n" +
+                          "- Servers: " + serverFiles.Length + "\r\n" +
                           "Platforms: \r\n" +
                           "-- Beam: " + serverBeamCount + "\r\n" +
                           "-- Smashcast: " + serverHitboxCount + "\r\n" +
@@ -84,7 +83,7 @@ namespace MTD.CouchBot.Modules
                           "- Current Memory Usage: " + ((System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024) / 1024) + "MB \r\n" +
                           "- Built on Discord.Net - (https://github.com/RogueException/Discord.Net)\r\n" +
                           "- Developed and Maintained by Dawgeth - (http://twitter.com/dawgeth)\r\n" +
-                          "- Want to submit feedback, a bug, or suggestion ? - (https://bitbucket.org/MattTheDev/couchbot/issues?status=new&status=open)\r\n" +
+                          "- Want to submit feedback, a bug, or suggestion? - (http://github.com/dawgeth/couchbot/issues)\r\n" +
                           "- Join us on Discord!-(http://discord.couchbot.io)\r\n" +
                           "```\r\n";
 
@@ -134,7 +133,7 @@ namespace MTD.CouchBot.Modules
 
             string info = "```Markdown\r\n" +
                           "# " + Program.client.CurrentUser.Username + "\r\n" +
-                          "- Joined Guilds: " + serverFiles.Length + "\r\n" +
+                          "- Servers: " + serverFiles.Length + "\r\n" +
                           "- Servers Announcing Livestreams: " + serversUsingGoLive.Count + "\r\n" +
                           "- Servers Announcing Announcements: " + serversUsingAnnouncements.Count + "\r\n" +
                           "- Servers Announcing Published Content: " + serversUsingPublished.Count + "\r\n" +
@@ -149,7 +148,7 @@ namespace MTD.CouchBot.Modules
         public async Task Help()
         {
             string info = "```Markdown\r\n" +
-                          "#" + Program.client.CurrentUser.Username + "Help\r\n\r\n" + 
+                          "#" + Program.client.CurrentUser.Username + " Help\r\n\r\n" + 
                           "We've got so many commands, we needed to move all of them to our website, http://couchbot.io!\r\n\r\n" +
                           "If you need any further help, join us on our Discord Server, http://discord.couchbot.io. Thanks!!\r\n" +
                           "```\r\n";
@@ -216,53 +215,12 @@ namespace MTD.CouchBot.Modules
             }
 
             info +=  "- Your Name Could Be Here. Visit <http://patreon.com/dawgeth> today <3" +
-                     "- Want to be a 1 time supporter? <http://paypal.me/dawgeth>" +
+                     "- Want to be a one time supporter? <http://paypal.me/dawgeth>" +
                      "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);
         }
 
-        [Command("broadcast"), Summary("Broadcasts to EVERY server with an AnnounceChannel set.")]
-        public async Task Broadcast([Summary("Message to Broadcast")]string message)
-        {
-            // Lock this command to Bot Owner only.
-            if (Context.Message.Author.Id == 93015586698727424)
-            {
-                var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-                var guilds = new List<DiscordServer>();
-
-                foreach (var server in serverFiles)
-                {
-                    try
-                    {
-                        var guild = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server));
-                        if (guild.AnnouncementsChannel != 0)
-                        {
-                            guilds.Add(guild);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logging.LogError("Broadcast Error: Deserialize - " + ex.Message);
-                    }
-                }
-
-                foreach (var guild in guilds)
-                {
-                    try
-                    {
-                        var guildObj = Program.client.GetGuild(guild.Id);
-                        var channel = (IMessageChannel)(guildObj.GetChannel(guild.Id));
-
-                        await channel.SendMessageAsync(message.Replace("%NEWLINE%", "\r\n"));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logging.LogError("Broadcast Error: SendMessage - " + ex.Message);
-                    }
-                }
-            }
-        }
 
         [Command("ytidlookup"), Summary("Query YouTube API to find a Channel ID.")]
         public async Task YtIdLookup([Summary("Username to Query")]string name)
@@ -281,7 +239,7 @@ namespace MTD.CouchBot.Modules
                 foreach (var channel in channels.items)
                 {
                     channelInfo += "\r\n" +
-                        "Id (User This for " + Program.client.CurrentUser.Username + " Settings): " + channel.snippet.channelId + "\r\n" +
+                        "Id (Use This for " + Program.client.CurrentUser.Username + " Settings): " + channel.snippet.channelId + "\r\n" +
                         "Channel Name: " + channel.snippet.channelTitle + "\r\n" +
                         "Description: " + channel.snippet.description + "\r\n";
                 }

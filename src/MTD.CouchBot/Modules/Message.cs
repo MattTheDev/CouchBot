@@ -79,6 +79,38 @@ namespace MTD.CouchBot.Modules
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
         }
 
+        [Command("offline")]
+        public async Task Offline(string message)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            if (message.ToLower().Equals("clear"))
+            {
+                server.StreamOfflineMessage = "This stream is now offline.";
+                await Context.Channel.SendMessageAsync("Stream Offline Message has been reset to the default message.");
+            }
+            else
+            {
+                server.StreamOfflineMessage = message;
+                await Context.Channel.SendMessageAsync("Stream Offline Message has been set.");
+            }
+
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+        }
+
         [Command("testlive")]
         public async Task TestLive(string platform)
         {

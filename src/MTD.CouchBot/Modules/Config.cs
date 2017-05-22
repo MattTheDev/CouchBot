@@ -132,6 +132,7 @@ namespace MTD.CouchBot.Modules
                               "- Published Message: " + (string.IsNullOrEmpty(server.PublishedMessage) ? "Default" : server.PublishedMessage) + "\r\n" +
                               "- Greeting Message: " + (string.IsNullOrEmpty(server.GreetingMessage) ? "Default" : server.GreetingMessage) + "\r\n" +
                               "- Goodbye Message: " + (string.IsNullOrEmpty(server.GoodbyeMessage) ? "Default" : server.GoodbyeMessage) + "\r\n" +
+                              "- Stream Offline Message: " + (string.IsNullOrEmpty(server.StreamOfflineMessage) ? "Default" : server.StreamOfflineMessage) + "\r\n" +
                               "- Mention Role: " + ((server.MentionRole == 0 ) ? "Everyone" : role.Name.Replace("@","")) + "\r\n" +
                               "- Time Zone Offset: " + server.TimeZoneOffset + "\r\n" +
                               "```\r\n";

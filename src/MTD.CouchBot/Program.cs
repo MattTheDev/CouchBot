@@ -90,7 +90,7 @@ namespace MTD.CouchBot
                 || (string.IsNullOrEmpty(Constants.Prefix)))
             {
                 Console.WriteLine("Please configure the bot. The settings can be found at: " + Constants.ConfigRootDirectory + Constants.BotSettings);
-                Console.WriteLine("You need to have a Discord Token, YouTube API Key, and Twitch Client Id configured for the bot to function.");
+                Console.WriteLine("You need to have a Discord Token, YouTube API Key, Twitch Client Id, and Prefix configured for the bot to function.");
                 Console.ReadLine();
                 return;
             }
@@ -644,9 +644,15 @@ namespace MTD.CouchBot
                                 post.body + "\r\n\r\n" +
                                 "<https://twitch.tv/" + server.OwnerTwitchChannel + "/p/" + post.id + ">";
 
-                            await chat.SendMessageAsync(message);
-
-                            Logging.LogTwitch(server.OwnerTwitchChannel + " posted a new channel feed message.");
+                            try
+                            {
+                                await chat.SendMessageAsync(message);
+                                Logging.LogTwitch(server.OwnerTwitchChannel + " posted a new channel feed message.");
+                            }
+                            catch (Exception ex)
+                            {
+                                Logging.LogError("Send Message Error: " + ex.Message + " in server " + server.Id);
+                            }
                         }
                     }
                 }
@@ -1255,12 +1261,6 @@ namespace MTD.CouchBot
                     continue;
                 }
 
-                // If they dont allow published, skip it.
-                if (!server.AllowPublished)
-                {
-                    continue;
-                }
-
                 var chat = await DiscordHelper.GetMessageChannel(server.Id, server.OwnerPublishedChannel);
 
                 if (chat == null)
@@ -1268,7 +1268,7 @@ namespace MTD.CouchBot
                     continue;
                 }
 
-                if (!string.IsNullOrEmpty(server.OwnerYouTubeChannelId))
+                if (string.IsNullOrEmpty(server.OwnerYouTubeChannelId))
                 {
                     continue;
                 }
@@ -1644,7 +1644,7 @@ namespace MTD.CouchBot
                     }
                     else
                     {
-                        await DiscordHelper.SetOfflineStream(message.GuildId, message.ChannelId, message.MessageId);
+                        await DiscordHelper.SetOfflineStream(message.GuildId, serverFile.StreamOfflineMessage, message.ChannelId, message.MessageId);
                     }
                 }
             }
