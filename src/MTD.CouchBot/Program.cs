@@ -636,9 +636,7 @@ namespace MTD.CouchBot
                         DateTime created = DateTime.Parse(post.created_at).ToUniversalTime();
                         TimeSpan diff = now - created;
 
-
-
-                        if (diff.Minutes <= 2)
+                        if (diff.TotalMinutes <= 2)
                         {
                             string message = "**[New Channel Feed Update - " + created.AddHours(server.TimeZoneOffset).ToString("MM/dd/yyyy hh:mm tt") + "]**\r\n" +
                                 post.body + "\r\n\r\n" +
