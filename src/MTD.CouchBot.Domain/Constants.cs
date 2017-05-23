@@ -24,14 +24,15 @@ namespace MTD.CouchBot.Domain
             }
         }
 
-        public static readonly string ConfigRootDirectory = @"c:\programdata\CouchBot\";
-        public static readonly string GuildDirectory = @"Guilds\";
-        public static readonly string UserDirectory = @"Users\";
-        public static readonly string LiveDirectory = @"Live\";
-        public static readonly string TwitchDirectory = @"Twitch\";
-        public static readonly string YouTubeDirectory = @"YouTube\";
-        public static readonly string BeamDirectory = @"Beam\";
-        public static readonly string HitboxDirectory = @"Hitbox\";
+        public static readonly string ConfigRootDirectory = Settings.ConfigRootDirectory;
+        public static readonly string GuildDirectory = Settings.GuildDirectory;
+        public static readonly string UserDirectory = Settings.UserDirectory;
+        public static readonly string LiveDirectory = Settings.LiveDirectory;
+        public static readonly string TwitchDirectory = Settings.TwitchDirectory;
+        public static readonly string YouTubeDirectory = Settings.YouTubeDirectory;
+        public static readonly string BeamDirectory = Settings.BeamDirectory;
+        public static readonly string SmashcastDirectory = Settings.SmashcastDirectory;
+
         public static readonly string BotStatistics = "BotStats.json";
         public static readonly string BotSettings = "BotSettings.json";
 

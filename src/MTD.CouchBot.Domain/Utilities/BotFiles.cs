@@ -45,8 +45,8 @@ namespace MTD.CouchBot.Domain.Utilities
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory))
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory);
 
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory);
+            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
+                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory);
     }
 
         public static DiscordServer GetDiscordServer(string guildId)
@@ -133,7 +133,7 @@ namespace MTD.CouchBot.Domain.Utilities
             var liveChannels = new List<LiveChannel>();
 
             // Get Live Channels
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
+            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
             {
                 liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
             }

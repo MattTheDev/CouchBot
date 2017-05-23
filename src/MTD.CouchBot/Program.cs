@@ -983,7 +983,7 @@ namespace MTD.CouchBot
 
                                                 channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Smashcast, new List<BroadcastMessage>() { message }));
 
-                                                File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + hitboxChannel + ".json", JsonConvert.SerializeObject(channel));
+                                                File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + hitboxChannel + ".json", JsonConvert.SerializeObject(channel));
                                             }
                                         }
                                     }
@@ -1087,7 +1087,7 @@ namespace MTD.CouchBot
 
                                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Smashcast, new List<BroadcastMessage>() { message }));
 
-                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + server.OwnerHitboxChannel + ".json", JsonConvert.SerializeObject(channel));
+                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + server.OwnerHitboxChannel + ".json", JsonConvert.SerializeObject(channel));
                                         }
                                     }
                                 }
@@ -1621,7 +1621,7 @@ namespace MTD.CouchBot
             {
                 var liveStreams = new List<LiveChannel>();
 
-                foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
+                foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
                 {
                     var channel = JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live));
                     if (liveStreams.FirstOrDefault(x => x.Name == channel.Name) == null)
@@ -1640,7 +1640,7 @@ namespace MTD.CouchBot
                         {
                             await CleanupMessages(stream.ChannelMessages);
 
-                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + stream.Name + ".json");
+                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + stream.Name + ".json");
                         }
                     }
                     catch (Exception wex)
