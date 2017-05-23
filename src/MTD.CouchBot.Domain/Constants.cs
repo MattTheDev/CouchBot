@@ -35,6 +35,11 @@ namespace MTD.CouchBot.Domain
         public static readonly string BotStatistics = "BotStats.json";
         public static readonly string BotSettings = "BotSettings.json";
 
+        public static readonly bool EnableBeam = Settings.EnableBeam;
+        public static readonly bool EnableSmashcast = Settings.EnableSmashcast;
+        public static readonly bool EnableTwitch = Settings.EnableTwitch;
+        public static readonly bool EnableYouTube = Settings.EnableYouTube;
+
         public static readonly string DiscordToken = Settings.DiscordToken;
         public static readonly string TwitchClientId = Settings.TwitchClientId;
         public static readonly string YouTubeApiKey = Settings.YouTubeApiKey;

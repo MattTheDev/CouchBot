@@ -108,19 +108,33 @@ namespace MTD.CouchBot
             Logging.LogInfo("Bot Things Done.");
             Logging.LogInfo("Resubscribe to Beam Events.");
 
-            await ResubscribeToBeamEvents();
+            if (Constants.EnableBeam)
+            {
+                await ResubscribeToBeamEvents();
+                QueueBeamClientCheck();
+            }
 
             Logging.LogInfo("Subscribed to Beam Events - All Set.");
             Logging.LogInfo("Queue Timer Jobs.");
 
-            QueueTwitchChecks();
-            QueueYouTubeChecks();
-            QueueHitboxChecks();
+            if (Constants.EnableTwitch)
+            {
+                QueueTwitchChecks();
+            }
+
+            if (Constants.EnableYouTube)
+            {
+                QueueYouTubeChecks();
+            }
+
+            if (Constants.EnableSmashcast)
+            {
+                QueueHitboxChecks();
+            }
 
             QueueCleanUp();
             QueueUptimeCheckIn();
-            QueueBeamClientCheck();
-
+                        
             Logging.LogInfo("Timer Jobs Queued - All Set.");
 
             await Task.Delay(-1);
@@ -1375,9 +1389,21 @@ namespace MTD.CouchBot
                     if (initialServicesRan)
                     {
                         Logging.LogInfo("Cleaning Up Live Files.");
-                        await CleanUpLiveStreams(Constants.YouTubeGaming);
-                        await CleanUpLiveStreams(Constants.Twitch);
-                        await CleanUpLiveStreams(Constants.Smashcast);
+
+                        if (Constants.EnableYouTube)
+                        {
+                            await CleanUpLiveStreams(Constants.YouTubeGaming);
+                        }
+
+                        if (Constants.EnableTwitch)
+                        {
+                            await CleanUpLiveStreams(Constants.Twitch);
+                        }
+
+                        if (Constants.EnableSmashcast)
+                        {
+                            await CleanUpLiveStreams(Constants.Smashcast);
+                        }
                         Logging.LogInfo("Cleaning Up Live Files Complete.");
                     }
                 }
