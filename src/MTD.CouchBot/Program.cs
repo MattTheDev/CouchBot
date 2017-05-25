@@ -108,19 +108,33 @@ namespace MTD.CouchBot
             Logging.LogInfo("Bot Things Done.");
             Logging.LogInfo("Resubscribe to Mixer Events.");
 
-            await ResubscribeToBeamEvents();
+            if (Constants.EnableBeam)
+            {
+                await ResubscribeToBeamEvents();
+                QueueBeamClientCheck();
+            }
 
             Logging.LogInfo("Subscribed to Mixer Events - All Set.");
             Logging.LogInfo("Queue Timer Jobs.");
 
-            QueueTwitchChecks();
-            QueueYouTubeChecks();
-            QueueHitboxChecks();
+            if (Constants.EnableTwitch)
+            {
+                QueueTwitchChecks();
+            }
+
+            if (Constants.EnableYouTube)
+            {
+                QueueYouTubeChecks();
+            }
+
+            if (Constants.EnableSmashcast)
+            {
+                QueueHitboxChecks();
+            }
 
             QueueCleanUp();
             QueueUptimeCheckIn();
-            QueueBeamClientCheck();
-
+                        
             Logging.LogInfo("Timer Jobs Queued - All Set.");
 
             await Task.Delay(-1);
@@ -969,7 +983,7 @@ namespace MTD.CouchBot
 
                                                 channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Smashcast, new List<BroadcastMessage>() { message }));
 
-                                                File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + hitboxChannel + ".json", JsonConvert.SerializeObject(channel));
+                                                File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + hitboxChannel + ".json", JsonConvert.SerializeObject(channel));
                                             }
                                         }
                                     }
@@ -1073,7 +1087,7 @@ namespace MTD.CouchBot
 
                                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Smashcast, new List<BroadcastMessage>() { message }));
 
-                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + server.OwnerHitboxChannel + ".json", JsonConvert.SerializeObject(channel));
+                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + server.OwnerHitboxChannel + ".json", JsonConvert.SerializeObject(channel));
                                         }
                                     }
                                 }
@@ -1375,9 +1389,21 @@ namespace MTD.CouchBot
                     if (initialServicesRan)
                     {
                         Logging.LogInfo("Cleaning Up Live Files.");
-                        await CleanUpLiveStreams(Constants.YouTubeGaming);
-                        await CleanUpLiveStreams(Constants.Twitch);
-                        await CleanUpLiveStreams(Constants.Smashcast);
+
+                        if (Constants.EnableYouTube)
+                        {
+                            await CleanUpLiveStreams(Constants.YouTubeGaming);
+                        }
+
+                        if (Constants.EnableTwitch)
+                        {
+                            await CleanUpLiveStreams(Constants.Twitch);
+                        }
+
+                        if (Constants.EnableSmashcast)
+                        {
+                            await CleanUpLiveStreams(Constants.Smashcast);
+                        }
                         Logging.LogInfo("Cleaning Up Live Files Complete.");
                     }
                 }
@@ -1595,7 +1621,7 @@ namespace MTD.CouchBot
             {
                 var liveStreams = new List<LiveChannel>();
 
-                foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory))
+                foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
                 {
                     var channel = JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live));
                     if (liveStreams.FirstOrDefault(x => x.Name == channel.Name) == null)
@@ -1614,7 +1640,7 @@ namespace MTD.CouchBot
                         {
                             await CleanupMessages(stream.ChannelMessages);
 
-                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.HitboxDirectory + stream.Name + ".json");
+                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + stream.Name + ".json");
                         }
                     }
                     catch (Exception wex)
