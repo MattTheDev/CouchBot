@@ -208,7 +208,7 @@ namespace MTD.DiscordBot.Modules
 
             var message = await MessagingHelper.BuildMessage(channelTitle, "a game", video.snippet.title, url, avatarUrl, thumbnailUrl,
                 Constants.YouTubeGaming, video.snippet.channelId, server, server.GoLiveChannel);
-            await MessagingHelper.SendMessages(Constants.Beam, new List<CouchBot.Models.BroadcastMessage>() { message });
+            await MessagingHelper.SendMessages(Constants.YouTube, new List<CouchBot.Models.BroadcastMessage>() { message });
         }
     }
 }

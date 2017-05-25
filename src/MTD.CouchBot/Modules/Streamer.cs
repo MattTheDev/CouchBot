@@ -14,14 +14,14 @@ namespace MTD.CouchBot.Modules
     [Group("streamer")]
     public class Streamer : ModuleBase
     {
-        IYouTubeManager youtubeManager;
-        IBeamManager beamManager;
-        ISmashcastManager smashcastManager;
-        ITwitchManager twitchManager;
+        IYouTubeManager _youtubeManager;
+        IMixerManager _mixerManager;
+        ISmashcastManager _smashcastManager;
+        ITwitchManager _twitchManager;
 
         public Streamer()
         {
-            youtubeManager = new YouTubeManager();
+            _youtubeManager = new YouTubeManager();
         }
 
         [Command("list"), Summary("List server streamers")]
@@ -59,7 +59,7 @@ namespace MTD.CouchBot.Modules
             {
                 foreach (var streamer in guildObject.ServerYouTubeChannelIds)
                 {
-                    var channel = await youtubeManager.GetYouTubeChannelSnippetById(streamer);
+                    var channel = await _youtubeManager.GetYouTubeChannelSnippetById(streamer);
 
                     if (count == 0)
                     {
@@ -112,14 +112,14 @@ namespace MTD.CouchBot.Modules
 
             string info = "```Markdown\r\n" +
               "# Server Configured Channels\r\n" +
-              "- Beam: " + beam + "\r\n" +
+              "- Mixer: " + beam + "\r\n" +
               "- Smashcast: " + hitbox + "\r\n" +
               "- Twitch: " + twitch + "\r\n" +
               "- YouTube: " + youtube + "\r\n" +
-              "- Owner Beam: " + (string.IsNullOrEmpty(guildObject.OwnerBeamChannel) ? "Not Set" : guildObject.OwnerBeamChannel) + "\r\n" +
+              "- Owner Mixer: " + (string.IsNullOrEmpty(guildObject.OwnerBeamChannel) ? "Not Set" : guildObject.OwnerBeamChannel) + "\r\n" +
               "- Owner Smashcast: " + (string.IsNullOrEmpty(guildObject.OwnerHitboxChannel) ? "Not Set" : guildObject.OwnerHitboxChannel) + "\r\n" +
               "- Owner Twitch: " + (string.IsNullOrEmpty(guildObject.OwnerTwitchChannel) ? "Not Set" : guildObject.OwnerTwitchChannel) + "\r\n" +
-              "- Owner YouTube: " + (string.IsNullOrEmpty(guildObject.OwnerYouTubeChannelId) ? "Not Set" : (await youtubeManager.GetYouTubeChannelSnippetById(guildObject.OwnerYouTubeChannelId)).items[0].snippet.title) + "(" + guildObject.OwnerYouTubeChannelId + ")\r\n" +
+              "- Owner YouTube: " + (string.IsNullOrEmpty(guildObject.OwnerYouTubeChannelId) ? "Not Set" : (await _youtubeManager.GetYouTubeChannelSnippetById(guildObject.OwnerYouTubeChannelId)).items[0].snippet.title) + "(" + guildObject.OwnerYouTubeChannelId + ")\r\n" +
               "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);
@@ -146,7 +146,7 @@ namespace MTD.CouchBot.Modules
                 {
                     if(cm.GuildId == guildId)
                     {
-                        var channel = await beamManager.GetBeamChannelById(b.Name);
+                        var channel = await _mixerManager.GetChannelById(b.Name);
 
                         if(channel != null && channel.online)
                         beamLive += channel.token + ", ";
@@ -175,7 +175,7 @@ namespace MTD.CouchBot.Modules
                 {
                     if (cm.GuildId == guildId)
                     {
-                        var channel = await twitchManager.GetStreamById(t.Name);
+                        var channel = await _twitchManager.GetStreamById(t.Name);
 
                         if (channel != null && channel.stream != null)
                         {
@@ -193,7 +193,7 @@ namespace MTD.CouchBot.Modules
                 {
                     if (cm.GuildId == guildId)
                     {
-                        var channel = await youtubeManager.GetLiveVideoByChannelId(yt.Name);
+                        var channel = await _youtubeManager.GetLiveVideoByChannelId(yt.Name);
 
                         if (channel != null && channel.items != null && channel.items.Count > 0)
                         {
@@ -212,7 +212,7 @@ namespace MTD.CouchBot.Modules
 
             string info = "```Markdown\r\n" +
               "# Currently Live\r\n" +
-              "- Beam: " + beamLive + "\r\n" +
+              "- Mixer: " + beamLive + "\r\n" +
               "- Smashcast: " + hitboxLive + "\r\n" +
               "- Twitch: " + twitchLive + "\r\n" +
               "- YouTube Gaming: " + youtubeLive + "\r\n" +

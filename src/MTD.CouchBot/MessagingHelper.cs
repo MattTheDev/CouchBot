@@ -122,10 +122,10 @@ namespace MTD.CouchBot.Bot
                 footer.Text = "[" + Constants.Smashcast + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                 footer.IconUrl = "http://couchbot.io/img/smashcast.png";
             }
-            else if(platform.Equals(Constants.Beam))
+            else if(platform.Equals(Constants.Mixer))
             { 
                     color = new Color(76, 144, 243);
-                    footer.Text = "[" + Constants.Beam + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                    footer.Text = "[" + Constants.Mixer + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                     footer.IconUrl = "http://couchbot.io/img/beam.jpg";
             }
 
@@ -191,12 +191,12 @@ namespace MTD.CouchBot.Bot
             footer.Text = "[" + platform + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
             embed.Author = author;
 
-            if (platform.Equals(Constants.Beam))
+            if (platform.Equals(Constants.Mixer))
             {
                 embed.Color = Constants.Blue;
                 embed.ThumbnailUrl = avatarUrl != null ?
                         avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
-                        "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
+                        "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
                 footer.IconUrl = "http://couchbot.io/img/beam.jpg";
             }
             else if (platform.Equals(Constants.YouTubeGaming))
@@ -302,7 +302,7 @@ namespace MTD.CouchBot.Bot
 
                         channelMessages.Add(channelMessage);
 
-                        if (platform.Equals(Constants.Beam))
+                        if (platform.Equals(Constants.Mixer))
                         {
                             statisticsManager.AddToBeamAlertCount();
                         }

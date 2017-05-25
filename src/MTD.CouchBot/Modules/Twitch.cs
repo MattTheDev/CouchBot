@@ -213,7 +213,7 @@ namespace MTD.DiscordBot.Modules
 
             var message = await MessagingHelper.BuildMessage(name, stream.game, stream.channel.status, url, avatarUrl,
                                                     thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel);
-            await MessagingHelper.SendMessages(Constants.Beam, new List<CouchBot.Models.BroadcastMessage>() { message });
+            await MessagingHelper.SendMessages(Constants.Twitch, new List<CouchBot.Models.BroadcastMessage>() { message });
         }
     }
 }

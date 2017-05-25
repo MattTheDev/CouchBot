@@ -75,7 +75,7 @@ namespace MTD.CouchBot.Modules
                           "# " + Program.client.CurrentUser.Username + "\r\n" +
                           "- Servers: " + serverFiles.Length + "\r\n" +
                           "Platforms: \r\n" +
-                          "-- Beam: " + serverBeamCount + "\r\n" +
+                          "-- Mixer: " + serverBeamCount + "\r\n" +
                           "-- Smashcast: " + serverHitboxCount + "\r\n" +
                           "-- Twitch: " + serverTwitchCount + "\r\n" +
                           "-- YouTube: " + serverYouTubeCount + "\r\n" +
@@ -188,10 +188,10 @@ namespace MTD.CouchBot.Modules
 
             var info = "```Markdown\r\n" +
                     "# Alerts since initial tracking - " + botStats.LoggingStartDate.ToString("MM/dd/yyyy hh:mm:ss UTC") + "\r\n" +
-                    "YouTube - " + botStats.YouTubeAlertCount + "\r\n" +
-                    "Twitch - " + botStats.TwitchAlertCount + "\r\n" +
-                    "Beam - " + botStats.BeamAlertCount + "\r\n" +
+                    "Mixer - " + botStats.BeamAlertCount + "\r\n" +
                     "Smashcast - " + botStats.HitboxAlertCount + "\r\n" +
+                    "Twitch - " + botStats.TwitchAlertCount + "\r\n" +
+                    "YouTube - " + botStats.YouTubeAlertCount + "\r\n" +
                     "Total Alerts Sent - " + (botStats.YouTubeAlertCount + botStats.BeamAlertCount + botStats.TwitchAlertCount + botStats.HitboxAlertCount) + "\r\n" +
                     "```\r\n";
 

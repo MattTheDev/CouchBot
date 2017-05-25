@@ -15,12 +15,12 @@ namespace MTD.CouchBot.Bot
     public class BeamClient
     {
         public ClientWebSocket client = new ClientWebSocket();
-        IBeamManager _beamManager;
+        IMixerManager _mixerManager;
         IStatisticsManager _statisticsManager;
     
         public BeamClient()
         {
-            _beamManager = new BeamManager();
+            _mixerManager = new MixerManager();
             _statisticsManager = new StatisticsManager();
         }
 
@@ -32,7 +32,7 @@ namespace MTD.CouchBot.Bot
         public async Task RunWebSockets()
         {
             client.Options.SetRequestHeader("x-is-bot", "true");
-            await client.ConnectAsync(new Uri("wss://constellation.beam.pro"), CancellationToken.None);
+            await client.ConnectAsync(new Uri("wss://constellation.mixer.com"), CancellationToken.None);
 
             var receiving = Receiving(client);
         }
@@ -54,9 +54,9 @@ namespace MTD.CouchBot.Bot
                         var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
                         var channelData = payload.data.channel.Split(':');
                         var channelId = channelData[1];
-                        var channel = await _beamManager.GetBeamChannelById(channelId);
+                        var channel = await _mixerManager.GetChannelById(channelId);
 
-                        Logging.LogBeam(channel.token + " has gone online.");
+                        Logging.LogMixer(channel.token + " has gone online.");
                         await BeamHelper.AnnounceLiveChannel(channelId);
                     }
                     else if(data.ToLower().Contains("{\"online\": false}"))
@@ -64,9 +64,9 @@ namespace MTD.CouchBot.Bot
                         var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
                         var channelData = payload.data.channel.Split(':');
                         var channelId = channelData[1];
-                        var channel = await _beamManager.GetBeamChannelById(channelId);
+                        var channel = await _mixerManager.GetChannelById(channelId);
 
-                        Logging.LogBeam(channel.token + " has gone offline.");
+                        Logging.LogMixer(channel.token + " has gone offline.");
                         await BeamHelper.StreamOffline(channelId);
                     }
                 }

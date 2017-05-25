@@ -13,20 +13,20 @@ using System.Threading.Tasks;
 
 namespace MTD.DiscordBot.Modules
 {
-    [Group("beam")]
-    public class Beam : ModuleBase
+    [Group("mixer")]
+    public class Mixer : ModuleBase
     {
-        IBeamManager _beamManager;
+        IMixerManager _mixerManager;
 
-        public Beam()
+        public Mixer()
         {
-            _beamManager = new BeamManager();
+            _mixerManager = new MixerManager();
         }
 
         [Command("status")]
         public async Task Status()
         {
-            await Context.Channel.SendMessageAsync("Current " + Program.client.CurrentUser.Username + " Beam Constellation Connection Status: " + Program.beamClient.Status());
+            await Context.Channel.SendMessageAsync("Current " + Program.client.CurrentUser.Username + " Mixer Constellation Connection Status: " + Program.beamClient.Status());
         }
 
         [Command("add")]
@@ -39,11 +39,11 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            var channel = await _beamManager.GetBeamChannelByName(channelName);
+            var channel = await _mixerManager.GetChannelByName(channelName);
 
             if (channel == null)
             {
-                await Context.Channel.SendMessageAsync("The Beam channel, " + channelName + ", does not exist.");
+                await Context.Channel.SendMessageAsync("The Mixer channel, " + channelName + ", does not exist.");
                 return;
             }
 
@@ -61,8 +61,8 @@ namespace MTD.DiscordBot.Modules
 
             if (!string.IsNullOrEmpty(server.OwnerBeamChannel) && server.OwnerBeamChannel.ToLower().Equals(channelName.ToLower()))
             {
-                await Context.Channel.SendMessageAsync("The channel " + channelName + " is configured as the Owner Beam channel. " +
-                    "Please remove it with the '!cb beam resetowner' command and then try re-adding it.");
+                await Context.Channel.SendMessageAsync("The channel " + channelName + " is configured as the Owner Mixer channel. " +
+                    "Please remove it with the '!cb mixer resetowner' command and then try re-adding it.");
 
                 return;
             }
@@ -73,11 +73,11 @@ namespace MTD.DiscordBot.Modules
                 server.ServerBeamChannelIds.Add(channel.id.Value.ToString());
                 await Program.beamClient.SubscribeToLiveAnnouncements(channel.id.Value.ToString());
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
-                await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Beam streamer list.");
+                await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Mixer streamer list.");
             }
             else
             {
-                await Context.Channel.SendMessageAsync(channelName + " is already on the server Beam streamer list.");
+                await Context.Channel.SendMessageAsync(channelName + " is already on the server Mixer streamer list.");
             }
         }
 
@@ -102,15 +102,15 @@ namespace MTD.DiscordBot.Modules
 
             if (server.ServerBeamChannels.Contains(channel.ToLower()))
             {
-                var beamChannel = await _beamManager.GetBeamChannelByName(channel);
+                var beamChannel = await _mixerManager.GetChannelByName(channel);
                 server.ServerBeamChannels.Remove(channel.ToLower());
                 server.ServerBeamChannelIds.Remove(beamChannel.id.Value.ToString());
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
-                await Context.Channel.SendMessageAsync("Removed " + channel + " from the server Beam streamer list.");
+                await Context.Channel.SendMessageAsync("Removed " + channel + " from the server Mixer streamer list.");
             }
             else
             {
-                await Context.Channel.SendMessageAsync(channel + " wasn't on the server Beam streamer list.");
+                await Context.Channel.SendMessageAsync(channel + " wasn't on the server Mixer streamer list.");
             }
         }
 
@@ -124,11 +124,11 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            var beamChannel = await _beamManager.GetBeamChannelByName(channel);
+            var beamChannel = await _mixerManager.GetChannelByName(channel);
 
             if (beamChannel == null)
             {
-                await Context.Channel.SendMessageAsync("Beam Channel " + channel + " does not exist.");
+                await Context.Channel.SendMessageAsync("Mixer Channel " + channel + " does not exist.");
 
                 return;
             }
@@ -141,8 +141,8 @@ namespace MTD.DiscordBot.Modules
 
             if (server.ServerBeamChannels != null && server.ServerBeamChannels.Contains(channel.ToLower()))
             {
-                await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Beam Channels. " +
-                    "Please remove it with '!cb beam remove " + channel + "' and then retry setting your owner channel.");
+                await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Mixer Channels. " +
+                    "Please remove it with '!cb mixer remove " + channel + "' and then retry setting your owner channel.");
 
                 return;
             }
@@ -151,7 +151,7 @@ namespace MTD.DiscordBot.Modules
             server.OwnerBeamChannelId = beamChannel.id.Value.ToString();
             await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Owner Beam Channel has been set to " + channel + ".");
+            await Context.Channel.SendMessageAsync("Owner Mixer Channel has been set to " + channel + ".");
         }
 
         [Command("resetowner")]
@@ -173,7 +173,7 @@ namespace MTD.DiscordBot.Modules
             server.OwnerBeamChannel = null;
             server.OwnerBeamChannelId = null;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Owner Beam Channel has been reset.");
+            await Context.Channel.SendMessageAsync("Owner Mixer Channel has been reset.");
         }
 
         [Command("announce")]
@@ -192,11 +192,11 @@ namespace MTD.DiscordBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            var stream = await _beamManager.GetBeamChannelByName(channelName);
+            var stream = await _mixerManager.GetChannelByName(channelName);
 
             if (stream == null)
             {
-                await Context.Channel.SendMessageAsync(channelName + " doesn't exist on Beam.");
+                await Context.Channel.SendMessageAsync(channelName + " doesn't exist on Mixer.");
 
                 return;
             }
@@ -204,14 +204,14 @@ namespace MTD.DiscordBot.Modules
             if (stream.online)
             {
                 string gameName = stream.type == null ? "a game" : stream.type.name;
-                string url = "http://beam.pro/" + stream.token;
-                string avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
-                string thumbnailUrl = "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg";
+                string url = "http://mixer.com/" + stream.token;
+                string avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                string thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
                 string channelId = stream.id.Value.ToString();
 
                 var message = await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url,
-                    avatarUrl, thumbnailUrl, Constants.Beam, channelId, server, server.GoLiveChannel);
-                await MessagingHelper.SendMessages(Constants.Beam, new List<CouchBot.Models.BroadcastMessage>() { message });
+                    avatarUrl, thumbnailUrl, Constants.Mixer, channelId, server, server.GoLiveChannel);
+                await MessagingHelper.SendMessages(Constants.Mixer, new List<CouchBot.Models.BroadcastMessage>() { message });
             }
             else
             {

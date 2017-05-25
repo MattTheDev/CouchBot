@@ -52,7 +52,7 @@ namespace MTD.CouchBot
         IYouTubeManager youtubeManager;
         ITwitchManager twitchManager;
         ISmashcastManager smashcastManager;
-        IBeamManager beamManager;
+        IMixerManager mixerManager;
 
         #endregion
 
@@ -68,7 +68,7 @@ namespace MTD.CouchBot
             statisticsManager = new StatisticsManager();
             youtubeManager = new YouTubeManager();
             twitchManager = new TwitchManager();
-            beamManager = new BeamManager();
+            mixerManager = new MixerManager();
             smashcastManager = new SmashcastManager();
 
             Logging.LogInfo("Managers Initialized.");
@@ -76,7 +76,7 @@ namespace MTD.CouchBot
 
             statisticsManager.LogRestartTime();
 
-            Logging.LogInfo("Clear randomly seeded Beam task Ids.");
+            Logging.LogInfo("Clear randomly seeded Mixer task Ids.");
 
             statisticsManager.ClearRandomInts();
 
@@ -106,11 +106,11 @@ namespace MTD.CouchBot
             await DoBotStuff();
 
             Logging.LogInfo("Bot Things Done.");
-            Logging.LogInfo("Resubscribe to Beam Events.");
+            Logging.LogInfo("Resubscribe to Mixer Events.");
 
             await ResubscribeToBeamEvents();
 
-            Logging.LogInfo("Subscribed to Beam Events - All Set.");
+            Logging.LogInfo("Subscribed to Mixer Events - All Set.");
             Logging.LogInfo("Queue Timer Jobs.");
 
             QueueTwitchChecks();
@@ -151,21 +151,21 @@ namespace MTD.CouchBot
             var count = 0;
             beamClient = new BeamClient();
 
-            Logging.LogBeam("Getting Server Files.");
+            Logging.LogMixer("Getting Server Files.");
 
             var servers = BotFiles.GetConfiguredServers().Where(x => x.ServerBeamChannelIds != null && x.ServerBeamChannelIds.Count > 0);
 
             await Task.Run(async () =>
              {
-                 Logging.LogBeam("Connecting to Beam Constellation.");
+                 Logging.LogMixer("Connecting to Mixer Constellation.");
 
                  await beamClient.RunWebSockets();
 
-                 Logging.LogBeam("Connected to Beam Constellation.");
+                 Logging.LogMixer("Connected to Mixer Constellation.");
              });
 
 
-            Logging.LogBeam("Initiating Subscription Loop.");
+            Logging.LogMixer("Initiating Subscription Loop.");
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -182,7 +182,7 @@ namespace MTD.CouchBot
             }
 
             sw.Stop();
-            Logging.LogBeam("Subscription Loop Complete. Processed " + count + " channels in " + sw.ElapsedMilliseconds + " milliseconds.");
+            Logging.LogMixer("Subscription Loop Complete. Processed " + count + " channels in " + sw.ElapsedMilliseconds + " milliseconds.");
         }
 
         public void QueueBeamClientCheck()
@@ -191,7 +191,7 @@ namespace MTD.CouchBot
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Logging.LogBeam("Beam Constellation Health Check Started.");
+                Logging.LogMixer("Mixer Constellation Health Check Started.");
 
                 if (beamClient.Status() != WebSocketState.Open)
                 {
@@ -199,11 +199,11 @@ namespace MTD.CouchBot
                 }
                 else
                 {
-                    Logging.LogBeam("" + beamClient.Status());
+                    Logging.LogMixer("" + beamClient.Status());
                 }
 
                 sw.Stop();
-                Logging.LogBeam("Beam Constellation Health Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                Logging.LogMixer("Mixer Constellation Health Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 60000);
         }
 
@@ -213,20 +213,20 @@ namespace MTD.CouchBot
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Logging.LogHitbox("Checking Smashcast Channels.");
+                Logging.LogSmashcast("Checking Smashcast Channels.");
                 await CheckHitboxLive();
                 sw.Stop();
-                Logging.LogHitbox("Smashcast Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                Logging.LogSmashcast("Smashcast Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 120000);
 
             hitboxOwnerTimer = new Timer(async (e) =>
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                Logging.LogHitbox("Checking Owner Smashcast Channels.");
+                Logging.LogSmashcast("Checking Owner Smashcast Channels.");
                 await CheckOwnerHitboxLive();
                 sw.Stop();
-                Logging.LogHitbox("Owner Smashcast Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                Logging.LogSmashcast("Owner Smashcast Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 120000);
         }
 
@@ -911,7 +911,7 @@ namespace MTD.CouchBot
                             continue;
                         }
 
-                        // if our stream isnt null, and we have a return from beam.
+                        // if our stream isnt null, and we have a return from mixer.
                         if (stream != null && stream.livestream != null && stream.livestream.Count > 0)
                         {
                             if (stream.livestream[0].media_is_live == "1")
@@ -953,7 +953,7 @@ namespace MTD.CouchBot
                                             string gameName = stream.livestream[0].category_name == null ? "a game" : stream.livestream[0].category_name;
                                             string url = "http://smashcast.tv/" + hitboxChannel;
 
-                                            Logging.LogHitbox(hitboxChannel + " has gone online.");
+                                            Logging.LogSmashcast(hitboxChannel + " has gone online.");
 
                                             var message = await MessagingHelper.BuildMessage(
                                                 hitboxChannel, gameName, stream.livestream[0].media_status, url, "http://edge.sf.hitbox.tv" +
@@ -1015,7 +1015,7 @@ namespace MTD.CouchBot
                         continue;
                     }
 
-                    // if our stream isnt null, and we have a return from beam.
+                    // if our stream isnt null, and we have a return from mixer.
                     if (stream != null && stream.livestream != null && stream.livestream.Count > 0)
                     {
                         if (stream.livestream[0].media_is_live == "1")
@@ -1057,7 +1057,7 @@ namespace MTD.CouchBot
                                         string gameName = stream.livestream[0].category_name == null ? "a game" : stream.livestream[0].category_name;
                                         string url = "http://smashcast.tv/" + server.OwnerHitboxChannel;
 
-                                        Logging.LogHitbox(server.OwnerHitboxChannel + " has gone online.");
+                                        Logging.LogSmashcast(server.OwnerHitboxChannel + " has gone online.");
 
                                         var message = await MessagingHelper.BuildMessage(
                                             server.OwnerHitboxChannel, gameName, stream.livestream[0].media_status, url, "http://edge.sf.hitbox.tv" +
@@ -1693,7 +1693,7 @@ namespace MTD.CouchBot
                         statisticsManager.AddToTwitchAlertCount();
                     }
 
-                    if (message.Platform.Equals(Constants.Beam))
+                    if (message.Platform.Equals(Constants.Mixer))
                     {
                         statisticsManager.AddToBeamAlertCount();
                     }

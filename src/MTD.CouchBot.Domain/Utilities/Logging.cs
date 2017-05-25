@@ -36,14 +36,14 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static void LogBeam(string message)
+        public static void LogMixer(string message)
         {
             lock (_messageLog)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("[" + DateTime.UtcNow + "] - ");
                 Console.ForegroundColor = ConsoleColor.Blue;
-                Console.Write("[" + Constants.Beam + "]");
+                Console.Write("[" + Constants.Mixer + "]");
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(" " + message);
@@ -96,7 +96,7 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static void LogHitbox(string message)
+        public static void LogSmashcast(string message)
         {
             lock (_messageLog)
             {

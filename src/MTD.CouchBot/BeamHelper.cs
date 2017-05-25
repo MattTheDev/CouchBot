@@ -19,7 +19,7 @@ namespace MTD.CouchBot.Bot
     {
         public static async Task AnnounceLiveChannel(string beamId)
         {
-            IBeamManager beamManager = new BeamManager();
+            IMixerManager mixerManager = new MixerManager();
             var servers = BotFiles.GetConfiguredServers();
 
             var beamServers = new List<DiscordServer>();
@@ -61,15 +61,15 @@ namespace MTD.CouchBot.Bot
                 {
                     if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
                     {
-                        var stream = await beamManager.GetBeamChannelByName(beamId);
+                        var stream = await mixerManager.GetChannelByName(beamId);
                         string gameName = stream.type == null ? "a game" : stream.type.name;
-                        string url = "http://beam.pro/" + stream.token;
-                        string avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
-                        string thumbnailUrl = "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg";
+                        string url = "http://mixer.com/" + stream.token;
+                        string avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                        string thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
                         string channelId = stream.id.Value.ToString();
 
                         messages.Add(await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url, avatarUrl, thumbnailUrl,
-                            Constants.Beam, channelId, server, server.GoLiveChannel));
+                            Constants.Mixer, channelId, server, server.GoLiveChannel));
                     }
                 }
             }
@@ -80,15 +80,15 @@ namespace MTD.CouchBot.Bot
                 {
                     if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
                     {
-                        var stream = await beamManager.GetBeamChannelByName(beamId);
+                        var stream = await mixerManager.GetChannelByName(beamId);
                         string gameName = stream.type == null ? "a game" : stream.type.name;
-                        string url = "http://beam.pro/" + stream.token;
-                        string avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://beam.pro/_latest/assets/images/main/avatars/default.jpg";
-                        string thumbnailUrl = "https://thumbs.beam.pro/channel/" + stream.id + ".small.jpg";
+                        string url = "http://mixer.com/" + stream.token;
+                        string avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                        string thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
                         string channelId = stream.id.Value.ToString();
 
                         messages.Add(await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url, avatarUrl, thumbnailUrl,
-                            Constants.Beam, channelId, server, server.OwnerLiveChannel));
+                            Constants.Mixer, channelId, server, server.OwnerLiveChannel));
                     }
                 }
             }
@@ -100,7 +100,7 @@ namespace MTD.CouchBot.Bot
                 {
                     Name = beamId,
                     Servers = new List<ulong>(),
-                    ChannelMessages = await MessagingHelper.SendMessages(Constants.Beam, messages)
+                    ChannelMessages = await MessagingHelper.SendMessages(Constants.Mixer, messages)
                 };
 
                 File.WriteAllText(
@@ -114,8 +114,8 @@ namespace MTD.CouchBot.Bot
 
         public static async Task StreamOffline(string beamId)
         {
-            IBeamManager beamManager = new BeamManager();
-            var stream = await beamManager.GetBeamChannelByName(beamId);
+            IMixerManager mixerManager = new MixerManager();
+            var stream = await mixerManager.GetChannelByName(beamId);
             var live = BotFiles.GetCurrentlyLiveBeamChannels().FirstOrDefault(x => x.Name == beamId);
             
             if (live == null)
