@@ -99,6 +99,11 @@ namespace MTD.CouchBot.Dals.Implementations
             return GetBotStats().YouTubeAlertCount;
         }
 
+        public int GetHaiBaiCount()
+        {
+            return GetBotStats().HaiBaiCount;
+        }
+
         public void AddRandomInt(int random)
         {
             var stats = GetBotStats();
@@ -142,5 +147,11 @@ namespace MTD.CouchBot.Dals.Implementations
             SaveBotStats(botStats);
         }
 
+        public void AddToHaiBaiCount()
+        {
+            var stats = GetBotStats();
+            stats.HaiBaiCount += 1;
+            SaveBotStats(stats);
+        }
     }
 }

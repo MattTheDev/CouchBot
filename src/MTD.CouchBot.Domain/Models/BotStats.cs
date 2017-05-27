@@ -14,5 +14,6 @@ namespace MTD.CouchBot.Domain.Models
         public DateTime LoggingStartDate { get; set; }
         public DateTime LastRestart { get; set; }
         public List<int> BeamSubIds { get; set; }
+        public int HaiBaiCount { get; set; }
     }
 }

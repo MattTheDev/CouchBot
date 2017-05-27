@@ -14,11 +14,13 @@ namespace MTD.CouchBot.Dals
         void AddToBeamAlertCount();
         void AddToHitboxAlertCount();
         void AddToPicartoAlertCount();
+        void AddToHaiBaiCount();
         void AddUptimeMinutes();
         BotStats GetBotStats();
         void LogRestartTime();
         bool ContainsRandomInt(int random);
         void AddRandomInt(int random);
         void ClearRandomInts();
+        int GetHaiBaiCount();
     }
 }

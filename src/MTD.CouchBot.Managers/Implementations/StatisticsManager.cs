@@ -1,4 +1,5 @@
-﻿using MTD.CouchBot.Dals;
+﻿using System;
+using MTD.CouchBot.Dals;
 using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models;
 
@@ -91,6 +92,16 @@ namespace MTD.CouchBot.Managers.Implementations
         public void ClearRandomInts()
         {
             statisticsDal.ClearRandomInts();
+        }
+
+        public void AddToHaiBaiCount()
+        {
+            statisticsDal.AddToHaiBaiCount();
+        }
+
+        public int GetHaiBaiCount()
+        {
+            return statisticsDal.GetHaiBaiCount();
         }
     }
 }

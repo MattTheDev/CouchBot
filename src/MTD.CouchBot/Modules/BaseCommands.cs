@@ -261,6 +261,23 @@ namespace MTD.CouchBot.Modules
             }
         }
 
+        [Command("haibai")]
+        public async Task HaiBai()
+        {
+            statisticsManager.AddToHaiBaiCount();
+
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.ImageUrl = "http://couchbot.io/img/bot/haibai.gif";
+            builder.AddField(f =>
+            {
+                f.Name = "Hai Bai Count!";
+                f.Value = statisticsManager.GetHaiBaiCount();
+                f.IsInline = false;
+            });
+
+            await Context.Channel.SendMessageAsync("", false, builder.Build());
+        }
+
         [Command("permissions"), Summary("Check bot permissions.")]
         public async Task Permissions(IGuildChannel channel)
         {
