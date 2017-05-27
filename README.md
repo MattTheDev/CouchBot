@@ -13,10 +13,10 @@ CouchBot is a Discord Bot that allows you to announce when you, your friends, an
 
 1. Get CouchBot in your server! (Click here: https://discordapp.com/oauth2/authorize?client_id=308371905667137536&scope=bot)
 2. Once in there, type:
-* !cb beam add channel
-* !cb beam remove channel
-* !cb beam owner channel - Can only have 1 owner per server.
-* !cb beam resetowner
+* !cb mixer add channel
+* !cb mixer remove channel
+* !cb mixer owner channel - Can only have 1 owner per server.
+* !cb mixer resetowner
 * !cb picarto add Channel
 * !cb picarto remove Channel
 * !cb picarto owner Channel
