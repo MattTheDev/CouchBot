@@ -35,10 +35,11 @@ namespace MTD.CouchBot.Domain.Models
         [DefaultValue(@"YouTube\")]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public string YouTubeDirectory { get; set; }
+        public string PicartoDirectory { get; set; }
 
         [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        public bool EnableBeam { get; set; }
+        public bool EnableMixer { get; set; }
         [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool EnableSmashcast { get; set; }
@@ -48,5 +49,6 @@ namespace MTD.CouchBot.Domain.Models
         [DefaultValue(true)]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool EnableYouTube { get; set; }
+        public bool EnablePicarto { get; set; }
     }
 }

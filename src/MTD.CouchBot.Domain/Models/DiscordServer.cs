@@ -25,15 +25,13 @@ namespace MTD.CouchBot.Json
         public List<string> ServerBeamChannels { get; set; }
         public List<string> ServerBeamChannelIds { get; set; }
         public List<string> ServerHitboxChannels { get; set; }
+        public List<string> PicartoChannels { get; set; }
         public float TimeZoneOffset { get; set; }
         public bool AllowThumbnails { get; set; }
         public bool Greetings { get; set; }
         public bool Goodbyes { get; set; }
         public string GreetingMessage { get; set; }
         public string GoodbyeMessage { get; set; }
-
-        [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool AllowPublished { get; set; }
         public string PublishedMessage { get; set; }
         public string LiveMessage { get; set; }
@@ -41,24 +39,19 @@ namespace MTD.CouchBot.Json
         public bool UseTextAnnouncements { get; set; }
         public bool DeleteWhenOffline { get; set; }
         public ulong MentionRole { get; set; }
-        [DefaultValue(true)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool AllowLive { get; set; }
         public string OwnerBeamChannel { get; set; }
         public string OwnerBeamChannelId { get; set; }
         public string OwnerHitboxChannel { get; set; }
+        public string OwnerPicartoChannel { get; set; }
         public string OwnerTwitchChannel { get; set; }
         public string OwnerTwitchChannelId { get; set; }
         public string OwnerYouTubeChannelId { get; set; }
         public ulong OwnerTwitchFeedChannel { get; set; }
         public ulong TwitchFeedChannel { get; set; }
 
-        [DefaultValue(false)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool AllowChannelFeed { get; set; }
 
-        [DefaultValue(false)]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public bool AllowOwnerChannelFeed { get; set; }
 
         [DefaultValue("This stream is now offline.")]

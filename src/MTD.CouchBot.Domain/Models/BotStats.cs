@@ -9,6 +9,7 @@ namespace MTD.CouchBot.Domain.Models
         public int TwitchAlertCount { get; set; }
         public int BeamAlertCount { get; set; }
         public int HitboxAlertCount { get; set; }
+        public int PicartoAlertCount { get; set; }
         public int UptimeMinutes { get; set; }
         public DateTime LoggingStartDate { get; set; }
         public DateTime LastRestart { get; set; }

@@ -33,10 +33,19 @@ namespace MTD.CouchBot.Modules
             var serverYouTubeCount = 0;
             var serverBeamCount = 0;
             var serverHitboxCount = 0;
+            var serverPicartoCount = 0;
 
             foreach (var s in serverFiles)
             {
                 var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
+
+                if (server.PicartoChannels != null)
+                {
+                    foreach (var u in server.PicartoChannels)
+                    {
+                        serverPicartoCount++;
+                    }
+                }
 
                 if (server.ServerBeamChannels != null)
                 {
@@ -76,10 +85,11 @@ namespace MTD.CouchBot.Modules
                           "- Servers: " + serverFiles.Length + "\r\n" +
                           "Platforms: \r\n" +
                           "-- Mixer: " + serverBeamCount + "\r\n" +
+                          "-- Picarto: " + serverPicartoCount + "\r\n" +
                           "-- Smashcast: " + serverHitboxCount + "\r\n" +
                           "-- Twitch: " + serverTwitchCount + "\r\n" +
                           "-- YouTube: " + serverYouTubeCount + "\r\n" +
-                          "-- Total Channels Checked: " + (serverYouTubeCount + serverTwitchCount + serverBeamCount + serverHitboxCount) + "\r\n" +
+                          "-- Total Channels Checked: " + (serverYouTubeCount + serverTwitchCount + serverBeamCount + serverHitboxCount + serverPicartoCount) + "\r\n" +
                           "- Current Memory Usage: " + ((System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024) / 1024) + "MB \r\n" +
                           "- Built on Discord.Net - (https://github.com/RogueException/Discord.Net)\r\n" +
                           "- Developed and Maintained by Dawgeth - (http://twitter.com/dawgeth)\r\n" +
@@ -189,6 +199,7 @@ namespace MTD.CouchBot.Modules
             var info = "```Markdown\r\n" +
                     "# Alerts since initial tracking - " + botStats.LoggingStartDate.ToString("MM/dd/yyyy hh:mm:ss UTC") + "\r\n" +
                     "Mixer - " + botStats.BeamAlertCount + "\r\n" +
+                    "Picarto - " + botStats.PicartoAlertCount + "\r\n" +
                     "Smashcast - " + botStats.HitboxAlertCount + "\r\n" +
                     "Twitch - " + botStats.TwitchAlertCount + "\r\n" +
                     "YouTube - " + botStats.YouTubeAlertCount + "\r\n" +

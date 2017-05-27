@@ -42,12 +42,15 @@ namespace MTD.CouchBot.Domain.Utilities
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory);
 
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory);
+            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
+                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory);
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory);
-    }
+
+            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory))
+                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory);
+        }
 
         public static DiscordServer GetDiscordServer(string guildId)
         {
@@ -94,7 +97,7 @@ namespace MTD.CouchBot.Domain.Utilities
             var liveChannels = new List<LiveChannel>();
 
             // Get Live Channels
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory))
+            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
             {
                 liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
             }
@@ -141,9 +144,22 @@ namespace MTD.CouchBot.Domain.Utilities
             return liveChannels;
         }
 
+        public static List<LiveChannel> GetCurrentlyLivePicartoChannels()
+        {
+            var liveChannels = new List<LiveChannel>();
+
+            // Get Live Channels
+            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory))
+            {
+                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+            }
+
+            return liveChannels;
+        }
+
         public static void DeleteLiveBeamChannel(string beamId)
         {
-            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.BeamDirectory + beamId + ".json");
+            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + beamId + ".json");
         }
     }
 }

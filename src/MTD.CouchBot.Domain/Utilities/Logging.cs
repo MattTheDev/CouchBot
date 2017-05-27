@@ -110,5 +110,20 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.ResetColor();
             }
         }
+
+        public static void LogPicarto(string message)
+        {
+            lock (_messageLog)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Write("[" + DateTime.UtcNow + "] - ");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write("[" + Constants.Picarto + "]");
+                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(" " + message);
+                Console.ResetColor();
+            }
+        }
     }
 }

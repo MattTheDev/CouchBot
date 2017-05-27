@@ -33,6 +33,11 @@ namespace MTD.CouchBot.Managers.Implementations
             statisticsDal.AddToHitboxAlertCount();
         }
 
+        public void AddToPicartoAlertCount()
+        {
+            statisticsDal.AddToPicartoAlertCount();
+        }
+
         public void AddUptimeMinutes()
         {
             statisticsDal.AddUptimeMinutes();

@@ -318,6 +318,10 @@ namespace MTD.CouchBot.Bot
                         {
                             statisticsManager.AddToYouTubeAlertCount();
                         }
+                        else if(platform.Equals(Constants.Picarto))
+                        {
+                            statisticsManager.AddToPicartoAlertCount();
+                        }
 
                     }
                     catch (Exception ex)

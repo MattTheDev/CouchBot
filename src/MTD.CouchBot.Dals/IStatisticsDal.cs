@@ -13,6 +13,7 @@ namespace MTD.CouchBot.Dals
         void AddToTwitchAlertCount();
         void AddToBeamAlertCount();
         void AddToHitboxAlertCount();
+        void AddToPicartoAlertCount();
         void AddUptimeMinutes();
         BotStats GetBotStats();
         void LogRestartTime();

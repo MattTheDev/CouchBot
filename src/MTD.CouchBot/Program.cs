@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models;
+using MTD.CouchBot.Domain.Models.Picarto;
 using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
@@ -43,6 +44,8 @@ namespace MTD.CouchBot
         private static Timer youtubePublishedOwnerTimer;
         private static Timer twitchFeedTimer;
         private static Timer twitchOwnerFeedTimer;
+        private static Timer picartoTimer;
+        private static Timer picartoOwnerTimer;
 
         private static Timer cleanupTimer;
         private static Timer uptimeTimer;
@@ -53,6 +56,7 @@ namespace MTD.CouchBot
         ITwitchManager twitchManager;
         ISmashcastManager smashcastManager;
         IMixerManager mixerManager;
+        IPicartoManager picartoManager;
 
         #endregion
 
@@ -60,26 +64,7 @@ namespace MTD.CouchBot
 
         public async Task Start()
         {
-            Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-
             Logging.LogInfo("Starting the Bot!");
-            Logging.LogInfo("Initializing Managers.");
-
-            statisticsManager = new StatisticsManager();
-            youtubeManager = new YouTubeManager();
-            twitchManager = new TwitchManager();
-            mixerManager = new MixerManager();
-            smashcastManager = new SmashcastManager();
-
-            Logging.LogInfo("Managers Initialized.");
-            Logging.LogInfo("Log Last Restart Time and Date.");
-
-            statisticsManager.LogRestartTime();
-
-            Logging.LogInfo("Clear randomly seeded Mixer task Ids.");
-
-            statisticsManager.ClearRandomInts();
-
             Logging.LogInfo("Check Bot Configuration.");
 
             BotFiles.CheckConfiguration();
@@ -101,6 +86,25 @@ namespace MTD.CouchBot
             BotFiles.CheckFolderStructure();
 
             Logging.LogInfo("Folder Structure - All Set.");
+
+            Logging.LogInfo("Initializing Managers.");
+
+            statisticsManager = new StatisticsManager();
+            youtubeManager = new YouTubeManager();
+            twitchManager = new TwitchManager();
+            mixerManager = new MixerManager();
+            smashcastManager = new SmashcastManager();
+            picartoManager = new PicartoManager();
+
+            Logging.LogInfo("Managers Initialized.");
+            Logging.LogInfo("Log Last Restart Time and Date.");
+
+            statisticsManager.LogRestartTime();
+
+            Logging.LogInfo("Clear randomly seeded Mixer task Ids.");
+
+            statisticsManager.ClearRandomInts();
+
             Logging.LogInfo("Do Bot Things.");
 
             await DoBotStuff();
@@ -108,7 +112,7 @@ namespace MTD.CouchBot
             Logging.LogInfo("Bot Things Done.");
             Logging.LogInfo("Resubscribe to Mixer Events.");
 
-            if (Constants.EnableBeam)
+            if (Constants.EnableMixer)
             {
                 await ResubscribeToBeamEvents();
                 QueueBeamClientCheck();
@@ -130,6 +134,11 @@ namespace MTD.CouchBot
             if (Constants.EnableSmashcast)
             {
                 QueueHitboxChecks();
+            }
+
+            if (Constants.EnablePicarto)
+            {
+                QueuePicartoChecks();
             }
 
             QueueCleanUp();
@@ -329,6 +338,29 @@ namespace MTD.CouchBot
                 sw.Stop();
                 Logging.LogYouTube("Owner YouTube Published Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, 900000);
+        }
+
+        public void QueuePicartoChecks()
+        {
+            picartoTimer = new Timer(async (e) =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Logging.LogPicarto("Checking Picarto Channels.");
+                await CheckPicartoLive();
+                sw.Stop();
+                Logging.LogPicarto("Picarto Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+            }, null, 0, 60000);
+
+            hitboxOwnerTimer = new Timer(async (e) =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Logging.LogPicarto("Checking Picarto Smashcast Channels.");
+                await CheckOwnerPicartoLive();
+                sw.Stop();
+                Logging.LogPicarto("Owner Picarto Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+            }, null, 0, 60000);
         }
 
         public async Task BroadcastMessage(string message)
@@ -1098,6 +1130,393 @@ namespace MTD.CouchBot
             }
         }
 
+        public async Task CheckPicartoLive()
+        {
+            var servers = BotFiles.GetConfiguredServers();
+            var liveChannels = BotFiles.GetCurrentlyLivePicartoChannels();
+
+            // Loop through servers to broadcast.
+            foreach (var server in servers)
+            {
+                if (!server.AllowLive)
+                {
+                    continue;
+                }
+
+                if (server.Id == 0 || server.GoLiveChannel == 0)
+                { continue; }
+
+                if (server.PicartoChannels != null)
+                {
+                    foreach (var picartoChannel in server.PicartoChannels)
+                    {
+                        var channel = liveChannels.FirstOrDefault(x => x.Name.ToLower() == picartoChannel.ToLower());
+
+                        PicartoChannel stream = null;
+
+                        try
+                        {
+                            stream = await picartoManager.GetChannelByName(picartoChannel);
+                        }
+                        catch (Exception wex)
+                        {
+                            // Log our error and move to the next user.
+
+                            Logging.LogError("Picarto Error: " + wex.Message + " for user: " + picartoChannel + " in Discord Server Id: " + server.Id);
+                            continue;
+                        }
+
+                        // if our stream isnt null, and we have a return from mixer.
+                        if (stream != null)
+                        {
+                            if (stream.Online)
+                            {
+                                bool allowEveryone = server.AllowEveryone;
+                                var chat = await DiscordHelper.GetMessageChannel(server.Id, server.GoLiveChannel);
+
+                                if (chat == null)
+                                {
+                                    continue;
+                                }
+
+                                bool checkChannelBroadcastStatus = channel == null || !channel.Servers.Contains(server.Id);
+                                bool checkGoLive = !string.IsNullOrEmpty(server.GoLiveChannel.ToString()) && server.GoLiveChannel != 0;
+
+                                if (checkChannelBroadcastStatus)
+                                {
+                                    if (checkGoLive)
+                                    {
+                                        if (chat != null)
+                                        {
+                                            if (channel == null)
+                                            {
+                                                channel = new LiveChannel()
+                                                {
+                                                    Name = picartoChannel,
+                                                    Servers = new List<ulong>()
+                                                };
+
+                                                channel.Servers.Add(server.Id);
+
+                                                liveChannels.Add(channel);
+                                            }
+                                            else
+                                            {
+                                                channel.Servers.Add(server.Id);
+                                            }
+
+                                            if (server.LiveMessage == null)
+                                            {
+                                                server.LiveMessage = "%CHANNEL% just went live - %TITLE% - %URL%";
+                                            }
+
+                                            string url = "https://picarto.tv/user_data/usrimg/" + stream.Name.ToLower() + "/dsdefault.jpg";
+
+                                            EmbedBuilder embedBuilder = new EmbedBuilder();
+                                            EmbedAuthorBuilder author = new EmbedAuthorBuilder();
+                                            EmbedFooterBuilder footer = new EmbedFooterBuilder();
+
+                                            author.IconUrl = "https://picarto.tv/user_data/usrimg/" + stream.Name.ToLower() + "/dsdefault.jpg";
+                                            author.Name = stream.Name;
+                                            author.Url = "https://picarto.tv/" + stream.Name;
+                                            embedBuilder.Author = author;
+
+                                            footer.IconUrl = "https://picarto.tv/images/Picarto_logo.png";
+                                            footer.Text = "[Picarto] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                                            embedBuilder.Footer = footer;
+
+                                            embedBuilder.Title = stream.Name + " has gone live!";
+                                            embedBuilder.Color = new Color(192, 192, 192);
+                                            embedBuilder.ThumbnailUrl = server.AllowThumbnails ? "https://picarto.tv/user_data/usrimg/" + stream.Name.ToLower() + "/dsdefault.jpg" : "";
+                                            embedBuilder.ImageUrl = "https://thumb.picarto.tv/thumbnail/" + stream.Name + ".jpg";
+
+                                            embedBuilder.Description = server.LiveMessage.Replace("%CHANNEL%", stream.Name).Replace("%TITLE%", stream.Title).Replace("%URL%", "https://picarto.tv/" + stream.Name).Replace("%GAME%", stream.Category);
+
+                                            embedBuilder.AddField(f =>
+                                            {
+                                                f.Name = "Category";
+                                                f.Value = stream.Category;
+                                                f.IsInline = true;
+                                            });
+
+                                            embedBuilder.AddField(f =>
+                                            {
+                                                f.Name = "Adult Stream?";
+                                                f.Value = stream.Adult ? "Yup!" : "Nope!";
+                                                f.IsInline = true;
+                                            });
+
+                                            embedBuilder.AddField(f =>
+                                            {
+                                                f.Name = "Total Viewers";
+                                                f.Value = stream.ViewersTotal;
+                                                f.IsInline = true;
+                                            });
+
+                                            embedBuilder.AddField(f =>
+                                            {
+                                                f.Name = "Total Followers";
+                                                f.Value = stream.Followers;
+                                                f.IsInline = true;
+                                            });
+
+                                            string tags = "";
+                                            foreach (var t in stream.Tags)
+                                            {
+                                                tags += t + ", ";
+                                            }
+
+                                            embedBuilder.AddField(f =>
+                                            {
+                                                f.Name = "Stream Tags";
+                                                f.Value = tags.Trim().TrimEnd(',');
+                                                f.IsInline = false;
+                                            });
+
+                                            Logging.LogPicarto(picartoChannel + " has gone online.");
+
+                                            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                                            if (role == null)
+                                            {
+                                                server.MentionRole = 0;
+                                            }
+
+                                            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
+
+                                            if (server.UseTextAnnouncements)
+                                            {
+                                                if (!server.AllowThumbnails)
+                                                {
+                                                    url = "<" + url + ">";
+                                                }
+
+                                                message += "**[Picarto]** " + server.LiveMessage.Replace("%CHANNEL%", stream.Name).Replace("%TITLE%", stream.Title).Replace("%URL%", "https://picarto.tv/" + stream.Name).Replace("%GAME%", stream.Category);
+                                            }
+
+                                            var broadcastMessage = new BroadcastMessage()
+                                            {
+                                                GuildId = server.Id,
+                                                ChannelId = server.GoLiveChannel,
+                                                UserId = picartoChannel,
+                                                Message = message,
+                                                Platform = Constants.Picarto,
+                                                Embed = (!server.UseTextAnnouncements ? embedBuilder.Build() : null)
+                                            };
+
+                                            var finalCheck = BotFiles.GetCurrentlyLivePicartoChannels().FirstOrDefault(x => x.Name == picartoChannel);
+
+                                            if (finalCheck == null || !finalCheck.Servers.Contains(server.Id))
+                                            {
+                                                if (channel.ChannelMessages == null)
+                                                    channel.ChannelMessages = new List<ChannelMessage>();
+
+                                                channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Picarto, new List<BroadcastMessage>() { broadcastMessage }));
+
+                                                File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory + picartoChannel + ".json", JsonConvert.SerializeObject(channel));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task CheckOwnerPicartoLive()
+        {
+            var servers = BotFiles.GetConfiguredServers();
+            var liveChannels = BotFiles.GetCurrentlyLivePicartoChannels();
+
+            // Loop through servers to broadcast.
+            foreach (var server in servers)
+            {
+                if (!server.AllowLive)
+                {
+                    continue;
+                }
+
+                if (server.Id == 0 || server.OwnerLiveChannel == 0)
+                { continue; }
+
+                if (server.OwnerPicartoChannel != null)
+                {
+                    var channel = liveChannels.FirstOrDefault(x => x.Name.ToLower() == server.OwnerPicartoChannel.ToLower());
+
+                    PicartoChannel stream = null;
+
+                    try
+                    {
+                        stream = await picartoManager.GetChannelByName(server.OwnerPicartoChannel);
+                    }
+                    catch (Exception wex)
+                    {
+                        // Log our error and move to the next user.
+
+                        Logging.LogError("Picarto Error: " + wex.Message + " for user: " + server.OwnerPicartoChannel + " in Discord Server Id: " + server.Id);
+                        continue;
+                    }
+
+                    // if our stream isnt null, and we have a return from mixer.
+                    if (stream != null)
+                    {
+                        if (stream.Online)
+                        {
+                            bool allowEveryone = server.AllowEveryone;
+                            var chat = await DiscordHelper.GetMessageChannel(server.Id, server.OwnerLiveChannel);
+
+                            if (chat == null)
+                            {
+                                continue;
+                            }
+
+                            bool checkChannelBroadcastStatus = channel == null || !channel.Servers.Contains(server.Id);
+                            bool checkGoLive = !string.IsNullOrEmpty(server.OwnerLiveChannel.ToString()) && server.OwnerLiveChannel != 0;
+
+                            if (checkChannelBroadcastStatus)
+                            {
+                                if (checkGoLive)
+                                {
+                                    if (chat != null)
+                                    {
+                                        if (channel == null)
+                                        {
+                                            channel = new LiveChannel()
+                                            {
+                                                Name = server.OwnerPicartoChannel,
+                                                Servers = new List<ulong>()
+                                            };
+
+                                            channel.Servers.Add(server.Id);
+
+                                            liveChannels.Add(channel);
+                                        }
+                                        else
+                                        {
+                                            channel.Servers.Add(server.Id);
+                                        }
+
+                                        if (server.LiveMessage == null)
+                                        {
+                                            server.LiveMessage = "%CHANNEL% just went live - %TITLE% - %URL%";
+                                        }
+
+                                        string url = "https://picarto.tv/user_data/usrimg/" + stream.Name.ToLower() + "/dsdefault.jpg";
+
+                                        EmbedBuilder embedBuilder = new EmbedBuilder();
+                                        EmbedAuthorBuilder author = new EmbedAuthorBuilder();
+                                        EmbedFooterBuilder footer = new EmbedFooterBuilder();
+
+                                        author.IconUrl = "https://picarto.tv/user_data/usrimg/" + stream.Name.ToLower() + "/dsdefault.jpg";
+                                        author.Name = stream.Name;
+                                        author.Url = "https://picarto.tv/" + stream.Name;
+                                        embedBuilder.Author = author;
+
+                                        footer.IconUrl = "https://picarto.tv/images/Picarto_logo.png";
+                                        footer.Text = "[Picarto] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                                        embedBuilder.Footer = footer;
+
+                                        embedBuilder.Title = stream.Name + " has gone live!";
+                                        embedBuilder.Color = new Color(192, 192, 192);
+                                        embedBuilder.ThumbnailUrl = server.AllowThumbnails ? "https://picarto.tv/user_data/usrimg/" + stream.Name.ToLower() + "/dsdefault.jpg" : "";
+                                        embedBuilder.ImageUrl = "https://thumb.picarto.tv/thumbnail/" + stream.Name + ".jpg";
+
+                                        embedBuilder.Description = server.LiveMessage.Replace("%CHANNEL%", stream.Name).Replace("%TITLE%", stream.Title).Replace("%URL%", "https://picarto.tv/" + stream.Name).Replace("%GAME%", stream.Category);
+
+                                        embedBuilder.AddField(f =>
+                                        {
+                                            f.Name = "Category";
+                                            f.Value = stream.Category;
+                                            f.IsInline = true;
+                                        });
+
+                                        embedBuilder.AddField(f =>
+                                        {
+                                            f.Name = "Adult Stream?";
+                                            f.Value = stream.Adult ? "Yup!" : "Nope!";
+                                            f.IsInline = true;
+                                        });
+
+                                        embedBuilder.AddField(f =>
+                                        {
+                                            f.Name = "Total Viewers";
+                                            f.Value = stream.ViewersTotal;
+                                            f.IsInline = true;
+                                        });
+
+                                        embedBuilder.AddField(f =>
+                                        {
+                                            f.Name = "Total Followers";
+                                            f.Value = stream.Followers;
+                                            f.IsInline = true;
+                                        });
+
+                                        string tags = "";
+                                        foreach (var t in stream.Tags)
+                                        {
+                                            tags += t + ", ";
+                                        }
+
+                                        embedBuilder.AddField(f =>
+                                        {
+                                            f.Name = "Stream Tags";
+                                            f.Value = tags.Trim().TrimEnd(',');
+                                            f.IsInline = false;
+                                        });
+
+                                        Logging.LogPicarto(server.OwnerPicartoChannel + " has gone online.");
+
+                                        var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                                        if (role == null)
+                                        {
+                                            server.MentionRole = 0;
+                                        }
+
+                                        var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
+
+                                        if (server.UseTextAnnouncements)
+                                        {
+                                            if (!server.AllowThumbnails)
+                                            {
+                                                url = "<" + url + ">";
+                                            }
+
+                                            message += "**[Picarto]** " + server.LiveMessage.Replace("%CHANNEL%", stream.Name).Replace("%TITLE%", stream.Title).Replace("%URL%", "https://picarto.tv/" + stream.Name).Replace("%GAME%", stream.Category);
+                                        }
+
+                                        var broadcastMessage = new BroadcastMessage()
+                                        {
+                                            GuildId = server.Id,
+                                            ChannelId = server.GoLiveChannel,
+                                            UserId = server.OwnerPicartoChannel,
+                                            Message = message,
+                                            Platform = Constants.Picarto,
+                                            Embed = (!server.UseTextAnnouncements ? embedBuilder.Build() : null)
+                                        };
+
+                                        var finalCheck = BotFiles.GetCurrentlyLivePicartoChannels().FirstOrDefault(x => x.Name == server.OwnerPicartoChannel);
+
+                                        if (finalCheck == null || !finalCheck.Servers.Contains(server.Id))
+                                        {
+                                            if (channel.ChannelMessages == null)
+                                                channel.ChannelMessages = new List<ChannelMessage>();
+
+                                            channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Picarto, new List<BroadcastMessage>() { broadcastMessage }));
+
+                                            File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory + server.OwnerPicartoChannel + ".json", JsonConvert.SerializeObject(channel));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public async Task CheckPublishedYouTube()
         {
             var servers = BotFiles.GetConfiguredServers();
@@ -1404,6 +1823,12 @@ namespace MTD.CouchBot
                         {
                             await CleanUpLiveStreams(Constants.Smashcast);
                         }
+
+                        if(Constants.EnablePicarto)
+                        {
+                            await CleanUpLiveStreams(Constants.Picarto);
+                        }
+
                         Logging.LogInfo("Cleaning Up Live Files Complete.");
                     }
                 }
@@ -1647,6 +2072,40 @@ namespace MTD.CouchBot
                     {
 
                         Logging.LogError("Clean Up Smashcast Error: " + wex.Message + " for user: " + stream.Name);
+                    }
+                }
+            }
+
+            if (platform == Constants.Picarto)
+            {
+                var liveStreams = new List<LiveChannel>();
+
+                foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory))
+                {
+                    var channel = JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live));
+                    if (liveStreams.FirstOrDefault(x => x.Name == channel.Name) == null)
+                    {
+                        liveStreams.Add(channel);
+                    }
+                }
+
+                foreach (var stream in liveStreams)
+                {
+                    try
+                    {
+                        var liveStream = await picartoManager.GetChannelByName(stream.Name);
+
+                        if (liveStream == null || !liveStream.Online)
+                        {
+                            await CleanupMessages(stream.ChannelMessages);
+
+                            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory + stream.Name + ".json");
+                        }
+                    }
+                    catch (Exception wex)
+                    {
+
+                        Logging.LogError("Clean Up Picarto Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }

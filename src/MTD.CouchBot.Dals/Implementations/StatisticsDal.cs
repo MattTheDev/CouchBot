@@ -20,6 +20,7 @@ namespace MTD.CouchBot.Dals.Implementations
                 stats.TwitchAlertCount = 0;
                 stats.UptimeMinutes = 0;
                 stats.YouTubeAlertCount = 0;
+                stats.PicartoAlertCount = 0;
                 stats.LoggingStartDate = DateTime.UtcNow;
                 File.WriteAllText(path, JsonConvert.SerializeObject(stats));
             }
@@ -43,6 +44,12 @@ namespace MTD.CouchBot.Dals.Implementations
         {
             var stats = GetBotStats();
             stats.HitboxAlertCount++;
+            SaveBotStats(stats);
+        }
+        public void AddToPicartoAlertCount()
+        {
+            var stats = GetBotStats();
+            stats.PicartoAlertCount++;
             SaveBotStats(stats);
         }
 

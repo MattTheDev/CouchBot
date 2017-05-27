@@ -106,7 +106,7 @@ namespace MTD.CouchBot.Bot
                 File.WriteAllText(
                     Constants.ConfigRootDirectory +
                     Constants.LiveDirectory +
-                    Constants.BeamDirectory +
+                    Constants.MixerDirectory +
                     beamId + ".json",
                     JsonConvert.SerializeObject(channel));
             }

@@ -24,22 +24,24 @@ namespace MTD.CouchBot.Domain
             }
         }
 
-        public static readonly string ConfigRootDirectory = Settings.ConfigRootDirectory;
-        public static readonly string GuildDirectory = Settings.GuildDirectory;
-        public static readonly string UserDirectory = Settings.UserDirectory;
-        public static readonly string LiveDirectory = Settings.LiveDirectory;
-        public static readonly string TwitchDirectory = Settings.TwitchDirectory;
-        public static readonly string YouTubeDirectory = Settings.YouTubeDirectory;
-        public static readonly string BeamDirectory = Settings.BeamDirectory;
-        public static readonly string SmashcastDirectory = Settings.SmashcastDirectory;
+        public static readonly string ConfigRootDirectory = @"c:\programdata\CouchBot\";
+        public static readonly string GuildDirectory = @"Guilds\";
+        public static readonly string UserDirectory = @"Users\";
+        public static readonly string LiveDirectory = @"Live\";
+        public static readonly string TwitchDirectory = @"Twitch\";
+        public static readonly string YouTubeDirectory = @"YouTube\";
+        public static readonly string MixerDirectory = @"Mixer\";
+        public static readonly string SmashcastDirectory = @"Smashcast\";
+        public static readonly string PicartoDirectory = @"Picarto\";
 
         public static readonly string BotStatistics = "BotStats.json";
         public static readonly string BotSettings = "BotSettings.json";
 
-        public static readonly bool EnableBeam = Settings.EnableBeam;
+        public static readonly bool EnableMixer = Settings.EnableMixer;
         public static readonly bool EnableSmashcast = Settings.EnableSmashcast;
         public static readonly bool EnableTwitch = Settings.EnableTwitch;
         public static readonly bool EnableYouTube = Settings.EnableYouTube;
+        public static readonly bool EnablePicarto = Settings.EnablePicarto;
 
         public static readonly string DiscordToken = Settings.DiscordToken;
         public static readonly string TwitchClientId = Settings.TwitchClientId;
@@ -57,6 +59,6 @@ namespace MTD.CouchBot.Domain
         public static readonly string Twitch = "Twitch";
         public static readonly string YouTubeGaming = "YouTube Gaming";
         public static readonly string YouTube = "YouTube";
-
+        public static readonly string Picarto = "Picarto";
     }
 }
