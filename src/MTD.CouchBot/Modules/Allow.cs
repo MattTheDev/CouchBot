@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using MTD.CouchBot.Domain;
-using MTD.CouchBot.Json;
+using MTD.CouchBot.Domain.Models.Bot;
 using Newtonsoft.Json;
 using System.IO;
 using System.Threading.Tasks;

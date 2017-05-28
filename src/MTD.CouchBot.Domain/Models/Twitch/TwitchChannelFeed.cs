@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MTD.CouchBot.Domain.Models
+namespace MTD.CouchBot.Domain.Models.Twitch
 {
     public class TwitchChannelFeed
     {

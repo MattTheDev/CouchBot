@@ -1,8 +1,7 @@
 ﻿using MTD.CouchBot.Dals;
 using MTD.CouchBot.Dals.Implementations;
-using MTD.CouchBot.Domain.Models;
+using MTD.CouchBot.Domain.Models.Mixer;
 using System.Threading.Tasks;
-using System;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
@@ -17,12 +16,12 @@ namespace MTD.CouchBot.Managers.Implementations
             _statisticsDal = new StatisticsDal();
         }
 
-        public async Task<BeamChannel> GetChannelById(string id)
+        public async Task<MixerChannel> GetChannelById(string id)
         {
             return await mixerDal.GetChannelById(id);
         }
 
-        public async Task<BeamChannel> GetChannelByName(string name)
+        public async Task<MixerChannel> GetChannelByName(string name)
         {
             return await mixerDal.GetChannelByName(name);
         }

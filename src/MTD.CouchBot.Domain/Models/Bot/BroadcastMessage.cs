@@ -1,6 +1,6 @@
 ﻿using Discord;
 
-namespace MTD.CouchBot.Models
+namespace MTD.CouchBot.Models.Bot
 {
     public class BroadcastMessage
     {

@@ -1,4 +1,4 @@
-﻿using MTD.CouchBot.Domain.Models;
+﻿using MTD.CouchBot.Domain.Models.Smashcast;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net;
@@ -8,7 +8,7 @@ namespace MTD.CouchBot.Dals.Implementations
 {
     public class SmashcastDal : ISmashcastDal
     {
-        public async Task<HitboxChannel> GetChannelByName(string name)
+        public async Task<SmashcastChannel> GetChannelByName(string name)
         {
             var baseUrl = "https://api.smashcast.tv/media/live/";
 
@@ -21,7 +21,7 @@ namespace MTD.CouchBot.Dals.Implementations
                 responseText = sr.ReadToEnd();
             }
 
-            return JsonConvert.DeserializeObject<HitboxChannel>(responseText);
+            return JsonConvert.DeserializeObject<SmashcastChannel>(responseText);
         }
     }
 }

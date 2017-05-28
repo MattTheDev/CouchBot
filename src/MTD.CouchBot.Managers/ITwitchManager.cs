@@ -1,4 +1,4 @@
-﻿using MTD.CouchBot.Domain.Models;
+﻿using MTD.CouchBot.Domain.Models.Twitch;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MTD.CouchBot.Json
+namespace MTD.CouchBot.Domain.Models.Bot
 {
     public class User
     {

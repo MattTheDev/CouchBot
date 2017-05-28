@@ -1,4 +1,4 @@
-﻿using MTD.CouchBot.Domain.Models;
+﻿using MTD.CouchBot.Domain.Models.YouTube;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers

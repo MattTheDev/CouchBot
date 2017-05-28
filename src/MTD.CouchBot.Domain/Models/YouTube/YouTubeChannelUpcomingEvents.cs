@@ -1,9 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace MTD.CouchBot.Domain.Models
+namespace MTD.CouchBot.Domain.Models.YouTube
 {
-    public class YouTubeChannelSearchList
+    public class YouTubeChannelUpcomingEvents
     {
+        public string kind { get; set; }
+        public string etag { get; set; }
+        public string regionCode { get; set; }
+        public PageInfo pageInfo { get; set; }
+        public List<Item> items { get; set; }
+
         public class PageInfo
         {
             public int totalResults { get; set; }
@@ -13,22 +21,28 @@ namespace MTD.CouchBot.Domain.Models
         public class Id
         {
             public string kind { get; set; }
-            public string channelId { get; set; }
+            public string videoId { get; set; }
         }
 
         public class Default
         {
             public string url { get; set; }
+            public int width { get; set; }
+            public int height { get; set; }
         }
 
         public class Medium
         {
             public string url { get; set; }
+            public int width { get; set; }
+            public int height { get; set; }
         }
 
         public class High
         {
             public string url { get; set; }
+            public int width { get; set; }
+            public int height { get; set; }
         }
 
         public class Thumbnails
@@ -56,14 +70,5 @@ namespace MTD.CouchBot.Domain.Models
             public Id id { get; set; }
             public Snippet snippet { get; set; }
         }
-
-
-            public string kind { get; set; }
-            public string etag { get; set; }
-            public string nextPageToken { get; set; }
-            public string regionCode { get; set; }
-            public PageInfo pageInfo { get; set; }
-            public List<Item> items { get; set; }
-        
     }
 }

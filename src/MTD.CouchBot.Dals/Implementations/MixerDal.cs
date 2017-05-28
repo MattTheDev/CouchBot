@@ -1,4 +1,4 @@
-﻿using MTD.CouchBot.Domain.Models;
+﻿using MTD.CouchBot.Domain.Models.Mixer;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net;
@@ -8,7 +8,7 @@ namespace MTD.CouchBot.Dals.Implementations
 {
     public class MixerDal : IMixerDal
     {
-        public async Task<BeamChannel> GetChannelByName(string name)
+        public async Task<MixerChannel> GetChannelByName(string name)
         {
             var baseUrl = "https://mixer.com/api/v1";
 
@@ -22,10 +22,10 @@ namespace MTD.CouchBot.Dals.Implementations
                 responseText = sr.ReadToEnd();
             }
 
-            return JsonConvert.DeserializeObject<BeamChannel>(responseText);
+            return JsonConvert.DeserializeObject<MixerChannel>(responseText);
         }
 
-        public async Task<BeamChannel> GetChannelById(string id)
+        public async Task<MixerChannel> GetChannelById(string id)
         {
             return await GetChannelByName(id);
         }

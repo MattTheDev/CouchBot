@@ -1,8 +1,8 @@
-﻿using MTD.CouchBot.Domain.Utilities;
-using MTD.CouchBot.Domain.Models;
+﻿using Discord;
+using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System.IO;
-using Discord;
 
 namespace MTD.CouchBot.Domain
 {
@@ -37,17 +37,24 @@ namespace MTD.CouchBot.Domain
         public static readonly string BotStatistics = "BotStats.json";
         public static readonly string BotSettings = "BotSettings.json";
 
-        public static readonly bool EnableMixer = Settings.EnableMixer;
-        public static readonly bool EnableSmashcast = Settings.EnableSmashcast;
-        public static readonly bool EnableTwitch = Settings.EnableTwitch;
-        public static readonly bool EnableYouTube = Settings.EnableYouTube;
-        public static readonly bool EnablePicarto = Settings.EnablePicarto;
+        public static readonly bool EnableMixer = Settings.PlatformSettings.EnableMixer;
+        public static readonly bool EnableSmashcast = Settings.PlatformSettings.EnableSmashcast;
+        public static readonly bool EnableTwitch = Settings.PlatformSettings.EnableTwitch;
+        public static readonly bool EnableYouTube = Settings.PlatformSettings.EnableYouTube;
+        public static readonly bool EnablePicarto = Settings.PlatformSettings.EnablePicarto;
 
-        public static readonly string DiscordToken = Settings.DiscordToken;
-        public static readonly string TwitchClientId = Settings.TwitchClientId;
-        public static readonly string YouTubeApiKey = Settings.YouTubeApiKey;
-        public static readonly ulong CouchBotId = Settings.CouchBotId;
-        public static readonly string Prefix = Settings.Prefix;
+        public static readonly string DiscordToken = Settings.KeySettings.DiscordToken;
+        public static readonly string TwitchClientId = Settings.KeySettings.TwitchClientId;
+        public static readonly string YouTubeApiKey = Settings.KeySettings.YouTubeApiKey;
+        public static readonly ulong CouchBotId = Settings.BotConfig.CouchBotId;
+        public static readonly string Prefix = Settings.BotConfig.Prefix;
+
+        public static readonly int PicartoInterval = Settings.IntervalSettings.Picarto * 1000;
+        public static readonly int TwitchInterval = Settings.IntervalSettings.Twitch * 1000;
+        public static readonly int TwitchFeedInterval = Settings.IntervalSettings.TwitchFeed * 1000;
+        public static readonly int SmashcastInterval = Settings.IntervalSettings.Smashcast * 1000;
+        public static readonly int YouTubePublishedInterval = Settings.IntervalSettings.YouTubePublished * 1000;
+        public static readonly int YouTubeLiveInterval = Settings.IntervalSettings.YouTubeLive * 1000;
 
         public static readonly Color Blue = new Color(76, 144, 243);
         public static readonly Color Red = new Color(179, 18, 23);

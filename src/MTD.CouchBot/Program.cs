@@ -3,13 +3,15 @@ using Discord.Commands;
 using Discord.WebSocket;
 using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
-using MTD.CouchBot.Domain.Models;
+using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Models.Picarto;
+using MTD.CouchBot.Domain.Models.Smashcast;
+using MTD.CouchBot.Domain.Models.Twitch;
+using MTD.CouchBot.Domain.Models.YouTube;
 using MTD.CouchBot.Domain.Utilities;
-using MTD.CouchBot.Json;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
-using MTD.CouchBot.Models;
+using MTD.CouchBot.Models.Bot;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -240,7 +242,7 @@ namespace MTD.CouchBot
                 await CheckHitboxLive();
                 sw.Stop();
                 Logging.LogSmashcast("Smashcast Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 120000);
+            }, null, 0, Constants.SmashcastInterval);
 
             hitboxOwnerTimer = new Timer(async (e) =>
             {
@@ -250,7 +252,7 @@ namespace MTD.CouchBot
                 await CheckOwnerHitboxLive();
                 sw.Stop();
                 Logging.LogSmashcast("Owner Smashcast Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 120000);
+            }, null, 0, Constants.SmashcastInterval);
         }
 
         public void QueueTwitchChecks()
@@ -264,7 +266,7 @@ namespace MTD.CouchBot
                 sw.Stop();
                 Logging.LogTwitch("Twitch Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
                 initialServicesRan = true;
-            }, null, 0, 300000);
+            }, null, 0, Constants.TwitchInterval);
 
             twitchOwnerTimer = new Timer(async (e) =>
             {
@@ -274,7 +276,7 @@ namespace MTD.CouchBot
                 await CheckOwnerTwitchLive();
                 sw.Stop();
                 Logging.LogTwitch("Owner Twitch Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 120000);
+            }, null, 0, Constants.TwitchInterval);
 
             twitchFeedTimer = new Timer(async (e) =>
             {
@@ -284,7 +286,7 @@ namespace MTD.CouchBot
                 await CheckTwitchChannelFeeds();
                 sw.Stop();
                 Logging.LogTwitch("Twitch Channel Feed Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 120000);
+            }, null, 0, Constants.TwitchFeedInterval);
 
             twitchOwnerFeedTimer = new Timer(async (e) =>
             {
@@ -294,7 +296,7 @@ namespace MTD.CouchBot
                 await CheckTwitchOwnerChannelFeeds();
                 sw.Stop();
                 Logging.LogTwitch("Owner Twitch Channel Feed Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 120000);
+            }, null, 0, Constants.TwitchFeedInterval);
         }
 
         public void QueueYouTubeChecks()
@@ -307,7 +309,7 @@ namespace MTD.CouchBot
                 await CheckYouTubeLive();
                 sw.Stop();
                 Logging.LogYouTubeGaming("YouTube Gaming Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 300000);
+            }, null, 0, Constants.YouTubeLiveInterval);
 
             youtubeOwnerTimer = new Timer(async (e) =>
             {
@@ -317,7 +319,7 @@ namespace MTD.CouchBot
                 await CheckOwnerYouTubeLive();
                 sw.Stop();
                 Logging.LogYouTubeGaming("Owner YouTube Gaming Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 120000);
+            }, null, 0, Constants.YouTubeLiveInterval);
 
             youtubePublishedTimer = new Timer(async (e) =>
             {
@@ -327,7 +329,7 @@ namespace MTD.CouchBot
                 await CheckPublishedYouTube();
                 sw.Stop();
                 Logging.LogYouTube("YouTube Published Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 900000);
+            }, null, 0, Constants.YouTubePublishedInterval);
 
             youtubePublishedOwnerTimer = new Timer(async (e) =>
             {
@@ -337,7 +339,7 @@ namespace MTD.CouchBot
                 await CheckOwnerPublishedYouTube();
                 sw.Stop();
                 Logging.LogYouTube("Owner YouTube Published Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 900000);
+            }, null, 0, Constants.YouTubePublishedInterval);
         }
 
         public void QueuePicartoChecks()
@@ -350,9 +352,9 @@ namespace MTD.CouchBot
                 await CheckPicartoLive();
                 sw.Stop();
                 Logging.LogPicarto("Picarto Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 60000);
+            }, null, 0, Constants.PicartoInterval);
 
-            hitboxOwnerTimer = new Timer(async (e) =>
+            picartoOwnerTimer = new Timer(async (e) =>
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
@@ -360,7 +362,7 @@ namespace MTD.CouchBot
                 await CheckOwnerPicartoLive();
                 sw.Stop();
                 Logging.LogPicarto("Owner Picarto Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 60000);
+            }, null, 0, Constants.PicartoInterval);
         }
 
         public async Task BroadcastMessage(string message)
@@ -943,7 +945,7 @@ namespace MTD.CouchBot
                     {
                         var channel = liveChannels.FirstOrDefault(x => x.Name.ToLower() == hitboxChannel.ToLower());
 
-                        HitboxChannel stream = null;
+                        SmashcastChannel stream = null;
 
                         try
                         {
@@ -1047,7 +1049,7 @@ namespace MTD.CouchBot
                 {
                     var channel = liveChannels.FirstOrDefault(x => x.Name.ToLower() == server.OwnerHitboxChannel.ToLower());
 
-                    HitboxChannel stream = null;
+                    SmashcastChannel stream = null;
 
                     try
                     {

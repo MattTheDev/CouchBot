@@ -1,4 +1,4 @@
-﻿using MTD.CouchBot.Domain.Models;
+﻿using MTD.CouchBot.Domain.Models.Mixer;
 using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
@@ -51,7 +51,7 @@ namespace MTD.CouchBot.Bot
 
                     if (data.ToLower().Contains("{\"online\": true}"))
                     {
-                        var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
+                        var payload = JsonConvert.DeserializeObject<MixerPayload>(data);
                         var channelData = payload.data.channel.Split(':');
                         var channelId = channelData[1];
                         var channel = await _mixerManager.GetChannelById(channelId);
@@ -61,7 +61,7 @@ namespace MTD.CouchBot.Bot
                     }
                     else if(data.ToLower().Contains("{\"online\": false}"))
                     {
-                        var payload = JsonConvert.DeserializeObject<BeamPayload>(data);
+                        var payload = JsonConvert.DeserializeObject<MixerPayload>(data);
                         var channelData = payload.data.channel.Split(':');
                         var channelId = channelData[1];
                         var channel = await _mixerManager.GetChannelById(channelId);

@@ -1,6 +1,6 @@
-﻿namespace MTD.CouchBot.Domain.Models
+﻿namespace MTD.CouchBot.Domain.Models.Mixer
 {
-    public class BeamPayload
+    public class MixerPayload
     {
         public class Payload
         {

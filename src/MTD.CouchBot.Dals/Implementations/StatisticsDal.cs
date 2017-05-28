@@ -1,5 +1,5 @@
 ﻿using MTD.CouchBot.Domain;
-using MTD.CouchBot.Domain.Models;
+using MTD.CouchBot.Domain.Models.Bot;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

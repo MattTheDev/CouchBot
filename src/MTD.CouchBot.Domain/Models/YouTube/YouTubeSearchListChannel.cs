@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MTD.CouchBot.Domain.Models
+namespace MTD.CouchBot.Domain.Models.YouTube
 {
     public class YouTubeSearchListChannel
     {

@@ -1,5 +1,5 @@
 ﻿using MTD.CouchBot.Domain;
-using MTD.CouchBot.Domain.Models;
+using MTD.CouchBot.Domain.Models.YouTube;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net;
@@ -62,7 +62,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
         public async Task<YouTubePlaylist> GetPlaylistItemsByPlaylistId(string playlistId)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&key=" + Constants.YouTubeApiKey + "&playlistId=" + playlistId);
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&key=" + Constants.YouTubeApiKey + "&playlistId=" + playlistId);
             webRequest.ContentType = "application/json; charset=utf-8";
             string str;
             using (StreamReader streamReader = new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()))

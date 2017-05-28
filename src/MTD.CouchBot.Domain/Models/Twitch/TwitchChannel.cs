@@ -1,4 +1,4 @@
-﻿namespace MTD.CouchBot.Domain.Models
+﻿namespace MTD.CouchBot.Domain.Models.Twitch
 {
     public class TwitchChannel
     {

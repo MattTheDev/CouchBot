@@ -1,5 +1,4 @@
-﻿using MTD.CouchBot.Domain.Models;
-using MTD.CouchBot.Json;
+﻿using MTD.CouchBot.Domain.Models.Bot;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -10,16 +9,7 @@ namespace MTD.CouchBot.Domain.Utilities
     {
         public static void CheckConfiguration()
         {
-            BotFiles.CheckFolderStructure();
-            if(!File.Exists(Constants.ConfigRootDirectory + Constants.BotSettings))
-            {
-                BotSettings settings = new BotSettings();
-                settings.DiscordToken = "DISCORDTOKEN";
-                settings.TwitchClientId = "TWITCHID";
-                settings.YouTubeApiKey = "YOUTUBEAPI";
-                settings.CouchBotId = 0;
-                File.WriteAllText(Constants.ConfigRootDirectory + Constants.BotSettings, JsonConvert.SerializeObject(settings));
-            }
+            CheckFolderStructure();
         }
 
         public static void CheckFolderStructure()

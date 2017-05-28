@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace MTD.CouchBot.Json
+namespace MTD.CouchBot.Domain.Models.Bot
 {
     public class DiscordServer
     {

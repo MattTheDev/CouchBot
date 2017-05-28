@@ -1,6 +1,6 @@
 ﻿using MTD.CouchBot.Dals;
 using MTD.CouchBot.Dals.Implementations;
-using MTD.CouchBot.Domain.Models;
+using MTD.CouchBot.Domain.Models.Smashcast;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
@@ -14,7 +14,7 @@ namespace MTD.CouchBot.Managers.Implementations
             smashcastDal = new SmashcastDal();
         }
 
-        public async Task<HitboxChannel> GetChannelByName(string name)
+        public async Task<SmashcastChannel> GetChannelByName(string name)
         {
             return await smashcastDal.GetChannelByName(name);
         }

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace MTD.CouchBot.Domain.Models
+namespace MTD.CouchBot.Domain.Models.Mixer
 {
-    public class BeamChannel
+    public class MixerChannel
     {
         public class Meta
         {

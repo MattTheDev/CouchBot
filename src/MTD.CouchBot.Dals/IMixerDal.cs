@@ -1,11 +1,11 @@
-﻿using MTD.CouchBot.Domain.Models;
+﻿using MTD.CouchBot.Domain.Models.Mixer;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Dals
 {
     public interface IMixerDal
     {
-        Task<BeamChannel> GetChannelByName(string name);
-        Task<BeamChannel> GetChannelById(string id);
+        Task<MixerChannel> GetChannelByName(string name);
+        Task<MixerChannel> GetChannelById(string id);
     }
 }

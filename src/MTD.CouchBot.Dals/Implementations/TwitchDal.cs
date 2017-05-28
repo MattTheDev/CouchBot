@@ -1,5 +1,5 @@
 ﻿using MTD.CouchBot.Domain;
-using MTD.CouchBot.Domain.Models;
+using MTD.CouchBot.Domain.Models.Twitch;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net;

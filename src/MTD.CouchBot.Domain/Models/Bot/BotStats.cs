@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MTD.CouchBot.Domain.Models
+namespace MTD.CouchBot.Domain.Models.Bot
 {
     public class BotStats
     {

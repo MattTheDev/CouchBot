@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace MTD.CouchBot.Domain.Models
+namespace MTD.CouchBot.Domain.Models.Smashcast
 {
-    public class HitboxChannel
+    public class SmashcastChannel
     {
         public Request request { get; set; }
         public string media_type { get; set; }

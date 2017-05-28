@@ -1,4 +1,5 @@
 ﻿using MTD.CouchBot.Domain.Models;
+using MTD.CouchBot.Domain.Models.Bot;
 
 namespace MTD.CouchBot.Dals
 {

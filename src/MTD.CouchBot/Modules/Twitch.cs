@@ -2,9 +2,10 @@
 using Discord.Commands;
 using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
-using MTD.CouchBot.Json;
+using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
+using MTD.CouchBot.Models.Bot;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -213,7 +214,7 @@ namespace MTD.DiscordBot.Modules
 
             var message = await MessagingHelper.BuildMessage(name, stream.game, stream.channel.status, url, avatarUrl,
                                                     thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel);
-            await MessagingHelper.SendMessages(Constants.Twitch, new List<CouchBot.Models.BroadcastMessage>() { message });
+            await MessagingHelper.SendMessages(Constants.Twitch, new List<BroadcastMessage>() { message });
         }
     }
 }
