@@ -44,10 +44,11 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public class Platforms
         {
             public bool EnableMixer { get; set; }
+            public bool EnablePicarto { get; set; }
             public bool EnableSmashcast { get; set; }
             public bool EnableTwitch { get; set; }
             public bool EnableYouTube { get; set; }
-            public bool EnablePicarto { get; set; }
+            public bool EnableVidMe { get; set; }
         }
 
         public class Intervals
@@ -58,6 +59,7 @@ namespace MTD.CouchBot.Domain.Models.Bot
             public int TwitchFeed { get; set; }
             public int YouTubePublished { get; set; }
             public int YouTubeLive { get; set; }
+            public int VidMe { get; set; }
         }
     }
 }

@@ -7,11 +7,6 @@ namespace MTD.CouchBot.Domain.Utilities
 {
     public static class BotFiles
     {
-        public static void CheckConfiguration()
-        {
-            CheckFolderStructure();
-        }
-
         public static void CheckFolderStructure()
         {
             if (!Directory.Exists(Constants.ConfigRootDirectory))

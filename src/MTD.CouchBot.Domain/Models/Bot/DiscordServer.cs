@@ -25,6 +25,8 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public List<string> ServerBeamChannels { get; set; }
         public List<string> ServerBeamChannelIds { get; set; }
         public List<string> ServerHitboxChannels { get; set; }
+        public List<string> ServerVidMeChannels { get; set; }
+        public List<int> ServerVidMeChannelIds { get; set; }
         public List<string> PicartoChannels { get; set; }
         public float TimeZoneOffset { get; set; }
         public bool AllowThumbnails { get; set; }
@@ -47,6 +49,9 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public string OwnerTwitchChannel { get; set; }
         public string OwnerTwitchChannelId { get; set; }
         public string OwnerYouTubeChannelId { get; set; }
+        public string OwnerVidMeChannel { get; set; }
+        public int OwnerVidMeChannelId { get; set; }
+
         public ulong OwnerTwitchFeedChannel { get; set; }
         public ulong TwitchFeedChannel { get; set; }
 

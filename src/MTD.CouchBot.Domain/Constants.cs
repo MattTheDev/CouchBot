@@ -14,8 +14,7 @@ namespace MTD.CouchBot.Domain
         {
             get
             {
-                BotFiles.CheckConfiguration();
-                return JsonConvert.DeserializeObject<BotSettings>(File.ReadAllText(Constants.ConfigRootDirectory + Constants.BotSettings));
+                return JsonConvert.DeserializeObject<BotSettings>(File.ReadAllText(BotSettings));
             }
 
             set

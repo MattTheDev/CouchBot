@@ -69,15 +69,16 @@ namespace MTD.CouchBot
             Logging.LogInfo("Starting the Bot!");
             Logging.LogInfo("Check Bot Configuration.");
 
-            BotFiles.CheckConfiguration();
-
             if ((Constants.DiscordToken == "" || Constants.DiscordToken == "DISCORDTOKEN")
                 || (Constants.YouTubeApiKey == "" || Constants.YouTubeApiKey == "YOUTUBEAPI")
                 || (Constants.TwitchClientId == "" || Constants.TwitchClientId == "TWITCHID")
                 || (string.IsNullOrEmpty(Constants.Prefix)))
             {
-                Console.WriteLine("Please configure the bot. The settings can be found at: " + Constants.ConfigRootDirectory + Constants.BotSettings);
-                Console.WriteLine("You need to have a Discord Token, YouTube API Key, Twitch Client Id, and Prefix configured for the bot to function.");
+                Console.WriteLine("\r\nYou need to configure the following items:");
+                Console.WriteLine("- Bot Prefix\r\n- Discord Token\r\n- Twitch Client ID\r\n- YouTube API Key");
+                Console.WriteLine("\r\nIf you're using the launcher, stop the bot, and set the settings via the UI. If you are not using the launcher, you can edit the settings JSON file and relaunch the bot.");
+                Console.WriteLine("\r\nYour settings can be found at: ");
+                Console.WriteLine(Assembly.GetEntryAssembly().Location.Replace(Path.GetFileName(Assembly.GetEntryAssembly().Location), "") + Constants.BotSettings);
                 Console.ReadLine();
                 return;
             }
