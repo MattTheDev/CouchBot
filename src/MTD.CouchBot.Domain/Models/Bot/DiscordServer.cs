@@ -59,8 +59,8 @@ namespace MTD.CouchBot.Domain.Models.Bot
 
         public bool AllowOwnerChannelFeed { get; set; }
 
-        [DefaultValue("This stream is now offline.")]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public string StreamOfflineMessage { get; set; }
+
+        public List<ulong> ApprovedAdmins { get; set; }
     }
 }

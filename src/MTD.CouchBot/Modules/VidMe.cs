@@ -1,11 +1,9 @@
-﻿using Discord;
-using Discord.Commands;
-using MTD.CouchBot.Bot;
+﻿using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
-using MTD.CouchBot.Models.Bot;
+using MTD.CouchBot.Modules;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +12,7 @@ using System.Threading.Tasks;
 namespace MTD.DiscordBot.Modules
 {
     [Group("vidme")]
-    public class VidMe : ModuleBase
+    public class VidMe : BaseModule
     {
         IVidMeManager _vidMeManager;
 
@@ -26,9 +24,7 @@ namespace MTD.DiscordBot.Modules
         [Command("add")]
         public async Task Add(string name)
         {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
+            if (!IsApprovedAdmin)
             {
                 return;
             }
@@ -40,7 +36,7 @@ namespace MTD.DiscordBot.Modules
                 await Context.Channel.SendFileAsync("No channel exists with the name " + name + ".");
             }
 
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
@@ -76,16 +72,14 @@ namespace MTD.DiscordBot.Modules
         [Command("remove")]
         public async Task Remove(string name)
         {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
+            if (!IsApprovedAdmin)
             {
                 return;
             }
 
             var id = await _vidMeManager.GetIdByName(name);
 
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
@@ -110,9 +104,7 @@ namespace MTD.DiscordBot.Modules
         [Command("owner")]
         public async Task Owner(string name)
         {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -125,7 +117,7 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
@@ -151,14 +143,12 @@ namespace MTD.DiscordBot.Modules
         [Command("resetowner")]
         public async Task ResetOwner()
         {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
+            if (!IsAdmin)
             {
                 return;
             }
 
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + user.Guild.Id + ".json";
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))

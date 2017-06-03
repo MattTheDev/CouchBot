@@ -242,3 +242,4 @@ ModelManifest.xml
 .fake/
 *.jfm
 *.jfm
+*.pubxml
