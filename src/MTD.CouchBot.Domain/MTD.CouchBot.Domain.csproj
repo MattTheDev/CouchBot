@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="1.0.0-rc2-00719" />
-    <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc2-00719" />
+    <PackageReference Include="Discord.Net" Version="1.0.0-rc3-00746" />
+    <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc3-00746" />
   </ItemGroup>
 
 </Project>

@@ -31,9 +31,8 @@ namespace MTD.CouchBot
         #region : Class Level Variables :
 
         private CommandService commands;
-        public static DiscordSocketClient client;
+        public static DiscordShardedClient client;
         public static BeamClient beamClient;
-        private DependencyMap map;
 
         private static Timer beamClientTimer;
         private static Timer hitboxTimer;
@@ -154,8 +153,11 @@ namespace MTD.CouchBot
 
         public async Task DoBotStuff()
         {
-            map = new DependencyMap();
-            client = new DiscordSocketClient();
+            client = new DiscordShardedClient(new DiscordSocketConfig()
+            {
+                TotalShards = Constants.TotalShards
+            });
+
             commands = new CommandService();
 
             Logging.LogInfo("Installing Commands, Logging into Discord, and Starting Client.");
@@ -423,7 +425,7 @@ namespace MTD.CouchBot
 
             var context = new CommandContext(client, message);
 
-            var result = await commands.ExecuteAsync(context, argPos, map);
+            var result = await commands.ExecuteAsync(context, argPos);
         }
 
         public async Task CheckTwitchLive()
