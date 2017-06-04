@@ -145,7 +145,7 @@ namespace MTD.CouchBot
 
             QueueCleanUp();
             QueueUptimeCheckIn();
-                        
+
             Logging.LogInfo("Timer Jobs Queued - All Set.");
 
             await Task.Delay(-1);
@@ -681,7 +681,7 @@ namespace MTD.CouchBot
                         continue;
                     }
 
-                    foreach(var post in feed.posts)
+                    foreach (var post in feed.posts)
                     {
                         DateTime now = DateTime.UtcNow;
                         DateTime created = DateTime.Parse(post.created_at).ToUniversalTime();
@@ -697,7 +697,7 @@ namespace MTD.CouchBot
                             {
                                 await chat.SendMessageAsync(message);
                             }
-                            catch(Exception wex)
+                            catch (Exception wex)
                             {
                                 Logging.LogError("Twitch Channel Feed Error: " + wex.Message + " for user: " + server.OwnerTwitchChannel + " in server: " + server.Id);
                             }
@@ -786,7 +786,24 @@ namespace MTD.CouchBot
                                         }
 
                                         // Build our message
-                                        var channelData = await youtubeManager.GetYouTubeChannelSnippetById(stream.snippet.channelId);
+                                        YouTubeChannelSnippet channelData = null;
+
+                                        try
+                                        {
+                                            channelData = await youtubeManager.GetYouTubeChannelSnippetById(stream.snippet.channelId);
+                                        }
+                                        catch (Exception wex)
+                                        {
+                                            // Log our error and move to the next user.
+
+                                            Logging.LogError("YouTube Error: " + wex.Message + " for user: " + youtubeChannelId);
+                                            continue;
+                                        }
+
+                                        if (channelData == null)
+                                        {
+                                            continue;
+                                        }
 
                                         string url = "http://" + (server.UseYouTubeGamingPublished ? "gaming" : "www") + ".youtube.com/watch?v=" + stream.id;
                                         string channelTitle = stream.snippet.channelTitle;
@@ -893,8 +910,24 @@ namespace MTD.CouchBot
                                         channel.Servers.Add(server.Id);
                                     }
 
-                                    // Build our message
-                                    var channelData = await youtubeManager.GetYouTubeChannelSnippetById(stream.snippet.channelId);
+                                    YouTubeChannelSnippet channelData = null;
+                                    try
+                                    {
+                                        // Build our message
+                                        channelData = await youtubeManager.GetYouTubeChannelSnippetById(stream.snippet.channelId);
+                                    }
+                                    catch (Exception wex)
+                                    {
+                                        // Log our error and move to the next user.
+
+                                        Logging.LogError("YouTube Error: " + wex.Message + " for user: " + stream.snippet.channelId);
+                                        continue;
+                                    }
+
+                                    if (channelData == null)
+                                    {
+                                        continue;
+                                    }
 
                                     string url = "http://" + (server.UseYouTubeGamingPublished ? "gaming" : "www") + ".youtube.com/watch?v=" + stream.id;
                                     string channelTitle = stream.snippet.channelTitle;
@@ -1607,7 +1640,24 @@ namespace MTD.CouchBot
                         EmbedAuthorBuilder author = new EmbedAuthorBuilder();
                         EmbedFooterBuilder footer = new EmbedFooterBuilder();
 
-                        var channelData = await youtubeManager.GetYouTubeChannelSnippetById(video.snippet.channelId);
+                        YouTubeChannelSnippet channelData = null;
+
+                        try
+                        {
+                            channelData = await youtubeManager.GetYouTubeChannelSnippetById(video.snippet.channelId);
+                        }
+                        catch (Exception wex)
+                        {
+                            // Log our error and move to the next user.
+
+                            Logging.LogError("YouTube Error: " + wex.Message + " for user: " + video.snippet.channelId);
+                            continue;
+                        }
+
+                        if (channelData == null)
+                        {
+                            continue;
+                        }
 
                         if (server.PublishedMessage == null)
                         {
@@ -1749,7 +1799,25 @@ namespace MTD.CouchBot
                     EmbedAuthorBuilder author = new EmbedAuthorBuilder();
                     EmbedFooterBuilder footer = new EmbedFooterBuilder();
 
-                    var channelData = await youtubeManager.GetYouTubeChannelSnippetById(video.snippet.channelId);
+                    YouTubeChannelSnippet channelData = null;
+
+                    try
+                    {
+                        channelData = await youtubeManager.GetYouTubeChannelSnippetById(video.snippet.channelId);
+
+                    }
+                    catch (Exception wex)
+                    {
+                        // Log our error and move to the next user.
+
+                        Logging.LogError("YouTube Error: " + wex.Message + " for user: " + video.snippet.channelId);
+                        continue;
+                    }
+
+                    if (channelData == null)
+                    {
+                        continue;
+                    }
 
                     if (server.PublishedMessage == null)
                     {
@@ -1829,7 +1897,7 @@ namespace MTD.CouchBot
                             await CleanUpLiveStreams(Constants.Smashcast);
                         }
 
-                        if(Constants.EnablePicarto)
+                        if (Constants.EnablePicarto)
                         {
                             await CleanUpLiveStreams(Constants.Picarto);
                         }
