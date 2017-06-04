@@ -14,11 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MTD.CouchBot.Domain\MTD.CouchBot.Domain.csproj" />
-    <ProjectReference Include="..\MTD.CouchBot.Managers\MTD.CouchBot.Managers.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Discord.Net" Version="1.0.0-rc3-00746" />
     <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc3-00746" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
@@ -28,6 +23,11 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.1" />
     <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MTD.CouchBot.Domain\MTD.CouchBot.Domain.csproj" />
+    <ProjectReference Include="..\MTD.CouchBot.Managers\MTD.CouchBot.Managers.csproj" />
   </ItemGroup>
 
   <ItemGroup>
