@@ -1,6 +1,5 @@
 ﻿using Discord;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System.IO;
 
@@ -8,18 +7,11 @@ namespace MTD.CouchBot.Domain
 {
     public static class Constants
     {
-        static BotSettings _settings;
-
         public static BotSettings Settings
         {
             get
             {
                 return JsonConvert.DeserializeObject<BotSettings>(File.ReadAllText(BotSettings));
-            }
-
-            set
-            {
-                _settings = value;
             }
         }
 
