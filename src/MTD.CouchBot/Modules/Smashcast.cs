@@ -49,7 +49,9 @@ namespace MTD.DiscordBot.Modules
                 return;
 
             if (server.ServerHitboxChannels == null)
+            {
                 server.ServerHitboxChannels = new List<string>();
+            }
                         
             if (!string.IsNullOrEmpty(server.OwnerHitboxChannel) && server.OwnerHitboxChannel.ToLower().Equals(channelName.ToLower()))
             {
@@ -83,13 +85,19 @@ namespace MTD.DiscordBot.Modules
             DiscordServer server = null;
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             if (server == null)
+            {
                 return;
+            }
 
             if (server.ServerHitboxChannels == null)
+            {
                 return;
+            }
 
             if (server.ServerHitboxChannels.Contains(channel.ToLower()))
             {

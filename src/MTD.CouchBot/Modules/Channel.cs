@@ -246,8 +246,6 @@ namespace MTD.CouchBot.Modules
                         server.TwitchFeedChannel = 0;
                         label = "All";
                         break;
-                    default:
-                        break;
                 }
 
                 if (!string.IsNullOrEmpty(label))
