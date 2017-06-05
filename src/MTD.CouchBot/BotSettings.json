@@ -6,7 +6,7 @@
   },
   "BotConfiguration": {
     "CouchBotId": 0,
-    "Prefix": "!cb",
+    "Prefix": "",
     "TotalShards":  1
   },
   "Directories": {
