@@ -5,6 +5,7 @@ using MTD.CouchBot.Domain.Models.Bot;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
@@ -108,19 +109,18 @@ namespace MTD.CouchBot.Modules
                 server.ApprovedAdmins = new List<ulong>();
             }
 
-            var admins = "";
+            var builder = new StringBuilder();
 
             foreach (var aa in server.ApprovedAdmins)
             {
                 var user = await Context.Guild.GetUserAsync(aa);
-                admins += user.Username + ", ";
-            }
 
-            admins = admins.Trim().TrimEnd(',');
+                builder.Append(user.Username + ", ");
+            }
 
             string info = "```Markdown\r\n" +
               "# Server Approved Admins\r\n" +
-              admins + "\r\n" +
+              builder.ToString().Trim().TrimEnd(',') + "\r\n" +
               "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);

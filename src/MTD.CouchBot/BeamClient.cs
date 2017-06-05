@@ -34,7 +34,7 @@ namespace MTD.CouchBot.Bot
             client.Options.SetRequestHeader("x-is-bot", "true");
             await client.ConnectAsync(new Uri("wss://constellation.mixer.com"), CancellationToken.None);
 
-            var receiving = Receiving(client);
+            await Receiving(client);
         }
 
         private async Task Receiving(ClientWebSocket client)
@@ -44,7 +44,7 @@ namespace MTD.CouchBot.Bot
             while (true)
             {
                 var result = await client.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                var connectionStatus = client.State;
+
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
                     var data = Encoding.UTF8.GetString(buffer, 0, result.Count);
@@ -82,7 +82,6 @@ namespace MTD.CouchBot.Bot
 
         public async Task SubscribeToLiveAnnouncements(string beamId)
         {
-            //var channel = await beamManager.GetBeamChannelByName(channelName);
             int random = GetRandomInt();
 
             while (_statisticsManager.ContainsRandomInt(random))
@@ -102,7 +101,7 @@ namespace MTD.CouchBot.Bot
             }
             catch(Exception ex)
             {
-                var test = ex;
+                Logging.LogError("Beam Subscribe Error: " + ex.Message);
             }
         }
 

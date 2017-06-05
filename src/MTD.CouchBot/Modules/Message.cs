@@ -18,8 +18,6 @@ namespace MTD.CouchBot.Modules
         [Command("live")]
         public async Task Live(string message)
         {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-
             var user = ((IGuildUser)Context.Message.Author);
 
             if (!user.GuildPermissions.ManageGuild)
@@ -27,7 +25,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
@@ -50,8 +48,6 @@ namespace MTD.CouchBot.Modules
         [Command("published")]
         public async Task Published(string message)
         {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-
             var user = ((IGuildUser)Context.Message.Author);
 
             if (!user.GuildPermissions.ManageGuild)
@@ -59,7 +55,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
@@ -82,8 +78,6 @@ namespace MTD.CouchBot.Modules
         [Command("offline")]
         public async Task Offline(string message)
         {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-
             var user = ((IGuildUser)Context.Message.Author);
 
             if (!user.GuildPermissions.ManageGuild)
@@ -91,7 +85,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
@@ -137,11 +131,11 @@ namespace MTD.CouchBot.Modules
                     {
                         RequestOptions options = new RequestOptions();
                         options.RetryMode = RetryMode.AlwaysRetry;
-                        var msg = await Context.Channel.SendMessageAsync(message.Message, false, message.Embed, options);
+                        await Context.Channel.SendMessageAsync(message.Message, false, message.Embed, options);
                     }
                     else
                     {
-                        var msg = await Context.Channel.SendMessageAsync(message.Message);
+                        await Context.Channel.SendMessageAsync(message.Message);
                     }
                 }
                 catch (Exception ex)
@@ -154,8 +148,6 @@ namespace MTD.CouchBot.Modules
         [Command("testpublished")]
         public async Task TestPublished()
         {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-
             var user = ((IGuildUser)Context.Message.Author);
 
             if (!user.GuildPermissions.ManageGuild)

@@ -2,6 +2,7 @@
 using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models.Twitch;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
@@ -32,15 +33,13 @@ namespace MTD.CouchBot.Managers.Implementations
 
         public async Task<TwitchStreamsV5> GetStreamsByIdList(List<string> twitchIdList)
         {
-            string list = "";
+            var builder = new StringBuilder();
             foreach (var id in twitchIdList)
             {
-                list += id + ",";
+                builder.Append(id + ",");
             }
 
-            list = list.TrimEnd(',');
-
-            return await twitchDal.GetStreamsByIdList(list);
+            return await twitchDal.GetStreamsByIdList(builder.ToString().TrimEnd(','));
         }
 
         public async Task<TwitchChannelFeed> GetChannelFeedPosts(string twitchId)
