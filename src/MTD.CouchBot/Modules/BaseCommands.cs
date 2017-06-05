@@ -79,9 +79,18 @@ namespace MTD.CouchBot.Modules
                 }
             }
 
+            int serverCount = 0;
+
+            foreach(var shard in Program.client.Shards)
+            {
+                serverCount += shard.Guilds.Count;
+            }
+
             string info = "```Markdown\r\n" +
                           "# " + Program.client.CurrentUser.Username + "\r\n" +
-                          "- Servers: " + serverFiles.Length + "\r\n" +
+                          "- Configured Servers: " + serverFiles.Length + "\r\n" +
+                          "- Connected Shards: " + Program.client.Shards.Count + "\r\n" +
+                          "- Connected Servers: " + serverCount + "\r\n" +
                           "Platforms: \r\n" +
                           "-- Mixer: " + serverBeamCount + "\r\n" +
                           "-- Picarto: " + serverPicartoCount + "\r\n" +

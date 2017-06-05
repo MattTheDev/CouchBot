@@ -121,15 +121,15 @@ namespace MTD.DiscordBot.Modules
 
             if (server.PicartoChannels != null && server.PicartoChannels.Contains(channelName.ToLower()))
             {
-                await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Picarto Channels. " +
-                    "Please remove it with '!cb picarto remove " + channel + "' and then retry setting your owner channel.");
+                await Context.Channel.SendMessageAsync("The channel " + channelName + " is in the list of server Picarto Channels. " +
+                    "Please remove it with '!cb picarto remove " + channelName + "' and then retry setting your owner channel.");
 
                 return;
             }
 
             server.OwnerPicartoChannel = channelName;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Owner Picarto Channel has been set to " + channel + ".");
+            await Context.Channel.SendMessageAsync("Owner Picarto Channel has been set to " + channelName + ".");
         }
 
         [Command("resetowner")]

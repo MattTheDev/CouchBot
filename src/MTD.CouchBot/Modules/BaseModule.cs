@@ -34,7 +34,7 @@ namespace MTD.CouchBot.Modules
                 if (File.Exists(file))
                     server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-                if (server.ApprovedAdmins.Contains(Context.User.Id) || IsAdmin)
+                if ((server.ApprovedAdmins != null && server.ApprovedAdmins.Contains(Context.User.Id)) || IsAdmin)
                 {
                     return true;
                 }
