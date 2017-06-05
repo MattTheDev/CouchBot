@@ -14,8 +14,8 @@ namespace MTD.CouchBot.Modules
 {
     public class BaseCommands : ModuleBase
     {
-        IStatisticsManager statisticsManager;
-        IYouTubeManager youtubeManager;
+        readonly IStatisticsManager statisticsManager;
+        readonly IYouTubeManager youtubeManager;
 
         public BaseCommands()
         {
