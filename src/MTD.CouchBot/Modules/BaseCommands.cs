@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
@@ -27,7 +28,6 @@ namespace MTD.CouchBot.Modules
         public async Task Info()
         {
             var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
-            var userFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory);
             var serverTwitchCount = 0;
             var serverYouTubeCount = 0;
             var serverBeamCount = 0;
@@ -221,23 +221,24 @@ namespace MTD.CouchBot.Modules
         public async Task Supporters()
         {
             var supporters = (File.ReadAllText(Constants.ConfigRootDirectory + "Supporters.txt")).Split(',');
+            var builder = new StringBuilder();
 
-            string info = "```Markdown\r\n" +
+            builder.Append("```Markdown\r\n" +
                           "# " + Program.client.CurrentUser.Username + " Supporters\r\n" +
                           "I wanted to create a place to show my thanks to everyone that supports the development and growth of " + Program.client.CurrentUser.Username + ", whether it be via <http://patreon.com/dawgeth>, or " +
                           "just in it's use. Thanks to all those out there that have used it, provided feedback, found bugs, and supported me through Patreon.\r\n\r\n" +
-                          "Patron List:\r\n";
+                          "Patron List:\r\n");
 
             foreach(var s in supporters)
             {
-                info += "- " + s + "\r\n";
+                builder.Append("- " + s + "\r\n");
             }
 
-            info +=  "- Your Name Could Be Here. Visit <http://patreon.com/dawgeth> today <3" +
+            builder.Append("- Your Name Could Be Here. Visit <http://patreon.com/dawgeth> today <3" +
                      "- Want to be a one time supporter? <http://paypal.me/dawgeth>" +
-                     "```\r\n";
+                     "```\r\n");
 
-            await Context.Channel.SendMessageAsync(info);
+            await Context.Channel.SendMessageAsync(builder.ToString());
         }
 
 
@@ -253,19 +254,21 @@ namespace MTD.CouchBot.Modules
                 await Context.Channel.SendMessageAsync("No Results Found.");
             }
             else {
+                var builder = new StringBuilder();
 
-                string channelInfo = "```\r\n";
+                builder.Append("```\r\n");
+
                 foreach (var channel in channels.items)
                 {
-                    channelInfo += "\r\n" +
+                    builder.Append("\r\n" +
                         "Id (Use This for " + Program.client.CurrentUser.Username + " Settings): " + channel.snippet.channelId + "\r\n" +
                         "Channel Name: " + channel.snippet.channelTitle + "\r\n" +
-                        "Description: " + channel.snippet.description + "\r\n";
+                        "Description: " + channel.snippet.description + "\r\n");
                 }
 
-                channelInfo += "```";
+                builder.Append("```");
 
-                await Context.Channel.SendMessageAsync(channelInfo);
+                await Context.Channel.SendMessageAsync(builder.ToString());
             }
         }
 

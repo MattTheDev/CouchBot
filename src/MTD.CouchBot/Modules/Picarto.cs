@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.DiscordBot.Modules
@@ -230,16 +231,16 @@ namespace MTD.DiscordBot.Modules
                     f.IsInline = true;
                 });
 
-                string tags = "";
+                var builder = new StringBuilder();
                 foreach(var t in stream.Tags)
                 {
-                    tags += t + ", ";
+                   builder.Append(t + ", ");
                 }
 
                 embedBuilder.AddField(f =>
                 {
                     f.Name = "Stream Tags";
-                    f.Value = tags.Trim().TrimEnd(',');
+                    f.Value = builder.ToString().Trim().TrimEnd(',');
                     f.IsInline = false;
                 });
 

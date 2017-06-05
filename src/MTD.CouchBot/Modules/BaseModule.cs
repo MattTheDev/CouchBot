@@ -29,10 +29,18 @@ namespace MTD.CouchBot.Modules
             {
                 var file = Constants.ConfigRootDirectory + Constants.GuildDirectory +
                     Context.Guild.Id + ".json";
+
                 DiscordServer server = null;
 
                 if (File.Exists(file))
+                {
                     server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+                }
+
+                if(server == null)
+                {
+                    return false;
+                }
 
                 if ((server.ApprovedAdmins != null && server.ApprovedAdmins.Contains(Context.User.Id)) || IsAdmin)
                 {

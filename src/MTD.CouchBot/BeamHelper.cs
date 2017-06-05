@@ -21,7 +21,6 @@ namespace MTD.CouchBot.Bot
 
             var beamServers = new List<DiscordServer>();
             var ownerBeamServers = new List<DiscordServer>();
-            var userSharedServers = new List<DiscordServer>();
 
             foreach(var server in servers)
             {
@@ -53,7 +52,6 @@ namespace MTD.CouchBot.Bot
             foreach (var server in beamServers)
             {
                 // Check to see if we have a message already queued up. If so, jump to the next server.
-
                 if (server.GoLiveChannel != 0 && server.Id != 0)
                 {
                     if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
@@ -112,7 +110,6 @@ namespace MTD.CouchBot.Bot
         public static async Task StreamOffline(string beamId)
         {
             IMixerManager mixerManager = new MixerManager();
-            var stream = await mixerManager.GetChannelByName(beamId);
             var live = BotFiles.GetCurrentlyLiveBeamChannels().FirstOrDefault(x => x.Name == beamId);
             
             if (live == null)

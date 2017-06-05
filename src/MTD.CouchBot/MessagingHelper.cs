@@ -52,12 +52,7 @@ namespace MTD.CouchBot.Bot
 
             var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
 
-            if (role == null)
-            {
-                server.MentionRole = 0;
-            }
-
-            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
+            var message = (server.AllowEveryone ? role != null ? role.Mention : "@everyone " : "");
 
             if (server.UseTextAnnouncements)
             {
@@ -90,7 +85,7 @@ namespace MTD.CouchBot.Bot
             if (server == null)
                 return null;
 
-            string gameName = "a game"; ;
+            string gameName = "a game";
             string url = "http://couchbot.io";
 
             EmbedBuilder embed = new EmbedBuilder();

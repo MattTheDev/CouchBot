@@ -15,14 +15,15 @@ namespace MTD.CouchBot.Modules
     [Group("streamer")]
     public class Streamer : ModuleBase
     {
-        IYouTubeManager _youtubeManager;
-        IMixerManager _mixerManager;
-        ISmashcastManager _smashcastManager;
-        ITwitchManager _twitchManager;
+        readonly IYouTubeManager _youtubeManager;
+        readonly IMixerManager _mixerManager;
+        readonly ITwitchManager _twitchManager;
 
         public Streamer()
         {
             _youtubeManager = new YouTubeManager();
+            _mixerManager = new MixerManager();
+            _twitchManager = new TwitchManager();
         }
 
         [Command("list"), Summary("List server streamers")]
@@ -190,16 +191,16 @@ namespace MTD.CouchBot.Modules
             var youtube = BotFiles.GetCurrentlyLiveYouTubeChannels();
             var picarto = BotFiles.GetCurrentlyLivePicartoChannels();
 
-
             var guildId = Context.Guild.Id;
 
-            var beamLive = "";
-            var hitboxLive = "";
-            var twitchLive = "";
-            var youtubeLive = "";
-            var picartoLive = "";
+            var mixerBuilder = new StringBuilder();
+            var picartoBuilder = new StringBuilder();
+            var smashcastBuilder = new StringBuilder();
+            var twitchBuilder = new StringBuilder();
+            var youtubeBuilder = new StringBuilder();
 
-            foreach(var b in beam)
+
+            foreach (var b in beam)
             {
                 foreach(var cm in b.ChannelMessages)
                 {
@@ -207,8 +208,10 @@ namespace MTD.CouchBot.Modules
                     {
                         var channel = await _mixerManager.GetChannelById(b.Name);
 
-                        if(channel != null && channel.online)
-                        beamLive += channel.token + ", ";
+                        if (channel != null && channel.online)
+                        {
+                            mixerBuilder.Append(channel.token + ", ");
+                        }
 
                         break;
                     }
@@ -224,7 +227,9 @@ namespace MTD.CouchBot.Modules
                         var channel = await _mixerManager.GetChannelById(p.Name);
 
                         if (channel != null && channel.online)
-                            picartoLive += channel.token + ", ";
+                        {
+                            picartoBuilder.Append(channel.token + ", ");
+                        }
 
                         break;
                     }
@@ -237,7 +242,7 @@ namespace MTD.CouchBot.Modules
                 {
                     if (cm.GuildId == guildId)
                     {
-                        hitboxLive += h.Name + ", ";
+                        smashcastBuilder.Append(h.Name + ", ");
 
                         break;
                     }
@@ -254,7 +259,7 @@ namespace MTD.CouchBot.Modules
 
                         if (channel != null && channel.stream != null)
                         {
-                            twitchLive += channel.stream.channel.name + ", ";
+                            twitchBuilder.Append(channel.stream.channel.name + ", ");
                         }
 
                         break;
@@ -272,7 +277,7 @@ namespace MTD.CouchBot.Modules
 
                         if (channel != null && channel.items != null && channel.items.Count > 0)
                         {
-                            youtubeLive += channel.items[0].snippet.channelTitle + ", ";
+                            youtubeBuilder.Append(channel.items[0].snippet.channelTitle + ", ");
                         }
 
                         break;
@@ -280,19 +285,13 @@ namespace MTD.CouchBot.Modules
                 }
             }
 
-            beamLive = beamLive.Trim().TrimEnd(',');
-            hitboxLive = hitboxLive.Trim().TrimEnd(',');
-            twitchLive = twitchLive.Trim().TrimEnd(',');
-            youtubeLive = youtubeLive.Trim().TrimEnd(',');
-            picartoLive = picartoLive.Trim().TrimEnd(',');
-
             string info = "```Markdown\r\n" +
               "# Currently Live\r\n" +
-              "- Mixer: " + beamLive + "\r\n" +
-              "- Picarto: " + picartoLive + "\r\n" +
-              "- Smashcast: " + hitboxLive + "\r\n" +
-              "- Twitch: " + twitchLive + "\r\n" +
-              "- YouTube Gaming: " + youtubeLive + "\r\n" +
+              "- Mixer: " + mixerBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
+              "- Picarto: " + picartoBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
+              "- Smashcast: " + smashcastBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
+              "- Twitch: " + twitchBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
+              "- YouTube Gaming: " + youtubeBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
               "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);
