@@ -14,7 +14,7 @@ namespace MTD.DiscordBot.Modules
     [Group("vidme")]
     public class VidMe : BaseModule
     {
-        IVidMeManager _vidMeManager;
+        readonly IVidMeManager _vidMeManager;
 
         public VidMe()
         {
@@ -40,13 +40,19 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             if (server.ServerVidMeChannels == null)
+            {
                 server.ServerVidMeChannels = new List<string>();
+            }
 
             if (server.ServerVidMeChannelIds == null)
+            {
                 server.ServerVidMeChannelIds = new List<int>();
+            }
 
             if (!string.IsNullOrEmpty(server.OwnerVidMeChannel) && server.OwnerVidMeChannel.ToLower().Equals(name.ToLower()))
             {
@@ -83,10 +89,14 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             if (server.ServerVidMeChannels == null)
+            {
                 return;
+            }
 
             if (server.ServerVidMeChannels.Contains(name.ToLower()))
             {
@@ -121,10 +131,14 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             if (server.Id == 0)
+            {
                 return;
+            }
 
             if (server.ServerVidMeChannels != null && server.ServerVidMeChannels.Contains(name.ToLower()))
             {
@@ -152,7 +166,9 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             server.OwnerVidMeChannel = null;
             server.OwnerVidMeChannelId = 0;

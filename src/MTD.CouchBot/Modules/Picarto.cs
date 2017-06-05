@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MTD.DiscordBot.Modules
@@ -16,7 +17,7 @@ namespace MTD.DiscordBot.Modules
     [Group("picarto")]
     public class Picarto : BaseModule
     {
-        IPicartoManager _picartoManager;
+        readonly IPicartoManager _picartoManager;
 
         public Picarto()
         {
@@ -56,9 +57,9 @@ namespace MTD.DiscordBot.Modules
                 return;
             }
 
-            if (!server.PicartoChannels.Contains(channelName.ToLower()))
+            if (!server.PicartoChannels.Contains(channelName, StringComparer.CurrentCultureIgnoreCase))
             {
-                server.PicartoChannels.Add(channelName.ToLower());
+                server.PicartoChannels.Add(channelName);
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
                 await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Picarto streamer list.");
             }

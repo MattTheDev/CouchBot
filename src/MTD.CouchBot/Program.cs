@@ -34,22 +34,6 @@ namespace MTD.CouchBot
         public static DiscordShardedClient client;
         public static BeamClient beamClient;
 
-        private static Timer beamClientTimer;
-        private static Timer hitboxTimer;
-        private static Timer hitboxOwnerTimer;
-        private static Timer twitchTimer;
-        private static Timer twitchOwnerTimer;
-        private static Timer youtubeTimer;
-        private static Timer youtubeOwnerTimer;
-        private static Timer youtubePublishedTimer;
-        private static Timer youtubePublishedOwnerTimer;
-        private static Timer twitchFeedTimer;
-        private static Timer twitchOwnerFeedTimer;
-        private static Timer picartoTimer;
-        private static Timer picartoOwnerTimer;
-
-        private static Timer cleanupTimer;
-        private static Timer uptimeTimer;
         private bool initialServicesRan = false;
 
         IStatisticsManager statisticsManager;
@@ -213,39 +197,45 @@ namespace MTD.CouchBot
             Logging.LogMixer("Subscription Loop Complete. Processed " + count + " channels in " + sw.ElapsedMilliseconds + " milliseconds.");
         }
 
-        public void QueueBeamClientCheck()
+        public async Task QueueBeamClientCheck()
         {
+            Timer beamClientTimer;
+
             beamClientTimer = new Timer(async (e) =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                Logging.LogMixer("Mixer Constellation Health Check Started.");
-
-                if (beamClient.Status() != WebSocketState.Open)
                 {
-                    await ResubscribeToBeamEvents();
-                }
-                else
-                {
-                    Logging.LogMixer("" + beamClient.Status());
-                }
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    Logging.LogMixer("Mixer Constellation Health Check Started.");
 
-                sw.Stop();
-                Logging.LogMixer("Mixer Constellation Health Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, 60000);
+                    if (beamClient.Status() != WebSocketState.Open)
+                    {
+                        await ResubscribeToBeamEvents();
+                    }
+                    else
+                    {
+                        Logging.LogMixer("" + beamClient.Status());
+                    }
+
+                    sw.Stop();
+                    Logging.LogMixer("Mixer Constellation Health Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                }, null, 0, 60000);
         }
 
         public void QueueHitboxChecks()
         {
+            Timer hitboxTimer;
+            Timer hitboxOwnerTimer;
+
+
             hitboxTimer = new Timer(async (e) =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                Logging.LogSmashcast("Checking Smashcast Channels.");
-                await CheckHitboxLive();
-                sw.Stop();
-                Logging.LogSmashcast("Smashcast Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, Constants.SmashcastInterval);
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    Logging.LogSmashcast("Checking Smashcast Channels.");
+                    await CheckHitboxLive();
+                    sw.Stop();
+                    Logging.LogSmashcast("Smashcast Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                }, null, 0, Constants.SmashcastInterval);
 
             hitboxOwnerTimer = new Timer(async (e) =>
             {
@@ -260,16 +250,21 @@ namespace MTD.CouchBot
 
         public void QueueTwitchChecks()
         {
+            Timer twitchTimer;
+            Timer twitchOwnerTimer;
+            Timer twitchFeedTimer;
+            Timer twitchOwnerFeedTimer;
+
             twitchTimer = new Timer(async (e) =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                Logging.LogTwitch("Checking Twitch Channels.");
-                await CheckTwitchLive();
-                sw.Stop();
-                Logging.LogTwitch("Twitch Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-                initialServicesRan = true;
-            }, null, 0, Constants.TwitchInterval);
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    Logging.LogTwitch("Checking Twitch Channels.");
+                    await CheckTwitchLive();
+                    sw.Stop();
+                    Logging.LogTwitch("Twitch Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                    initialServicesRan = true;
+                }, null, 0, Constants.TwitchInterval);
 
             twitchOwnerTimer = new Timer(async (e) =>
             {
@@ -304,15 +299,20 @@ namespace MTD.CouchBot
 
         public void QueueYouTubeChecks()
         {
+            Timer youtubeTimer;
+            Timer youtubeOwnerTimer;
+            Timer youtubePublishedTimer;
+            Timer youtubePublishedOwnerTimer;
+
             youtubeTimer = new Timer(async (e) =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                Logging.LogYouTubeGaming("Checking YouTube Gaming Channels.");
-                await CheckYouTubeLive();
-                sw.Stop();
-                Logging.LogYouTubeGaming("YouTube Gaming Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, Constants.YouTubeLiveInterval);
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    Logging.LogYouTubeGaming("Checking YouTube Gaming Channels.");
+                    await CheckYouTubeLive();
+                    sw.Stop();
+                    Logging.LogYouTubeGaming("YouTube Gaming Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                }, null, 0, Constants.YouTubeLiveInterval);
 
             youtubeOwnerTimer = new Timer(async (e) =>
             {
@@ -347,15 +347,18 @@ namespace MTD.CouchBot
 
         public void QueuePicartoChecks()
         {
+            Timer picartoTimer;
+            Timer picartoOwnerTimer;
+
             picartoTimer = new Timer(async (e) =>
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                Logging.LogPicarto("Checking Picarto Channels.");
-                await CheckPicartoLive();
-                sw.Stop();
-                Logging.LogPicarto("Picarto Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
-            }, null, 0, Constants.PicartoInterval);
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    Logging.LogPicarto("Checking Picarto Channels.");
+                    await CheckPicartoLive();
+                    sw.Stop();
+                    Logging.LogPicarto("Picarto Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+                }, null, 0, Constants.PicartoInterval);
 
             picartoOwnerTimer = new Timer(async (e) =>
             {
@@ -1874,51 +1877,55 @@ namespace MTD.CouchBot
 
         public void QueueCleanUp()
         {
+            Timer cleanupTimer;
+
             cleanupTimer = new Timer(async (e) =>
-            {
-                using (var httpClient = new HttpClient())
                 {
-                    if (initialServicesRan)
+                    using (var httpClient = new HttpClient())
                     {
-                        Logging.LogInfo("Cleaning Up Live Files.");
-
-                        if (Constants.EnableYouTube)
+                        if (initialServicesRan)
                         {
-                            await CleanUpLiveStreams(Constants.YouTubeGaming);
-                        }
+                            Logging.LogInfo("Cleaning Up Live Files.");
 
-                        if (Constants.EnableTwitch)
-                        {
-                            await CleanUpLiveStreams(Constants.Twitch);
-                        }
+                            if (Constants.EnableYouTube)
+                            {
+                                await CleanUpLiveStreams(Constants.YouTubeGaming);
+                            }
 
-                        if (Constants.EnableSmashcast)
-                        {
-                            await CleanUpLiveStreams(Constants.Smashcast);
-                        }
+                            if (Constants.EnableTwitch)
+                            {
+                                await CleanUpLiveStreams(Constants.Twitch);
+                            }
 
-                        if (Constants.EnablePicarto)
-                        {
-                            await CleanUpLiveStreams(Constants.Picarto);
-                        }
+                            if (Constants.EnableSmashcast)
+                            {
+                                await CleanUpLiveStreams(Constants.Smashcast);
+                            }
 
-                        Logging.LogInfo("Cleaning Up Live Files Complete.");
+                            if (Constants.EnablePicarto)
+                            {
+                                await CleanUpLiveStreams(Constants.Picarto);
+                            }
+
+                            Logging.LogInfo("Cleaning Up Live Files Complete.");
+                        }
                     }
-                }
-            }, null, 0, 300000);
+                }, null, 0, 300000);
         }
 
         public void QueueUptimeCheckIn()
         {
+            Timer uptimeTimer;
+
             uptimeTimer = new Timer((e) =>
-            {
-                using (var httpClient = new HttpClient())
                 {
-                    Logging.LogInfo("Adding to Uptime.");
-                    statisticsManager.AddUptimeMinutes();
-                    Logging.LogInfo("Uptime Update Complete.");
-                }
-            }, null, 0, 60000);
+                    using (var httpClient = new HttpClient())
+                    {
+                        Logging.LogInfo("Adding to Uptime.");
+                        statisticsManager.AddUptimeMinutes();
+                        Logging.LogInfo("Uptime Update Complete.");
+                    }
+                }, null, 0, 60000);
         }
 
         public void ConfigureEventHandlers()
