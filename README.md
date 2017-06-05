@@ -16,7 +16,7 @@ CouchBot is a Discord Bot that allows you to announce when you, your friends, an
 4. YouTube and YouTube Gaming (http://youtube.com / http://gaming.youtube.com)
 
 **Simple Tutorial**: 
-The CouchBot simple tutorial can be found in the CouchBot Wiki: (https://github.com/dawgeth/CouchBot/wiki/Setup-Tutorial)
+The CouchBot simple tutorial can be found in the CouchBot Wiki: https://github.com/dawgeth/CouchBot/wiki/Setup-Tutorial
 
 Twitter: http://twitter.com/dawgeth
 
