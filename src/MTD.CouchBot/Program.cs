@@ -21,7 +21,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -429,7 +428,7 @@ namespace MTD.CouchBot
 
             var context = new CommandContext(client, message);
 
-            await commands.ExecuteAsync(context, argPos);
+            var result = await commands.ExecuteAsync(context, argPos);
         }
 
         public async Task CheckTwitchLive()
@@ -1302,16 +1301,16 @@ namespace MTD.CouchBot
                                                 f.IsInline = true;
                                             });
 
-                                            var builder = new StringBuilder();
+                                            string tags = "";
                                             foreach (var t in stream.Tags)
                                             {
-                                                builder.Append(t + ", ");
+                                                tags += t + ", ";
                                             }
 
                                             embedBuilder.AddField(f =>
                                             {
                                                 f.Name = "Stream Tags";
-                                                f.Value = builder.ToString().Trim().TrimEnd(',');
+                                                f.Value = tags.Trim().TrimEnd(',');
                                                 f.IsInline = false;
                                             });
 
@@ -1495,16 +1494,16 @@ namespace MTD.CouchBot
                                             f.IsInline = true;
                                         });
 
-                                        var builder = new StringBuilder();
+                                        string tags = "";
                                         foreach (var t in stream.Tags)
                                         {
-                                            builder.Append(t + ", ");
+                                            tags += t + ", ";
                                         }
 
                                         embedBuilder.AddField(f =>
                                         {
                                             f.Name = "Stream Tags";
-                                            f.Value = builder.ToString().Trim().TrimEnd(',');
+                                            f.Value = tags.Trim().TrimEnd(',');
                                             f.IsInline = false;
                                         });
 

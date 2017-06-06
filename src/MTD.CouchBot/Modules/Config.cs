@@ -82,6 +82,9 @@ namespace MTD.CouchBot.Modules
 
             if (server != null)
             {
+                var announce = await guild.GetChannelAsync(server.AnnouncementsChannel);
+                var announceChannel = announce != null ? announce.Name : "Not Set";
+
                 var golive = await guild.GetChannelAsync(server.GoLiveChannel);
                 var goliveChannel = golive != null ? golive.Name : "Not Set";
 

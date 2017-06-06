@@ -58,8 +58,9 @@ namespace MTD.CouchBot.Domain.Utilities
         public static DiscordServer GetDiscordServer(string guildId)
         {
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildId + ".json";
+            var server = new DiscordServer();
 
-            return JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            return server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
         }
 
         public static void SaveDiscordServer(DiscordServer server)
