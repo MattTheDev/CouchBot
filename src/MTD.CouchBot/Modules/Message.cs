@@ -120,6 +120,8 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+
             var user = ((IGuildUser)Context.Message.Author);
 
             if (!user.GuildPermissions.ManageGuild)
