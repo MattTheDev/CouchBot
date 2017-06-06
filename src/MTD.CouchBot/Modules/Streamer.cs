@@ -7,7 +7,6 @@ using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using Newtonsoft.Json;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
@@ -40,116 +39,97 @@ namespace MTD.CouchBot.Modules
 
             if (guildObject.PicartoChannels != null && guildObject.PicartoChannels.Count > 0)
             {
-                var builder = new StringBuilder();
-
                 foreach (var streamer in guildObject.PicartoChannels)
                 {
                     if (count == 0)
                     {
-                        builder.Append(streamer);
+                        picarto += streamer;
                     }
                     else
                     {
-                        builder.Append(", ").Append(streamer);
+                        picarto += ", " + streamer;
                     }
 
                     count++;
                 }
-
-                picarto = builder.ToString();
             }
 
             count = 0;
 
             if (guildObject.ServerTwitchChannels != null && guildObject.ServerTwitchChannels.Count > 0)
             {
-                var builder = new StringBuilder();
-
                 foreach (var streamer in guildObject.ServerTwitchChannels)
                 {
                     if (count == 0)
                     {
-                        builder.Append(streamer);
+                        twitch += streamer;
                     }
                     else
                     {
-                        builder.Append(", ").Append(streamer);
+                        twitch += ", " + streamer;
                     }
 
                     count++;
                 }
-
-                twitch = builder.ToString();
             }
 
             count = 0;
 
             if (guildObject.ServerYouTubeChannelIds != null && guildObject.ServerYouTubeChannelIds.Count > 0)
             {
-                var builder = new StringBuilder();
-
                 foreach (var streamer in guildObject.ServerYouTubeChannelIds)
                 {
                     var channel = await _youtubeManager.GetYouTubeChannelSnippetById(streamer);
-                    var ytStreamer = (channel.items.Count > 0 ? channel.items[0].snippet.title + " (" + streamer + ")" : streamer);
 
                     if (count == 0)
                     {
-                        builder.Append(ytStreamer);
+                        youtube += (channel.items.Count > 0 ? channel.items[0].snippet.title + " (" +  streamer + ")" : streamer);
                     }
                     else
                     {
-                        builder.Append(", ").Append(ytStreamer);
+                        youtube += ", " + (channel.items.Count > 0 ? channel.items[0].snippet.title + " (" + streamer + ")" : streamer);
                     }
 
                     count++;
                 }
-
-                youtube = builder.ToString();
             }
 
             count = 0;
 
             if (guildObject.ServerBeamChannels != null && guildObject.ServerBeamChannels.Count > 0)
             {
-                var builder = new StringBuilder();
                 foreach (var streamer in guildObject.ServerBeamChannels)
                 {
                     if (count == 0)
                     {
-                        builder.Append(streamer);
+                        beam += streamer;
                     }
                     else
                     {
-                        builder.Append(", ").Append(streamer);
+                        beam += ", " + streamer;
                     }
 
                     count++;
                 }
-
-                beam = builder.ToString();
             }
 
             count = 0;
 
             if (guildObject.ServerHitboxChannels != null && guildObject.ServerHitboxChannels.Count > 0)
             {
-                var builder = new StringBuilder();
                 foreach (var streamer in guildObject.ServerHitboxChannels)
                 {
                     if (count == 0)
                     {
-                        builder.Append(streamer);
+                        hitbox += streamer;
                     }
                     else
                     {
-                        builder.Append(", ").Append(streamer);
+                        hitbox += ", " + streamer;
                     }
 
                     count++;
                 }
-
-                hitbox = builder.ToString();
             }
 
             var ownerYouTube = "Not Set";

@@ -28,14 +28,10 @@ namespace MTD.CouchBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             if (server.ApprovedAdmins == null)
-            {
                 server.ApprovedAdmins = new List<ulong>();
-            }
 
             if(server.ApprovedAdmins.Contains(user.Id))
             {
@@ -66,9 +62,7 @@ namespace MTD.CouchBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             if (server.ApprovedAdmins == null || !server.ApprovedAdmins.Contains(user.Id))
             {
@@ -99,14 +93,10 @@ namespace MTD.CouchBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             if (server.ApprovedAdmins == null)
-            {
                 server.ApprovedAdmins = new List<ulong>();
-            }
 
             var admins = "";
 

@@ -173,11 +173,11 @@ namespace MTD.CouchBot.Modules
                     {
                         RequestOptions options = new RequestOptions();
                         options.RetryMode = RetryMode.AlwaysRetry;
-                        await Context.Channel.SendMessageAsync(message.Message, false, message.Embed, options);
+                        var msg = await Context.Channel.SendMessageAsync(message.Message, false, message.Embed, options);
                     }
                     else
                     {
-                        await Context.Channel.SendMessageAsync(message.Message);
+                        var msg = await Context.Channel.SendMessageAsync(message.Message);
                     }
                 }
                 catch (Exception ex)

@@ -16,7 +16,7 @@ namespace MTD.DiscordBot.Modules
     [Group("youtube")]
     public class YouTube : BaseModule
     {
-        readonly IYouTubeManager _youTubeManager;
+        IYouTubeManager _youTubeManager;
 
         public YouTube()
         {
@@ -49,9 +49,7 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             if (server.ServerYouTubeChannelIds == null)
                 server.ServerYouTubeChannelIds = new List<string>();
@@ -88,14 +86,10 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             if (server.ServerYouTubeChannelIds == null)
-            {
                 return;
-            }
 
             if (server.ServerYouTubeChannelIds.Contains(channel))
             {
@@ -135,14 +129,10 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             if (server.Id == 0)
-            {
                 return;
-            }
 
             if (server.ServerYouTubeChannelIds != null && server.ServerYouTubeChannelIds.Contains(channelId.ToLower()))
             {
@@ -169,9 +159,7 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             server.OwnerYouTubeChannelId = null;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
@@ -190,9 +178,7 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             var videoResponse = await _youTubeManager.GetVideoById(videoId);
 
@@ -213,7 +199,6 @@ namespace MTD.DiscordBot.Modules
 
             var message = await MessagingHelper.BuildMessage(channelTitle, "a game", video.snippet.title, url, avatarUrl, thumbnailUrl,
                 Constants.YouTubeGaming, video.snippet.channelId, server, server.GoLiveChannel);
-
             await MessagingHelper.SendMessages(Constants.YouTube, new List<BroadcastMessage>() { message });
         }
     }
