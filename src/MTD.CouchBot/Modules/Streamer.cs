@@ -7,7 +7,6 @@ using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using Newtonsoft.Json;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
@@ -15,15 +14,14 @@ namespace MTD.CouchBot.Modules
     [Group("streamer")]
     public class Streamer : ModuleBase
     {
-        readonly IYouTubeManager _youtubeManager;
-        readonly IMixerManager _mixerManager;
-        readonly ITwitchManager _twitchManager;
+        IYouTubeManager _youtubeManager;
+        IMixerManager _mixerManager;
+        ISmashcastManager _smashcastManager;
+        ITwitchManager _twitchManager;
 
         public Streamer()
         {
             _youtubeManager = new YouTubeManager();
-            _mixerManager = new MixerManager();
-            _twitchManager = new TwitchManager();
         }
 
         [Command("list"), Summary("List server streamers")]
@@ -41,116 +39,97 @@ namespace MTD.CouchBot.Modules
 
             if (guildObject.PicartoChannels != null && guildObject.PicartoChannels.Count > 0)
             {
-                var builder = new StringBuilder();
-
                 foreach (var streamer in guildObject.PicartoChannels)
                 {
                     if (count == 0)
                     {
-                        builder.Append(streamer);
+                        picarto += streamer;
                     }
                     else
                     {
-                        builder.Append(", ").Append(streamer);
+                        picarto += ", " + streamer;
                     }
 
                     count++;
                 }
-
-                picarto = builder.ToString();
             }
 
             count = 0;
 
             if (guildObject.ServerTwitchChannels != null && guildObject.ServerTwitchChannels.Count > 0)
             {
-                var builder = new StringBuilder();
-
                 foreach (var streamer in guildObject.ServerTwitchChannels)
                 {
                     if (count == 0)
                     {
-                        builder.Append(streamer);
+                        twitch += streamer;
                     }
                     else
                     {
-                        builder.Append(", ").Append(streamer);
+                        twitch += ", " + streamer;
                     }
 
                     count++;
                 }
-
-                twitch = builder.ToString();
             }
 
             count = 0;
 
             if (guildObject.ServerYouTubeChannelIds != null && guildObject.ServerYouTubeChannelIds.Count > 0)
             {
-                var builder = new StringBuilder();
-
                 foreach (var streamer in guildObject.ServerYouTubeChannelIds)
                 {
                     var channel = await _youtubeManager.GetYouTubeChannelSnippetById(streamer);
-                    var ytStreamer = (channel.items.Count > 0 ? channel.items[0].snippet.title + " (" + streamer + ")" : streamer);
 
                     if (count == 0)
                     {
-                        builder.Append(ytStreamer);
+                        youtube += (channel.items.Count > 0 ? channel.items[0].snippet.title + " (" +  streamer + ")" : streamer);
                     }
                     else
                     {
-                        builder.Append(", ").Append(ytStreamer);
+                        youtube += ", " + (channel.items.Count > 0 ? channel.items[0].snippet.title + " (" + streamer + ")" : streamer);
                     }
 
                     count++;
                 }
-
-                youtube = builder.ToString();
             }
 
             count = 0;
 
             if (guildObject.ServerBeamChannels != null && guildObject.ServerBeamChannels.Count > 0)
             {
-                var builder = new StringBuilder();
                 foreach (var streamer in guildObject.ServerBeamChannels)
                 {
                     if (count == 0)
                     {
-                        builder.Append(streamer);
+                        beam += streamer;
                     }
                     else
                     {
-                        builder.Append(", ").Append(streamer);
+                        beam += ", " + streamer;
                     }
 
                     count++;
                 }
-
-                beam = builder.ToString();
             }
 
             count = 0;
 
             if (guildObject.ServerHitboxChannels != null && guildObject.ServerHitboxChannels.Count > 0)
             {
-                var builder = new StringBuilder();
                 foreach (var streamer in guildObject.ServerHitboxChannels)
                 {
                     if (count == 0)
                     {
-                        builder.Append(streamer);
+                        hitbox += streamer;
                     }
                     else
                     {
-                        builder.Append(", ").Append(streamer);
+                        hitbox += ", " + streamer;
                     }
 
                     count++;
                 }
-
-                hitbox = builder.ToString();
             }
 
             var ownerYouTube = "Not Set";
@@ -191,16 +170,16 @@ namespace MTD.CouchBot.Modules
             var youtube = BotFiles.GetCurrentlyLiveYouTubeChannels();
             var picarto = BotFiles.GetCurrentlyLivePicartoChannels();
 
+
             var guildId = Context.Guild.Id;
 
-            var mixerBuilder = new StringBuilder();
-            var picartoBuilder = new StringBuilder();
-            var smashcastBuilder = new StringBuilder();
-            var twitchBuilder = new StringBuilder();
-            var youtubeBuilder = new StringBuilder();
+            var beamLive = "";
+            var hitboxLive = "";
+            var twitchLive = "";
+            var youtubeLive = "";
+            var picartoLive = "";
 
-
-            foreach (var b in beam)
+            foreach(var b in beam)
             {
                 foreach(var cm in b.ChannelMessages)
                 {
@@ -208,10 +187,8 @@ namespace MTD.CouchBot.Modules
                     {
                         var channel = await _mixerManager.GetChannelById(b.Name);
 
-                        if (channel != null && channel.online)
-                        {
-                            mixerBuilder.Append(channel.token + ", ");
-                        }
+                        if(channel != null && channel.online)
+                        beamLive += channel.token + ", ";
 
                         break;
                     }
@@ -227,9 +204,7 @@ namespace MTD.CouchBot.Modules
                         var channel = await _mixerManager.GetChannelById(p.Name);
 
                         if (channel != null && channel.online)
-                        {
-                            picartoBuilder.Append(channel.token + ", ");
-                        }
+                            picartoLive += channel.token + ", ";
 
                         break;
                     }
@@ -242,7 +217,7 @@ namespace MTD.CouchBot.Modules
                 {
                     if (cm.GuildId == guildId)
                     {
-                        smashcastBuilder.Append(h.Name + ", ");
+                        hitboxLive += h.Name + ", ";
 
                         break;
                     }
@@ -259,7 +234,7 @@ namespace MTD.CouchBot.Modules
 
                         if (channel != null && channel.stream != null)
                         {
-                            twitchBuilder.Append(channel.stream.channel.name + ", ");
+                            twitchLive += channel.stream.channel.name + ", ";
                         }
 
                         break;
@@ -277,7 +252,7 @@ namespace MTD.CouchBot.Modules
 
                         if (channel != null && channel.items != null && channel.items.Count > 0)
                         {
-                            youtubeBuilder.Append(channel.items[0].snippet.channelTitle + ", ");
+                            youtubeLive += channel.items[0].snippet.channelTitle + ", ";
                         }
 
                         break;
@@ -285,13 +260,19 @@ namespace MTD.CouchBot.Modules
                 }
             }
 
+            beamLive = beamLive.Trim().TrimEnd(',');
+            hitboxLive = hitboxLive.Trim().TrimEnd(',');
+            twitchLive = twitchLive.Trim().TrimEnd(',');
+            youtubeLive = youtubeLive.Trim().TrimEnd(',');
+            picartoLive = picartoLive.Trim().TrimEnd(',');
+
             string info = "```Markdown\r\n" +
               "# Currently Live\r\n" +
-              "- Mixer: " + mixerBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
-              "- Picarto: " + picartoBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
-              "- Smashcast: " + smashcastBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
-              "- Twitch: " + twitchBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
-              "- YouTube Gaming: " + youtubeBuilder.ToString().Trim().TrimEnd(',') + "\r\n" +
+              "- Mixer: " + beamLive + "\r\n" +
+              "- Picarto: " + picartoLive + "\r\n" +
+              "- Smashcast: " + hitboxLive + "\r\n" +
+              "- Twitch: " + twitchLive + "\r\n" +
+              "- YouTube Gaming: " + youtubeLive + "\r\n" +
               "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);

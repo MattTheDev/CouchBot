@@ -5,7 +5,6 @@ using MTD.CouchBot.Domain.Models.Bot;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
@@ -29,14 +28,10 @@ namespace MTD.CouchBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             if (server.ApprovedAdmins == null)
-            {
                 server.ApprovedAdmins = new List<ulong>();
-            }
 
             if(server.ApprovedAdmins.Contains(user.Id))
             {
@@ -67,9 +62,7 @@ namespace MTD.CouchBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             if (server.ApprovedAdmins == null || !server.ApprovedAdmins.Contains(user.Id))
             {
@@ -100,27 +93,24 @@ namespace MTD.CouchBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
-            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-            }
 
             if (server.ApprovedAdmins == null)
-            {
                 server.ApprovedAdmins = new List<ulong>();
-            }
 
-            var builder = new StringBuilder();
+            var admins = "";
 
             foreach (var aa in server.ApprovedAdmins)
             {
                 var user = await Context.Guild.GetUserAsync(aa);
-
-                builder.Append(user.Username + ", ");
+                admins += user.Username + ", ";
             }
+
+            admins = admins.Trim().TrimEnd(',');
 
             string info = "```Markdown\r\n" +
               "# Server Approved Admins\r\n" +
-              builder.ToString().Trim().TrimEnd(',') + "\r\n" +
+              admins + "\r\n" +
               "```\r\n";
 
             await Context.Channel.SendMessageAsync(info);
