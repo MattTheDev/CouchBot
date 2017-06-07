@@ -1307,7 +1307,7 @@ namespace MTD.CouchBot
                                             embedBuilder.AddField(f =>
                                             {
                                                 f.Name = "Stream Tags";
-                                                f.Value = tags.Trim().TrimEnd(',');
+                                                f.Value = string.IsNullOrEmpty(tags.Trim().TrimEnd(',')) ? "None" : tags.Trim().TrimEnd(',');
                                                 f.IsInline = false;
                                             });
 
