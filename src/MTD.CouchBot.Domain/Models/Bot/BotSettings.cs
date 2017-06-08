@@ -35,7 +35,7 @@ namespace MTD.CouchBot.Domain.Models.Bot
             public string GuildDirectory { get; set; }
             public string UserDirectory { get; set; }
             public string LiveDirectory { get; set; }
-            public string BeamDirectory { get; set; }
+            public string MixerDirectory { get; set; }
             public string SmashcastDirectory { get; set; }
             public string TwitchDirectory { get; set; }
             public string YouTubeDirectory { get; set; }
