@@ -23,18 +23,18 @@ namespace MTD.CouchBot.Domain
             }
         }
 
-        public static readonly string ConfigRootDirectory = @"c:\programdata\CouchBot\";
-        public static readonly string GuildDirectory = @"Guilds\";
-        public static readonly string UserDirectory = @"Users\";
-        public static readonly string LiveDirectory = @"Live\";
-        public static readonly string TwitchDirectory = @"Twitch\";
-        public static readonly string YouTubeDirectory = @"YouTube\";
-        public static readonly string MixerDirectory = @"Mixer\";
-        public static readonly string SmashcastDirectory = @"Smashcast\";
-        public static readonly string PicartoDirectory = @"Picarto\";
-
         public static readonly string BotStatistics = "BotStats.json";
         public static readonly string BotSettings = "BotSettings.json";
+
+        public static readonly string ConfigRootDirectory = Settings.DirectorySettings.ConfigRootDirectory;
+        public static readonly string GuildDirectory = Settings.DirectorySettings.GuildDirectory;
+        public static readonly string UserDirectory = Settings.DirectorySettings.UserDirectory;
+        public static readonly string LiveDirectory = Settings.DirectorySettings.LiveDirectory;
+        public static readonly string TwitchDirectory = Settings.DirectorySettings.TwitchDirectory;
+        public static readonly string YouTubeDirectory = Settings.DirectorySettings.YouTubeDirectory;
+        public static readonly string MixerDirectory = Settings.DirectorySettings.MixerDirectory;
+        public static readonly string SmashcastDirectory = Settings.DirectorySettings.SmashcastDirectory;
+        public static readonly string PicartoDirectory = Settings.DirectorySettings.PicartoDirectory;
 
         public static readonly bool EnableMixer = Settings.PlatformSettings.EnableMixer;
         public static readonly bool EnableSmashcast = Settings.PlatformSettings.EnableSmashcast;
