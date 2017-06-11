@@ -45,6 +45,7 @@ namespace MTD.CouchBot.Domain
         public static readonly string DiscordToken = Settings.KeySettings.DiscordToken;
         public static readonly string TwitchClientId = Settings.KeySettings.TwitchClientId;
         public static readonly string YouTubeApiKey = Settings.KeySettings.YouTubeApiKey;
+        public static readonly string ApiAiKey = Settings.KeySettings.ApiAiKey;
         public static readonly ulong CouchBotId = Settings.BotConfig.CouchBotId;
         public static readonly string Prefix = Settings.BotConfig.Prefix;
         public static readonly int TotalShards = Settings.BotConfig.TotalShards;
