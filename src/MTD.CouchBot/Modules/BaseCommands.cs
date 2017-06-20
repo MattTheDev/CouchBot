@@ -177,7 +177,7 @@ namespace MTD.CouchBot.Modules
         [Command("invite"), Summary("Provide an invite link via DM.")]
         public async Task Invite()
         {
-            await (await ((IGuildUser)(Context.Message.Author)).CreateDMChannelAsync()).SendMessageAsync("Want me to join your server? Click here: <http://discordapp.com/oauth2/authorize?client_id=308371905667137536&scope=bot>");
+            await (await ((IGuildUser)(Context.Message.Author)).CreateDMChannelAsync()).SendMessageAsync("Want me to join your server? Click here: <https://discordapp.com/oauth2/authorize?client_id=308371905667137536&scope=bot&permissions=158720>");
         }
 
         [Command("uptime"), Summary("Get Uptime Statistic Information.")]
@@ -286,6 +286,19 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync("", false, builder.Build());
         }
 
+        [Command("setbotgame")]
+        public async Task SetBotGame(string game)
+        {
+            if(Context.User.Id != 93015586698727424)
+            {
+                await Context.Channel.SendMessageAsync("*Bbbbbzzztttt* You are not *zzzzt* Dawgeth. Acc *bbrrrttt* Access Denied.");
+
+                return;
+            }
+
+            await Program.client.SetGameAsync(game, "", StreamType.NotStreaming);
+        }
+
         [Command("permissions"), Summary("Check bot permissions.")]
         public async Task Permissions(IGuildChannel channel)
         {
@@ -319,5 +332,7 @@ namespace MTD.CouchBot.Modules
 
             await Context.Channel.SendMessageAsync(info);
         }
+
+
     }
 }
