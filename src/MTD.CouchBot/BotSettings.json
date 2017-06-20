@@ -2,7 +2,8 @@
   "Keys": {
     "DiscordToken": "DISCORDTOKEN",
     "TwitchClientId": "TWITCHID",
-    "YouTubeApiKey": "YOUTUBEAPI"
+    "YouTubeApiKey": "YOUTUBEAPI",
+    "ApiAiKey": "APIAIKEY" 
   },
   "BotConfiguration": {
     "CouchBotId": 0,

@@ -16,11 +16,13 @@ namespace MTD.CouchBot.Modules
     {
         IStatisticsManager statisticsManager;
         IYouTubeManager youtubeManager;
+        IApiAiManager apiAiManager;
 
         public BaseCommands()
         {
             statisticsManager = new StatisticsManager();
             youtubeManager = new YouTubeManager();
+            apiAiManager = new ApiAiManager();
         }
 
         [Command("info"), Summary("Get CouchBot Information.")]
@@ -165,13 +167,17 @@ namespace MTD.CouchBot.Modules
         [Command("help"), Summary("Provides a link to the CouchBot Website.")]
         public async Task Help()
         {
-            string info = "```Markdown\r\n" +
-                          "#" + Program.client.CurrentUser.Username + " Help\r\n\r\n" + 
-                          "We've got so many commands, we needed to move all of them to our website, http://couchbot.io!\r\n\r\n" +
-                          "If you need any further help, join us on our Discord Server, http://discord.couchbot.io. Thanks!!\r\n" +
-                          "```\r\n";
+            string info = "Need help? Ask me a question! ie: !cb help \"How can I add my Twitch account?\". Note: Please include quotes around your question.";
 
             await Context.Channel.SendMessageAsync(info);
+        }
+
+        [Command("help"), Summary("Provides a link to the CouchBot Website.")]
+        public async Task Help(string question)
+        {
+            var response = await apiAiManager.AskAQuestion(question);
+
+            await Context.Channel.SendMessageAsync(response.result.speech);
         }
 
         [Command("invite"), Summary("Provide an invite link via DM.")]
