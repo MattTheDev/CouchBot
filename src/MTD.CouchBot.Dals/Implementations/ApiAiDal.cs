@@ -11,7 +11,7 @@ namespace MTD.CouchBot.Dals.Implementations
     {
         public async Task<ApiAiResponse> AskAQuestion(string question)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create("https://api.api.ai/v1/query?query=How are you?&lang=en&sessionId=CouchBot");
+            var webRequest = (HttpWebRequest)WebRequest.Create("https://api.api.ai/v1/query?query=" + question + "?&lang=en&sessionId=CouchBot");
             webRequest.Headers["Authorization"] = "Bearer " + Constants.ApiAiKey;
             webRequest.ContentType = "application/json; charset=utf-8";
             string str;
