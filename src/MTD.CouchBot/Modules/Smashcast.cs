@@ -127,15 +127,15 @@ namespace MTD.DiscordBot.Modules
 
             if (server.ServerHitboxChannels != null && server.ServerHitboxChannels.Contains(channelName.ToLower()))
             {
-                await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server Smashcast Channels. " +
-                    "Please remove it with '!cb smashcast remove " + channel + "' and then retry setting your owner channel.");
+                await Context.Channel.SendMessageAsync("The channel " + channelName + " is in the list of server Smashcast Channels. " +
+                    "Please remove it with '!cb smashcast remove " + channelName + "' and then retry setting your owner channel.");
 
                 return;
             }
 
             server.OwnerHitboxChannel = channelName;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
-            await Context.Channel.SendMessageAsync("Owner Smashcast Channel has been set to " + channel + ".");
+            await Context.Channel.SendMessageAsync("Owner Smashcast Channel has been set to " + channelName + ".");
 
         }
 
