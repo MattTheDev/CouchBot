@@ -198,7 +198,7 @@ namespace MTD.DiscordBot.Modules
             string thumbnailUrl = video.snippet.thumbnails.high.url;
 
             var message = await MessagingHelper.BuildMessage(channelTitle, "a game", video.snippet.title, url, avatarUrl, thumbnailUrl,
-                Constants.YouTubeGaming, video.snippet.channelId, server, server.GoLiveChannel);
+                Constants.YouTubeGaming, video.snippet.channelId, server, server.GoLiveChannel, null);
             await MessagingHelper.SendMessages(Constants.YouTube, new List<BroadcastMessage>() { message });
         }
     }

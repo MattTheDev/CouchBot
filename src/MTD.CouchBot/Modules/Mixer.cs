@@ -201,7 +201,7 @@ namespace MTD.DiscordBot.Modules
                 string channelId = stream.id.Value.ToString();
 
                 var message = await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url,
-                    avatarUrl, thumbnailUrl, Constants.Mixer, channelId, server, server.GoLiveChannel);
+                    avatarUrl, thumbnailUrl, Constants.Mixer, channelId, server, server.GoLiveChannel, null);
                 await MessagingHelper.SendMessages(Constants.Mixer, new List<BroadcastMessage>() { message });
             }
             else
