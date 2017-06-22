@@ -1,0 +1,41 @@
+{
+  "Keys": {
+    "DiscordToken": "DISCORDTOKEN",
+    "TwitchClientId": "TWITCHID",
+    "YouTubeApiKey": "YOUTUBEAPI",
+    "ApiAiKey": "APIAIKEY" 
+  },
+  "BotConfiguration": {
+    "CouchBotId": 0,
+    "Prefix": "",
+    "TotalShards":  1
+  },
+  "Directories": {
+    "ConfigRootDirectory": "C:\\programdata\\CouchBot\\",
+    "GuildDirectory": "Guilds\\",
+    "UserDirectory": "Users\\",
+    "LiveDirectory": "Live\\",
+    "MixerDirectory": "Mixer\\",
+    "PicartoDirectory": "Picarto\\",
+    "SmashcastDirectory": "Smashcast\\",
+    "TwitchDirectory": "Twitch\\",
+    "YouTubeDirectory": "YouTube\\"
+  },
+  "Platforms": {
+    "EnableMixer": true,
+    "EnableSmashcast": true,
+    "EnableTwitch": true,
+    "EnableYouTube": true,
+    "EnablePicarto": true,
+    "EnableVidMe":  true
+  },
+  "Intervals": {
+    "Picarto": 120,
+    "Smashcast": 120,
+    "Twitch": 300,
+    "TwitchFeed": 300,
+    "YouTubePublished": 900,
+    "YouTubeLive": 300,
+    "VidMe":  900
+  }
+}

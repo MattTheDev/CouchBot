@@ -909,7 +909,8 @@ namespace MTD.CouchBot
                                                 string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                                 string thumbnailUrl = stream.preview.large;
 
-                                                Logging.LogTwitch(teamResponse + " team member " + channelName + " has gone online.");
+                                                // TODO MS - GAME RESPONSE
+                                                Logging.LogTwitch(gameResponse + " team member " + channelName + " has gone online.");
 
                                                 var message = await MessagingHelper.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
                                                     thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel, null);

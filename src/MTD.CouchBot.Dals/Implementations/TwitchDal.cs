@@ -72,7 +72,7 @@ namespace MTD.CouchBot.Dals.Implementations
         public async Task<TwitchChannelFeed> GetChannelFeedPosts(string twitchId)
         {
             var request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/feed/" + twitchId + "/posts?limit=5&api_version=5");
-            request.Headers["Client-Id"] = "g4lzetoz0ff2zkd46mduk03myr749uc";
+            request.Headers["Client-Id"] = Constants.TwitchClientId;
             request.Accept = "application/vnd.twitchtv.v5+json";
             var response = await request.GetResponseAsync();
             var responseText = "";
@@ -88,17 +88,24 @@ namespace MTD.CouchBot.Dals.Implementations
         // TODO: Implement followers by ID <<----
         public async Task<TwitchFollowers> GetFollowersByName(string name)
         {
-            var request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + name + "/follows");
-            request.Headers["Client-Id"] = Constants.TwitchClientId;
-            var response = await request.GetResponseAsync();
-            var responseText = "";
-
-            using (var sr = new StreamReader(response.GetResponseStream()))
+            try
             {
-                responseText = sr.ReadToEnd();
-            }
+                var request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + name + "/follows");
+                request.Headers["Client-Id"] = Constants.TwitchClientId;
+                var response = await request.GetResponseAsync();
+                var responseText = "";
 
-            return JsonConvert.DeserializeObject<TwitchFollowers>(responseText);
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                {
+                    responseText = sr.ReadToEnd();
+                }
+
+                return JsonConvert.DeserializeObject<TwitchFollowers>(responseText);
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         }
 
         public async Task<TwitchTeam> GetTwitchTeamByName(string name)
@@ -128,7 +135,7 @@ namespace MTD.CouchBot.Dals.Implementations
         {
             var team = await GetTwitchTeamByName(teamToken);
 
-            return string.Join(",", team.Users.Select(u => u.Id));
+            return team == null ? null : string.Join(",", team.Users.Select(u => u.Id));
         }
 
         public async Task<List<TwitchStreamsV5.Stream>> GetStreamsByGameName(string gameName)
