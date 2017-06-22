@@ -66,7 +66,7 @@ namespace MTD.CouchBot.Bot
                         string channelId = stream.id.Value.ToString();
 
                         messages.Add(await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url, avatarUrl, thumbnailUrl,
-                            Constants.Mixer, channelId, server, server.GoLiveChannel));
+                            Constants.Mixer, channelId, server, server.GoLiveChannel, null));
                     }
                 }
             }
@@ -85,7 +85,7 @@ namespace MTD.CouchBot.Bot
                         string channelId = stream.id.Value.ToString();
 
                         messages.Add(await MessagingHelper.BuildMessage(stream.token, gameName, stream.name, url, avatarUrl, thumbnailUrl,
-                            Constants.Mixer, channelId, server, server.OwnerLiveChannel));
+                            Constants.Mixer, channelId, server, server.OwnerLiveChannel, null));
                     }
                 }
             }

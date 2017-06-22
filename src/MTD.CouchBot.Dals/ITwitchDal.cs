@@ -1,5 +1,6 @@
 ﻿using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Domain.Models.Twitch;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Dals
@@ -11,5 +12,8 @@ namespace MTD.CouchBot.Dals
         Task<string> GetTwitchIdByLogin(string name);
         Task<TwitchStreamsV5> GetStreamsByIdList(string twitchIdList);
         Task<TwitchChannelFeed> GetChannelFeedPosts(string twitchId);
+        Task<TwitchTeam> GetTwitchTeamByName(string name);
+        Task<string> GetDelimitedListOfTwitchMemberIds(string teamToken);
+        Task<List<TwitchStreamsV5.Stream>> GetStreamsByGameName(string gameName);
     }
 }

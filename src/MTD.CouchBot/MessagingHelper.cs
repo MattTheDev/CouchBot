@@ -173,7 +173,7 @@ namespace MTD.CouchBot.Bot
 
         public static async Task<BroadcastMessage> BuildMessage(string channel, 
             string gameName, string title, string url, string avatarUrl, string thumbnailUrl, string platform, 
-            string channelId, DiscordServer server, ulong discordChannelId)
+            string channelId, DiscordServer server, ulong discordChannelId, string teamName)
         {
             EmbedBuilder embed = new EmbedBuilder();
             EmbedAuthorBuilder author = new EmbedAuthorBuilder();
@@ -224,7 +224,7 @@ namespace MTD.CouchBot.Bot
                 .Replace("%GAME%", gameName)
                 .Replace("%TITLE%", title)
                 .Replace("%URL%", url);
-            embed.Title = channel + " has gone live!";
+            embed.Title = channel + (string.IsNullOrEmpty(teamName) ? "" : " from the team '" + teamName + "'") + " has gone live!";
             embed.ImageUrl = server.AllowThumbnails ? thumbnailUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
 
@@ -259,6 +259,7 @@ namespace MTD.CouchBot.Bot
 
             return broadcastMessage;
         }
+
 
         public static async Task<List<ChannelMessage>> SendMessages(string platform, List<BroadcastMessage> messages)
         {

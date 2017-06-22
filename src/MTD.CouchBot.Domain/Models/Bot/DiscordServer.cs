@@ -51,16 +51,14 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public string OwnerYouTubeChannelId { get; set; }
         public string OwnerVidMeChannel { get; set; }
         public int OwnerVidMeChannelId { get; set; }
-
         public ulong OwnerTwitchFeedChannel { get; set; }
         public ulong TwitchFeedChannel { get; set; }
-
         public bool AllowChannelFeed { get; set; }
-
         public bool AllowOwnerChannelFeed { get; set; }
-
         public string StreamOfflineMessage { get; set; }
-
         public List<ulong> ApprovedAdmins { get; set; }
+        public List<string> TwitchTeams { get; set; }
+        public List<string> TwitchGames { get; set; }
+        public List<string> ServerGameList { get; set; }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Twitch;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -96,6 +99,68 @@ namespace MTD.CouchBot.Dals.Implementations
             }
 
             return JsonConvert.DeserializeObject<TwitchFollowers>(responseText);
+        }
+
+        public async Task<TwitchTeam> GetTwitchTeamByName(string name)
+        {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/teams/" + name);
+                request.Headers["Client-Id"] = Constants.TwitchClientId;
+                request.Accept = "application/vnd.twitchtv.v5+json";
+                var response = await request.GetResponseAsync();
+                var responseText = "";
+
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                {
+                    responseText = sr.ReadToEnd();
+                }
+
+                return JsonConvert.DeserializeObject<TwitchTeam>(responseText);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> GetDelimitedListOfTwitchMemberIds(string teamToken)
+        {
+            var team = await GetTwitchTeamByName(teamToken);
+
+            return string.Join(",", team.Users.Select(u => u.Id));
+        }
+
+        public async Task<List<TwitchStreamsV5.Stream>> GetStreamsByGameName(string gameName)
+        {
+            List<TwitchStreamsV5.Stream> streams = new List<TwitchStreamsV5.Stream>();
+
+            var offset = 0;
+            while (true)
+            {
+                var request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/streams/?game=" + gameName + "&limit=100&stream_type=live&offset=" + offset);
+                request.Headers["Client-Id"] = Constants.TwitchClientId;
+                request.Accept = "application/vnd.twitchtv.v5+json";
+                var response = await request.GetResponseAsync();
+                var responseText = "";
+
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                {
+                    responseText = sr.ReadToEnd();
+                }
+
+                var streamResponse = JsonConvert.DeserializeObject<TwitchStreamsV5>(responseText);
+
+                if (streamResponse.streams.Count < 1)
+                {
+                    break;
+                }
+
+                streams.AddRange(streamResponse.streams);
+                offset += 100;
+            }
+
+            return streams;
         }
     }
 }
