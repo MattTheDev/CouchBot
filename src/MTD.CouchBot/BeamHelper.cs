@@ -114,16 +114,20 @@ namespace MTD.CouchBot.Bot
             IMixerManager mixerManager = new MixerManager();
             var stream = await mixerManager.GetChannelByName(beamId);
             var live = BotFiles.GetCurrentlyLiveBeamChannels().FirstOrDefault(x => x.Name == beamId);
-            
+
             if (live == null)
+            {
                 return;
+            }
 
             foreach(var message in live.ChannelMessages)
             {
                 var serverFile = BotFiles.GetConfiguredServers().FirstOrDefault(x => x.Id == message.GuildId);
 
                 if (serverFile == null)
+                {
                     continue;
+                }
 
                 if(serverFile.DeleteWhenOffline)
                 {
