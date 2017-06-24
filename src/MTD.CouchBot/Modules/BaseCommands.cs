@@ -2,6 +2,7 @@
 using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using Newtonsoft.Json;
@@ -16,11 +17,13 @@ namespace MTD.CouchBot.Modules
     {
         IStatisticsManager statisticsManager;
         IYouTubeManager youtubeManager;
+        IApiAiManager apiAiManager;
 
         public BaseCommands()
         {
             statisticsManager = new StatisticsManager();
             youtubeManager = new YouTubeManager();
+            apiAiManager = new ApiAiManager();
         }
 
         [Command("info"), Summary("Get CouchBot Information.")]
@@ -165,19 +168,23 @@ namespace MTD.CouchBot.Modules
         [Command("help"), Summary("Provides a link to the CouchBot Website.")]
         public async Task Help()
         {
-            string info = "```Markdown\r\n" +
-                          "#" + Program.client.CurrentUser.Username + " Help\r\n\r\n" + 
-                          "We've got so many commands, we needed to move all of them to our website, http://couchbot.io!\r\n\r\n" +
-                          "If you need any further help, join us on our Discord Server, http://discord.couchbot.io. Thanks!!\r\n" +
-                          "```\r\n";
+            string info = "Need help? Ask me a question! ie: !cb help \"How can I add my Twitch account?\". Note: Please include quotes around your question.";
 
             await Context.Channel.SendMessageAsync(info);
+        }
+
+        [Command("help"), Summary("Provides a link to the CouchBot Website.")]
+        public async Task Help(string question)
+        {
+            var response = await apiAiManager.AskAQuestion(question);
+
+            await Context.Channel.SendMessageAsync(response.result.speech);
         }
 
         [Command("invite"), Summary("Provide an invite link via DM.")]
         public async Task Invite()
         {
-            await (await ((IGuildUser)(Context.Message.Author)).CreateDMChannelAsync()).SendMessageAsync("Want me to join your server? Click here: <http://discordapp.com/oauth2/authorize?client_id=308371905667137536&scope=bot>");
+            await (await ((IGuildUser)(Context.Message.Author)).CreateDMChannelAsync()).SendMessageAsync("Want me to join your server? Click here: <https://discordapp.com/oauth2/authorize?client_id=308371905667137536&scope=bot&permissions=158720>");
         }
 
         [Command("uptime"), Summary("Get Uptime Statistic Information.")]
@@ -240,7 +247,6 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
 
-
         [Command("ytidlookup"), Summary("Query YouTube API to find a Channel ID.")]
         public async Task YtIdLookup([Summary("Username to Query")]string name)
         {
@@ -286,6 +292,19 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync("", false, builder.Build());
         }
 
+        [Command("setbotgame")]
+        public async Task SetBotGame(string game)
+        {
+            if(Context.User.Id != 93015586698727424)
+            {
+                await Context.Channel.SendMessageAsync("*Bbbbbzzztttt* You are not *zzzzt* Dawgeth. Acc *bbrrrttt* Access Denied.");
+
+                return;
+            }
+
+            await Program.client.SetGameAsync(game, "", StreamType.NotStreaming);
+        }
+
         [Command("permissions"), Summary("Check bot permissions.")]
         public async Task Permissions(IGuildChannel channel)
         {
@@ -318,6 +337,21 @@ namespace MTD.CouchBot.Modules
               "```";
 
             await Context.Channel.SendMessageAsync(info);
+        }
+
+        [Command("echo")]
+        public async Task Echo(string message)
+        {
+            await Context.Channel.SendMessageAsync(StringUtilities.ScrubChatMessage(message));
+        }
+
+        [Command("echoembed")]
+        public async Task EchoEmbed(string message)
+        {
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.AddField("ECHO!", StringUtilities.ScrubChatMessage(message));
+
+            await Context.Channel.SendMessageAsync("", false, eb.Build(), null);
         }
     }
 }

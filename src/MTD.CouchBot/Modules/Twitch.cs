@@ -2,13 +2,17 @@
 using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models.Bot;
 using MTD.CouchBot.Modules;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.DiscordBot.Modules
@@ -198,13 +202,254 @@ namespace MTD.DiscordBot.Modules
             }
             
             string url = stream.channel.url;
-            string name = stream.channel.display_name.Replace("_", "").Replace("*", "");
+            string name = StringUtilities.ScrubChatMessage(stream.channel.display_name);
             string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
             string thumbnailUrl = stream.preview.large;
 
             var message = await MessagingHelper.BuildMessage(name, stream.game, stream.channel.status, url, avatarUrl,
-                                                    thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel);
+                                                    thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel, null);
             await MessagingHelper.SendMessages(Constants.Twitch, new List<BroadcastMessage>() { message });
         }
+
+        [Command("addgame")]
+        public async Task AddGame(string gameName)
+        {
+            if (!IsApprovedAdmin)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+            {
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
+
+            if (server.ServerGameList == null)
+            {
+                server.ServerGameList = new List<string>();
+            }
+
+            var games = await _twitchManager.SearchForGameByName(gameName);
+
+            if(games.games == null)
+            {
+                await Context.Channel.SendMessageAsync(gameName + " is not a valid game. Please check the name, and try again.");
+                return;
+            }
+
+            var gameDASfasdf = games.games.FirstOrDefault(x => x.name.Equals(gameName, StringComparison.CurrentCultureIgnoreCase));
+
+            if (games.games.FirstOrDefault(x => x.name.Equals(gameName, StringComparison.CurrentCultureIgnoreCase)) == null)
+            {
+                var suggestedGameList = "That is not a valid game name. Is the game you want on the list below?\r\n\r\n" +
+                    String.Join(", ", games.games.Select(x => x.name));
+
+                await Context.Channel.SendMessageAsync(suggestedGameList);
+                return;
+            }
+
+            if (!server.ServerGameList.Contains(gameName, StringComparer.CurrentCultureIgnoreCase))
+            {
+                server.ServerGameList.Add(gameName);
+                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+
+                await Context.Channel.SendMessageAsync("Added " + gameName + " to the server Twitch game list.");
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync(gameName + " is already on the server Twitch game list.");
+            }
+        }
+
+        [Command("removegame")]
+        public async Task RemoveGame(string gameName)
+        {
+            if (!IsApprovedAdmin)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+            {
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
+
+            if (server.ServerGameList == null)
+            {
+                return;
+            }
+
+            if (server.ServerGameList.Contains(gameName, StringComparer.CurrentCultureIgnoreCase))
+            {
+                server.ServerGameList.Remove(gameName);
+                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+
+                await Context.Channel.SendMessageAsync("Removed " + gameName + " from the server Twitch game list.");
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync(gameName + " isn't on the server Twitch game list.");
+            }
+        }
+
+        [Command("listgames")]
+        public async Task ListGames()
+        {
+            if (!IsApprovedAdmin)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+            {
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
+
+            if (server.ServerGameList == null)
+            {
+                server.ServerGameList = new List<string>();
+            }
+
+            var builder = new StringBuilder();
+
+            foreach (var tt in server.ServerGameList)
+            {
+                builder.Append(tt + ", ");
+            }
+
+            string info = "```Markdown\r\n" +
+              "# Server Twitch Games\r\n" +
+              builder.ToString().Trim().TrimEnd(',') + "\r\n" +
+              "```\r\n";
+
+            await Context.Channel.SendMessageAsync(info);
+        }
+
+        [Command("addteam")]
+        public async Task AddTeam(string teamName)
+        {
+            if (!IsApprovedAdmin)
+            {
+                return;
+            }
+
+            var team = await _twitchManager.GetTwitchTeamByName(teamName);
+
+            if (team == null)
+            {
+                await Context.Channel.SendMessageAsync(teamName + " is not a valid Twitch team token. The team token is on the end of the Team URL, ie: (http://twitch.tv/teams/ths .. use !cb twitch addteam ths).");
+
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+            {
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
+
+            if (server.TwitchTeams == null)
+            {
+                server.TwitchTeams = new List<string>();
+            }
+
+            if (!server.TwitchTeams.Contains(teamName, StringComparer.CurrentCultureIgnoreCase))
+            {
+                server.TwitchTeams.Add(teamName);
+                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+
+                await Context.Channel.SendMessageAsync("Added " + team.DisplayName + " (" + teamName + ") to the server Twitch team list.");
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync(team.DisplayName + " (" + teamName + ") is already on the server Twitch team list.");
+            }
+        }
+
+        [Command("removeteam")]
+        public async Task RemoveTeam(string teamName)
+        {
+            if (!IsApprovedAdmin)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+            {
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
+
+            if (server.TwitchTeams == null)
+            {
+                return;
+            }
+
+            if (server.TwitchTeams.Contains(teamName, StringComparer.CurrentCultureIgnoreCase))
+            {
+                var team = await _twitchManager.GetTwitchTeamByName(teamName);
+
+                server.TwitchTeams.Remove(teamName);
+                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+
+                await Context.Channel.SendMessageAsync("Removed " + team.DisplayName + " (" + teamName + ") from the server Twitch team list.");
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync("Token " + teamName + " isn't on the server Twitch team list.");
+            }
+        }
+
+        [Command("listteams")]
+        public async Task ListTeams()
+        {
+            if (!IsApprovedAdmin)
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+            {
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
+
+            if (server.TwitchTeams == null)
+            {
+                server.TwitchTeams = new List<string>();
+            }
+
+            var builder = new StringBuilder();
+
+            foreach (var tt in server.TwitchTeams)
+            {
+                var team = await _twitchManager.GetTwitchTeamByName(tt);
+
+                builder.Append(team.DisplayName + " (" + tt + "), ");
+            }
+
+            string info = "```Markdown\r\n" +
+              "# Server Twitch Teams\r\n" +
+              builder.ToString().Trim().TrimEnd(',') + "\r\n" +
+              "```\r\n";
+
+            await Context.Channel.SendMessageAsync(info);
+        }
+
     }
 }
