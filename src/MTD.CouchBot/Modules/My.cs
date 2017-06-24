@@ -12,7 +12,7 @@ namespace MTD.CouchBot.Modules
     public class My : ModuleBase
     {
         [Command("birthday"), Summary("Sets users birthday.")]
-        public async Task Birthday(string birthday)
+        public async Task Birthday(string date)
         {
             string file = Constants.ConfigRootDirectory + Constants.UserDirectory + Context.Message.Author.Id + ".json";
 
@@ -21,12 +21,12 @@ namespace MTD.CouchBot.Modules
             if (File.Exists(file))
                 user = JsonConvert.DeserializeObject<User>(File.ReadAllText(file));
 
-            if (!string.Equals(birthday.ToLower(), "clear"))
+            if (!string.Equals(date, "clear", StringComparison.CurrentCultureIgnoreCase))
             {
                 user.Id = Context.Message.Author.Id;
                 try
                 {
-                    user.Birthday = Convert.ToDateTime(birthday);
+                    user.Birthday = Convert.ToDateTime(date);
                     File.WriteAllText(file, JsonConvert.SerializeObject(user));
                     await Context.Channel.SendMessageAsync("Your Birthday has been set.");
                 }
@@ -52,7 +52,9 @@ namespace MTD.CouchBot.Modules
             var user = new User();
 
             if (File.Exists(file))
+            {
                 user = JsonConvert.DeserializeObject<User>(File.ReadAllText(file));
+            }
 
             user.TimeZoneOffset = offset;
             File.WriteAllText(file, JsonConvert.SerializeObject(user));
