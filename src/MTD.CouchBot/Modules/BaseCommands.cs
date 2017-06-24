@@ -246,7 +246,6 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
 
-
         [Command("ytidlookup"), Summary("Query YouTube API to find a Channel ID.")]
         public async Task YtIdLookup([Summary("Username to Query")]string name)
         {
@@ -339,6 +338,19 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync(info);
         }
 
+        [Command("echo")]
+        public async Task Echo(string message)
+        {
+            await Context.Channel.SendMessageAsync(message.Replace("_","\\_").Replace("*","\\*"));
+        }
 
+        [Command("echoembed")]
+        public async Task EchoEmbed(string message)
+        {
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.AddField("ECHO!", message.Replace("_", "\\_").Replace("*", "\\*"));
+
+            await Context.Channel.SendMessageAsync("", false, eb.Build(), null);
+        }
     }
 }

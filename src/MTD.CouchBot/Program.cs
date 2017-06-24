@@ -515,7 +515,7 @@ namespace MTD.CouchBot
 
                                     // Build our message
                                     string url = stream.channel.url;
-                                    string channelName = stream.channel.display_name.Replace("_", "").Replace("*", "");
+                                    string channelName = stream.channel.display_name.Replace("_", "\\_").Replace("*", "\\*");
                                     string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                     string thumbnailUrl = stream.preview.large;
 
@@ -620,7 +620,7 @@ namespace MTD.CouchBot
 
                                 // Build our message
                                 string url = stream.channel.url;
-                                string channelName = stream.channel.display_name.Replace("_", "").Replace("*", "");
+                                string channelName = stream.channel.display_name.Replace("_", "\\_").Replace("*", "\\*");
                                 string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                 string thumbnailUrl = stream.preview.large;
 
@@ -801,7 +801,7 @@ namespace MTD.CouchBot
 
                                         // Build our message
                                         string url = stream.channel.url;
-                                        string channelName = stream.channel.display_name.Replace("_", "").Replace("*", "");
+                                        string channelName = stream.channel.display_name.Replace("_", "\\_").Replace("*", "\\*");
                                         string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                         string thumbnailUrl = stream.preview.large;
 
@@ -905,7 +905,7 @@ namespace MTD.CouchBot
 
                                                 // Build our message
                                                 string url = stream.channel.url;
-                                                string channelName = stream.channel.display_name.Replace("_", "").Replace("*", "");
+                                                string channelName = stream.channel.display_name.Replace("_", "\\_").Replace("*", "\\*");
                                                 string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                                 string thumbnailUrl = stream.preview.large;
 

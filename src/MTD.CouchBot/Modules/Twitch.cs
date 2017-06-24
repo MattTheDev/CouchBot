@@ -201,7 +201,7 @@ namespace MTD.DiscordBot.Modules
             }
             
             string url = stream.channel.url;
-            string name = stream.channel.display_name.Replace("_", "").Replace("*", "");
+            string name = stream.channel.display_name.Replace("_", "\\_").Replace("*", "\\*");
             string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
             string thumbnailUrl = stream.preview.large;
 
