@@ -2,6 +2,7 @@
 using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using Newtonsoft.Json;
@@ -341,14 +342,14 @@ namespace MTD.CouchBot.Modules
         [Command("echo")]
         public async Task Echo(string message)
         {
-            await Context.Channel.SendMessageAsync(message.Replace("_","\\_").Replace("*","\\*"));
+            await Context.Channel.SendMessageAsync(StringUtilities.ScrubChatMessage(message));
         }
 
         [Command("echoembed")]
         public async Task EchoEmbed(string message)
         {
             EmbedBuilder eb = new EmbedBuilder();
-            eb.AddField("ECHO!", message.Replace("_", "\\_").Replace("*", "\\*"));
+            eb.AddField("ECHO!", StringUtilities.ScrubChatMessage(message));
 
             await Context.Channel.SendMessageAsync("", false, eb.Build(), null);
         }

@@ -169,5 +169,28 @@ namespace MTD.CouchBot.Dals.Implementations
 
             return streams;
         }
+
+        public async Task<TwitchGameSearchResponse> SearchForGameByName(string gameName)
+        {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/search/games?query=" + gameName);
+                request.Headers["Client-Id"] = Constants.TwitchClientId;
+                request.Accept = "application/vnd.twitchtv.v5+json";
+                var response = await request.GetResponseAsync();
+                var responseText = "";
+
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                {
+                    responseText = sr.ReadToEnd();
+                }
+
+                return JsonConvert.DeserializeObject<TwitchGameSearchResponse>(responseText);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

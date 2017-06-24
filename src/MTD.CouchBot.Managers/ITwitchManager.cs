@@ -15,5 +15,6 @@ namespace MTD.CouchBot.Managers
         Task<TwitchTeam> GetTwitchTeamByName(string name);
         Task<string> GetDelimitedListOfTwitchMemberIds(string teamToken);
         Task<List<TwitchStreamsV5.Stream>> GetStreamsByGameName(string gameName);
+        Task<TwitchGameSearchResponse> SearchForGameByName(string gameName);
     }
 }

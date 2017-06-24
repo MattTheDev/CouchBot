@@ -2,6 +2,7 @@
 using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models.Bot;
@@ -201,7 +202,7 @@ namespace MTD.DiscordBot.Modules
             }
             
             string url = stream.channel.url;
-            string name = stream.channel.display_name.Replace("_", "\\_").Replace("*", "\\*");
+            string name = StringUtilities.ScrubChatMessage(stream.channel.display_name);
             string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
             string thumbnailUrl = stream.preview.large;
 
@@ -229,6 +230,25 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerGameList == null)
             {
                 server.ServerGameList = new List<string>();
+            }
+
+            var games = await _twitchManager.SearchForGameByName(gameName);
+
+            if(games.games == null)
+            {
+                await Context.Channel.SendMessageAsync(gameName + " is not a valid game. Please check the name, and try again.");
+                return;
+            }
+
+            var gameDASfasdf = games.games.FirstOrDefault(x => x.name.Equals(gameName, StringComparison.CurrentCultureIgnoreCase));
+
+            if (games.games.FirstOrDefault(x => x.name.Equals(gameName, StringComparison.CurrentCultureIgnoreCase)) == null)
+            {
+                var suggestedGameList = "That is not a valid game name. Is the game you want on the list below?\r\n\r\n" +
+                    String.Join(", ", games.games.Select(x => x.name));
+
+                await Context.Channel.SendMessageAsync(suggestedGameList);
+                return;
             }
 
             if (!server.ServerGameList.Contains(gameName, StringComparer.CurrentCultureIgnoreCase))

@@ -3,6 +3,7 @@ using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models.Twitch;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
@@ -66,6 +67,11 @@ namespace MTD.CouchBot.Managers.Implementations
         public async Task<List<TwitchStreamsV5.Stream>> GetStreamsByGameName(string gameName)
         {
             return await twitchDal.GetStreamsByGameName(gameName);
+        }
+
+        public async Task<TwitchGameSearchResponse> SearchForGameByName(string gameName)
+        {
+            return await twitchDal.SearchForGameByName(gameName);
         }
     }
 }
