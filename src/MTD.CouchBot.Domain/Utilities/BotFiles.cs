@@ -10,39 +10,56 @@ namespace MTD.CouchBot.Domain.Utilities
         public static void CheckFolderStructure()
         {
             if (!Directory.Exists(Constants.ConfigRootDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.GuildDirectory))
+            { 
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.GuildDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.UserDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.UserDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory);
+            }
 
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory);
+            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.MixerDirectory))
+            {
+                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.MixerDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory);
+            }
         }
 
         public static DiscordServer GetDiscordServer(string guildId)
         {
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildId + ".json";
-            var server = new DiscordServer();
 
-            return server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            return JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
         }
 
         public static void SaveDiscordServer(DiscordServer server)
