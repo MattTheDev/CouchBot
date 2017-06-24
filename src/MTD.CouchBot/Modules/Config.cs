@@ -112,7 +112,6 @@ namespace MTD.CouchBot.Modules
 
                 string info = "```Markdown\r\n" +
                               "# " + server.Name + " Configuration Settings\r\n" +
-                              //"- Announcements Channel: " + announceChannel + "\r\n" + Removed for now. TODO
                               "- Owner Go Live Channel: " + ownerGoliveChannel + "\r\n" +
                               "- Owner Published Channel: " + ownerVodChannel + "\r\n" +
                               "- Owner Twitch Channel Feed Channel: " + ownerTwitchFeedChannel + "\r\n" +

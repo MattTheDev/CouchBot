@@ -85,7 +85,6 @@ namespace MTD.CouchBot.Dals.Implementations
             return JsonConvert.DeserializeObject<TwitchChannelFeed>(responseText);
         }
 
-        // TODO: Implement followers by ID <<----
         public async Task<TwitchFollowers> GetFollowersByName(string name)
         {
             try
