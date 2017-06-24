@@ -11,7 +11,7 @@ namespace MTD.CouchBot.Managers.Implementations
 
         public YouTubeManager()
         {
-            youtubeDal = new YouTubDal();
+            youtubeDal = new YouTubeDal();
         }
 
         public async Task<YouTubeChannelStatistics> GetChannelStatisticsById(string id)
