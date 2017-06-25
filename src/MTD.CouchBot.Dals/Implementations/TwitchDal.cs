@@ -132,7 +132,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
         public async Task<string> GetDelimitedListOfTwitchMemberIds(string teamToken)
         {
-            var team = await GetTwitchTeamByName(teamToken);
+            var team = await GetTwitchTeamByName(teamToken).ConfigureAwait(false);
 
             return team == null ? null : string.Join(",", team.Users.Select(u => u.Id));
         }
