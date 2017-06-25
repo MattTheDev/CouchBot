@@ -7,23 +7,21 @@ namespace MTD.CouchBot.Managers.Implementations
 {
     public class MixerManager : IMixerManager
     {
-        IMixerDal mixerDal;
-        IStatisticsDal _statisticsDal;
+        readonly IMixerDal _mixerDal;
 
         public MixerManager()
         {
-            mixerDal = new MixerDal();
-            _statisticsDal = new StatisticsDal();
+            _mixerDal = new MixerDal();
         }
 
         public async Task<MixerChannel> GetChannelById(string id)
         {
-            return await mixerDal.GetChannelById(id);
+            return await _mixerDal.GetChannelById(id);
         }
 
         public async Task<MixerChannel> GetChannelByName(string name)
         {
-            return await mixerDal.GetChannelByName(name);
+            return await _mixerDal.GetChannelByName(name);
         }
     }
 }
