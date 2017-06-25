@@ -14,7 +14,7 @@ namespace MTD.DiscordBot.Modules
     [Group("vidme")]
     public class VidMe : BaseModule
     {
-        IVidMeManager _vidMeManager;
+        readonly IVidMeManager _vidMeManager;
 
         public VidMe()
         {
@@ -40,7 +40,9 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             if (server.ServerVidMeChannels == null)
                 server.ServerVidMeChannels = new List<string>();
