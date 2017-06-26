@@ -747,7 +747,13 @@ namespace MTD.CouchBot
                 if (server.Id != 0 && server.GoLiveChannel != 0 &&
                     server.TwitchTeams != null && server.TwitchTeams.Count > 0)
                 {
-                    foreach(var team in server.TwitchTeams)
+
+                    if (server.TwitchTeams == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (var team in server.TwitchTeams)
                     {
                         var userList = await twitchManager.GetDelimitedListOfTwitchMemberIds(team);
                         var teamResponse = await twitchManager.GetTwitchTeamByName(team);
@@ -851,6 +857,11 @@ namespace MTD.CouchBot
             
             foreach(var s in servers)
             {
+                if(s.ServerGameList == null)
+                {
+                    continue; 
+                }
+
                 foreach (var g in s.ServerGameList)
                 {
                     var gameServerModel = gameList.FirstOrDefault(x => x.Name.Equals(g, StringComparison.CurrentCultureIgnoreCase));
