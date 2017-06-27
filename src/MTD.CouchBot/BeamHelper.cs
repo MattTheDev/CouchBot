@@ -135,6 +135,11 @@ namespace MTD.CouchBot.Bot
                 }
                 else
                 {
+                    if(string.IsNullOrEmpty(serverFile.StreamOfflineMessage))
+                    {
+                        serverFile.StreamOfflineMessage = "This stream is now offline.";
+                    }
+
                     await DiscordHelper.SetOfflineStream(message.GuildId, serverFile.StreamOfflineMessage, message.ChannelId, message.MessageId);
                 }
 

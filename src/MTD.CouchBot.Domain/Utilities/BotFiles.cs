@@ -130,7 +130,7 @@ namespace MTD.CouchBot.Domain.Utilities
             var liveChannels = new List<LiveChannel>();
 
             // Get Live Channels
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
+            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.MixerDirectory))
             {
                 liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
             }
