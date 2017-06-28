@@ -865,7 +865,7 @@ namespace MTD.CouchBot
             {
                 if(s.ServerGameList == null)
                 {
-                    continue;
+                    continue; 
                 }
 
                 foreach (var g in s.ServerGameList)
