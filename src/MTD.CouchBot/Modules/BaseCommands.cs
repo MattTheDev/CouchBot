@@ -91,9 +91,9 @@ namespace MTD.CouchBot.Modules
                     }
                 }
 
-                if (server.TwitchGames != null)
+                if (server.ServerGameList != null)
                 {
-                    foreach (var g in server.TwitchGames)
+                    foreach (var g in server.ServerGameList)
                     {
                         twitchGameCount++;
                     }

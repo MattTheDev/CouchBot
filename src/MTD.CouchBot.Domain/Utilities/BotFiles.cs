@@ -81,7 +81,7 @@ namespace MTD.CouchBot.Domain.Utilities
             return servers;
         }
 
-        public static List<DiscordServer> GetConfiguredServersForTwitchGames()
+        public static List<DiscordServer> GetConfiguredServersWithLiveChannel()
         {
             var servers = new List<DiscordServer>();
 
@@ -96,6 +96,31 @@ namespace MTD.CouchBot.Domain.Utilities
                 }
 
                 if(server.Id == 0 || server.GoLiveChannel == 0)
+                {
+                    continue;
+                }
+
+                servers.Add(server);
+            }
+
+            return servers;
+        }
+
+        public static List<DiscordServer> GetConfiguredServersWithOwnerLiveChannel()
+        {
+            var servers = new List<DiscordServer>();
+
+            // Get Servers
+            foreach (var s in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
+            {
+                var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
+
+                if (!server.AllowLive)
+                {
+                    continue;
+                }
+
+                if (server.Id == 0 || server.OwnerLiveChannel == 0)
                 {
                     continue;
                 }
