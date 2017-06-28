@@ -1078,8 +1078,6 @@ namespace MTD.CouchBot
                         string avatarUrl = channelData.items.Count > 0 ? channelData.items[0].snippet.thumbnails.high.url : "";
                         string thumbnailUrl = stream.snippet.thumbnails.high.url;
 
-                        Logging.LogYouTubeGaming(channelTitle + " has gone online.");
-
                         var message = await MessagingHelper.BuildMessage(channelTitle, "a game", stream.snippet.title, url, avatarUrl, thumbnailUrl,
                             Constants.YouTubeGaming, c.YouTubeChannelId, server, server.GoLiveChannel, null);
 
@@ -1091,7 +1089,7 @@ namespace MTD.CouchBot
                                 channel.ChannelMessages = new List<ChannelMessage>();
 
                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.YouTubeGaming, new List<BroadcastMessage>() { message }));
-
+                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + c.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
                         }
                     }
@@ -1207,8 +1205,6 @@ namespace MTD.CouchBot
                         string avatarUrl = channelData.items.Count > 0 ? channelData.items[0].snippet.thumbnails.high.url : "";
                         string thumbnailUrl = stream.snippet.thumbnails.high.url;
 
-                        Logging.LogYouTubeGaming(channelTitle + " has gone online.");
-
                         var message = await MessagingHelper.BuildMessage(channelTitle, "a game", stream.snippet.title, url, avatarUrl, thumbnailUrl,
                             Constants.YouTubeGaming, c.YouTubeChannelId, server, server.OwnerLiveChannel, null);
 
@@ -1220,7 +1216,7 @@ namespace MTD.CouchBot
                                 channel.ChannelMessages = new List<ChannelMessage>();
 
                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.YouTubeGaming, new List<BroadcastMessage>() { message }));
-
+                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + c.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
                         }
                     }
