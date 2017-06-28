@@ -5,7 +5,8 @@ namespace MTD.CouchBot.Managers
 {
     public interface IVidMeManager
     {
-        Task<VidMeChannelVideos> GetChannelVideosById(int id);
+        Task<VidMeUserVideos> GetChannelVideosById(int id);
         Task<int> GetIdByName(string name);
+        Task<VidMeUser> GetUserById(int id);
     }
 }

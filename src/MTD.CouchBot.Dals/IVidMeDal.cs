@@ -5,7 +5,8 @@ namespace MTD.CouchBot.Dals
 {
     public interface IVidMeDal
     {
-        Task<VidMeChannelVideos> GetChannelVideosById(int id);
+        Task<VidMeUserVideos> GetUserVideosById(int id);
         Task<int> GetIdByName(string name);
+        Task<VidMeUser> GetUserById(int id);
     }
 }

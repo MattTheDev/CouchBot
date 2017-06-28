@@ -10,7 +10,7 @@ namespace MTD.CouchBot.Dals.Implementations
 {
     public class VidMeDal : IVidMeDal
     {
-        public async Task<VidMeChannelVideos> GetChannelVideosById(int id)
+        public async Task<VidMeUserVideos> GetUserVideosById(int id)
         {
             var url = string.Format("https://api.vid.me/user/{0}/videos", id);
 
@@ -23,7 +23,23 @@ namespace MTD.CouchBot.Dals.Implementations
                 responseText = sr.ReadToEnd();
             }
 
-            return JsonConvert.DeserializeObject<VidMeChannelVideos>(responseText);
+            return JsonConvert.DeserializeObject<VidMeUserVideos>(responseText);
+        }
+
+        public async Task<VidMeUser> GetUserById(int id)
+        {
+            var url = string.Format("https://api.vid.me/user/{0}", id);
+
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            var response = await request.GetResponseAsync();
+            var responseText = "";
+
+            using (var sr = new StreamReader(response.GetResponseStream()))
+            {
+                responseText = sr.ReadToEnd();
+            }
+
+            return JsonConvert.DeserializeObject<VidMeUser>(responseText);
         }
 
         public async Task<int> GetIdByName(string name)

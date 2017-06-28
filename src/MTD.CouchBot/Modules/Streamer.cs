@@ -18,10 +18,12 @@ namespace MTD.CouchBot.Modules
         IMixerManager _mixerManager;
         ISmashcastManager _smashcastManager;
         ITwitchManager _twitchManager;
+        IVidMeManager _vidMeManager;
 
         public Streamer()
         {
             _youtubeManager = new YouTubeManager();
+            _vidMeManager = new VidMeManager();
         }
 
         [Command("list"), Summary("List server streamers")]
@@ -34,6 +36,7 @@ namespace MTD.CouchBot.Modules
             string beam = "";
             string hitbox = "";
             string picarto = "";
+            string vidMe = "";
 
             int count = 0;
 
@@ -132,6 +135,25 @@ namespace MTD.CouchBot.Modules
                 }
             }
 
+            if (guildObject.ServerVidMeChannels != null && guildObject.ServerVidMeChannels.Count > 0)
+            {
+                foreach (var streamer in guildObject.ServerVidMeChannels)
+                {
+                    if (count == 0)
+                    {
+                        vidMe += streamer;
+                    }
+                    else
+                    {
+                        vidMe += ", " + streamer;
+                    }
+
+                    count++;
+                }
+            }
+
+            count = 0;
+
             var ownerYouTube = "Not Set";
 
             if(!string.IsNullOrEmpty(guildObject.OwnerYouTubeChannelId))
@@ -144,17 +166,26 @@ namespace MTD.CouchBot.Modules
                 }
             }
 
+            var ownerVidMe = "Not Set";
+
+            if (!string.IsNullOrEmpty(guildObject.OwnerVidMeChannel))
+            {
+                ownerVidMe = guildObject.OwnerVidMeChannel;
+            }
+
             string info = "```Markdown\r\n" +
               "# Server Configured Channels\r\n" +
               "- Mixer: " + beam + "\r\n" +
               "- Picarto: " + picarto + "\r\n" +
               "- Smashcast: " + hitbox + "\r\n" +
               "- Twitch: " + twitch + "\r\n" +
+              "- VidMe: " + vidMe + "\r\n" +
               "- YouTube: " + youtube + "\r\n" +
               "- Owner Mixer: " + (string.IsNullOrEmpty(guildObject.OwnerBeamChannel) ? "Not Set" : guildObject.OwnerBeamChannel) + "\r\n" +
               "- Owner Picarto: " + (string.IsNullOrEmpty(guildObject.OwnerPicartoChannel) ? "Not Set" : guildObject.OwnerPicartoChannel) + "\r\n" +
               "- Owner Smashcast: " + (string.IsNullOrEmpty(guildObject.OwnerHitboxChannel) ? "Not Set" : guildObject.OwnerHitboxChannel) + "\r\n" +
               "- Owner Twitch: " + (string.IsNullOrEmpty(guildObject.OwnerTwitchChannel) ? "Not Set" : guildObject.OwnerTwitchChannel) + "\r\n" +
+              "- Owner VidMe: " + ownerVidMe + "\r\n" +
               "- Owner YouTube: " + ownerYouTube + "\r\n" +
               "```\r\n";
 

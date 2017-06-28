@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MTD.CouchBot.Domain.Models.VidMe
 {
-    public class VidMeChannelVideos
+    public class VidMeUserVideos
     {
         public class Page
         {
