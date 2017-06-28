@@ -1816,7 +1816,7 @@ namespace MTD.CouchBot
             var users = BotFiles.GetConfiguredUsers();
             var liveChannels = new List<LiveChannel>();
             var now = DateTime.UtcNow;
-            var then = now.AddMilliseconds(Constants.YouTubePublishedInterval);
+            var then = now.AddMilliseconds(-(Constants.YouTubePublishedInterval));
 
             foreach (var server in servers)
             {
@@ -1988,7 +1988,7 @@ namespace MTD.CouchBot
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
             var now = DateTime.UtcNow;
-            var then = now.AddMinutes(-15);
+            var then = now.AddMilliseconds(-(Constants.YouTubePublishedInterval));
 
             foreach (var server in servers)
             {
