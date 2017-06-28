@@ -186,13 +186,13 @@ namespace MTD.CouchBot
             var servers = BotFiles.GetConfiguredServers().Where(x => x.ServerBeamChannelIds != null && x.ServerBeamChannelIds.Count > 0);
 
             await Task.Run(async () =>
-             {
-                 Logging.LogMixer("Connecting to Mixer Constellation.");
+            {
+                Logging.LogMixer("Connecting to Mixer Constellation.");
 
-                 await beamClient.RunWebSockets();
+                await beamClient.RunWebSockets();
 
-                 Logging.LogMixer("Connected to Mixer Constellation.");
-             });
+                Logging.LogMixer("Connected to Mixer Constellation.");
+            });
 
 
             Logging.LogMixer("Initiating Subscription Loop.");
@@ -209,7 +209,7 @@ namespace MTD.CouchBot
                         count++;
                     }
 
-                    if(!string.IsNullOrEmpty(s.OwnerBeamChannelId))
+                    if (!string.IsNullOrEmpty(s.OwnerBeamChannelId))
                     {
                         await beamClient.SubscribeToLiveAnnouncements(s.OwnerBeamChannelId);
                         count++;
@@ -860,12 +860,12 @@ namespace MTD.CouchBot
             var servers = BotFiles.GetConfiguredServersWithLiveChannel();
             var liveChannels = BotFiles.GetCurrentlyLiveTwitchChannels();
             var gameList = new List<TwitchGameServerModel>();
-            
-            foreach(var s in servers)
+
+            foreach (var s in servers)
             {
-                if(s.ServerGameList == null)
+                if (s.ServerGameList == null)
                 {
-                    continue; 
+                    continue;
                 }
 
                 foreach (var g in s.ServerGameList)
@@ -878,19 +878,19 @@ namespace MTD.CouchBot
                     }
                     else
                     {
-                       gameServerModel.Servers.Add(s.Id);
+                        gameServerModel.Servers.Add(s.Id);
                     }
                 }
             }
 
-            foreach(var game in gameList)
-            { 
+            foreach (var game in gameList)
+            {
                 var gameResponse = await twitchManager.GetStreamsByGameName(game.Name);
                 int count = 0;
 
-                foreach(var stream in gameResponse)
+                foreach (var stream in gameResponse)
                 {
-                    if(count >= 5)
+                    if (count >= 5)
                     {
                         continue;
                     }
@@ -908,7 +908,7 @@ namespace MTD.CouchBot
                     foreach (var s in game.Servers)
                     {
                         var server = BotFiles.GetConfiguredServerById(s);
-                        
+
                         var channel = liveChannels.FirstOrDefault(x => x.Name == stream.channel._id.ToString());
 
                         var chat = await DiscordHelper.GetMessageChannel(server.Id, server.GoLiveChannel);
@@ -983,12 +983,12 @@ namespace MTD.CouchBot
                     continue;
                 }
 
-                if(server.ServerYouTubeChannelIds == null)
+                if (server.ServerYouTubeChannelIds == null)
                 {
                     continue;
                 }
 
-                foreach(var c in server.ServerYouTubeChannelIds)
+                foreach (var c in server.ServerYouTubeChannelIds)
                 {
                     var channelServerModel = youTubeChannelList.FirstOrDefault(x => x.YouTubeChannelId.Equals(c, StringComparison.CurrentCultureIgnoreCase));
 
@@ -1003,7 +1003,7 @@ namespace MTD.CouchBot
                 }
             }
 
-            foreach(var c in youTubeChannelList)
+            foreach (var c in youTubeChannelList)
             {
                 YouTubeSearchListChannel streamResult = null;
 
@@ -1024,7 +1024,7 @@ namespace MTD.CouchBot
                 {
                     var stream = streamResult.items[0];
 
-                    foreach(var s in c.Servers)
+                    foreach (var s in c.Servers)
                     {
                         var server = BotFiles.GetConfiguredServerById(s);
                         var channel = liveChannels.FirstOrDefault(x => x.Name.ToLower() == c.YouTubeChannelId.ToLower());
@@ -1078,8 +1078,6 @@ namespace MTD.CouchBot
                         string avatarUrl = channelData.items.Count > 0 ? channelData.items[0].snippet.thumbnails.high.url : "";
                         string thumbnailUrl = stream.snippet.thumbnails.high.url;
 
-                        Logging.LogYouTubeGaming(channelTitle + " has gone online.");
-
                         var message = await MessagingHelper.BuildMessage(channelTitle, "a game", stream.snippet.title, url, avatarUrl, thumbnailUrl,
                             Constants.YouTubeGaming, c.YouTubeChannelId, server, server.GoLiveChannel, null);
 
@@ -1091,7 +1089,7 @@ namespace MTD.CouchBot
                                 channel.ChannelMessages = new List<ChannelMessage>();
 
                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.YouTubeGaming, new List<BroadcastMessage>() { message }));
-
+                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + c.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
                         }
                     }
@@ -1207,8 +1205,6 @@ namespace MTD.CouchBot
                         string avatarUrl = channelData.items.Count > 0 ? channelData.items[0].snippet.thumbnails.high.url : "";
                         string thumbnailUrl = stream.snippet.thumbnails.high.url;
 
-                        Logging.LogYouTubeGaming(channelTitle + " has gone online.");
-
                         var message = await MessagingHelper.BuildMessage(channelTitle, "a game", stream.snippet.title, url, avatarUrl, thumbnailUrl,
                             Constants.YouTubeGaming, c.YouTubeChannelId, server, server.OwnerLiveChannel, null);
 
@@ -1220,7 +1216,7 @@ namespace MTD.CouchBot
                                 channel.ChannelMessages = new List<ChannelMessage>();
 
                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.YouTubeGaming, new List<BroadcastMessage>() { message }));
-
+                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + c.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
                         }
                     }
@@ -1830,7 +1826,7 @@ namespace MTD.CouchBot
             var users = BotFiles.GetConfiguredUsers();
             var liveChannels = new List<LiveChannel>();
             var now = DateTime.UtcNow;
-            var then = now.AddMilliseconds(Constants.YouTubePublishedInterval);
+            var then = now.AddMilliseconds(-(Constants.YouTubePublishedInterval));
 
             foreach (var server in servers)
             {
@@ -2002,7 +1998,7 @@ namespace MTD.CouchBot
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
             var now = DateTime.UtcNow;
-            var then = now.AddMinutes(-15);
+            var then = now.AddMilliseconds(-(Constants.YouTubePublishedInterval));
 
             foreach (var server in servers)
             {
