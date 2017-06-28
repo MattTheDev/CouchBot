@@ -123,7 +123,7 @@ namespace MTD.CouchBot.Modules
                               "- Allow Greetings: " + server.Greetings + "\r\n" +
                               "- Allow Goodbyes: "  + server.Goodbyes + "\r\n" +
                               "- Allow Live Content: " + server.AllowLive + "\r\n" +
-                              "- Allow VOD Content: " + server.AllowPublished + "\r\n" +
+                              "- Allow Published Content: " + server.AllowPublished + "\r\n" +
                               "- Allow Owner Twitch Channel Feed: " + server.AllowOwnerChannelFeed + "\r\n" +
                               "- Use Text Announcements: " + server.UseTextAnnouncements + "\r\n" +
                               "- Use YTG URLS For VOD Content: " + server.UseYouTubeGamingPublished + "\r\n" +

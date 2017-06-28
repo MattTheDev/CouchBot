@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Dals.Implementations
 {
-    public class YouTubDal : IYouTubeDal
+    public class YouTubeDal : IYouTubeDal
     {
         public async Task<YouTubeChannelStatistics> GetChannelStatisticsById(string id)
         {
@@ -32,9 +32,13 @@ namespace MTD.CouchBot.Dals.Implementations
             {
                 var channel = JsonConvert.DeserializeObject<SearchLiveEvent>(str);
                 if (channel.items.Count > 0)
-                    return await GetVideoById(channel.items[0].id.videoId);
+                {
+                    return await GetVideoById(channel.items[0].id.videoId).ConfigureAwait(false);
+                }
                 else
+                {
                     return null;
+                }
             }
 
             return null;

@@ -17,7 +17,7 @@ namespace MTD.DiscordBot.Modules
     [Group("mixer")]
     public class Mixer : BaseModule
     {
-        IMixerManager _mixerManager;
+        readonly IMixerManager _mixerManager;
 
         public Mixer()
         {
@@ -50,16 +50,24 @@ namespace MTD.DiscordBot.Modules
             DiscordServer server = null;
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             if (server == null)
+            {
                 return;
+            }
 
             if (server.ServerBeamChannels == null)
+            {
                 server.ServerBeamChannels = new List<string>();
+            }
 
             if (server.ServerBeamChannelIds == null)
+            {
                 server.ServerBeamChannelIds = new List<string>();
+            }
 
             if (!string.IsNullOrEmpty(server.OwnerBeamChannel) && server.OwnerBeamChannel.ToLower().Equals(channelName.ToLower()))
             {
@@ -75,7 +83,9 @@ namespace MTD.DiscordBot.Modules
                 server.ServerBeamChannelIds.Add(channel.id.Value.ToString());
 
                 if (Constants.EnableMixer)
+                {
                     await Program.beamClient.SubscribeToLiveAnnouncements(channel.id.Value.ToString());
+                }
 
                 File.WriteAllText(file, JsonConvert.SerializeObject(server));
                 await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Mixer streamer list.");
@@ -90,16 +100,22 @@ namespace MTD.DiscordBot.Modules
         public async Task Remove(string channel)
         {
             if (!IsApprovedAdmin)
+            {
                 return;
+            }
 
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             if (server.ServerBeamChannels == null)
+            {
                 return;
+            }
 
             if (server.ServerBeamChannels.Contains(channel.ToLower()))
             {
@@ -119,7 +135,9 @@ namespace MTD.DiscordBot.Modules
         public async Task Owner(string channel)
         {
             if (!IsAdmin)
+            {
                 return;
+            }
 
             var beamChannel = await _mixerManager.GetChannelByName(channel);
 
@@ -134,7 +152,9 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             if (server.ServerBeamChannels != null && server.ServerBeamChannels.Contains(channel.ToLower()))
             {
@@ -155,13 +175,17 @@ namespace MTD.DiscordBot.Modules
         public async Task ResetOwner()
         {
             if (!IsAdmin)
+            {
                 return;
+            }
 
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + Context.Guild.Id + ".json";
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             server.OwnerBeamChannel = null;
             server.OwnerBeamChannelId = null;
@@ -181,7 +205,9 @@ namespace MTD.DiscordBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             var stream = await _mixerManager.GetChannelByName(channelName);
 

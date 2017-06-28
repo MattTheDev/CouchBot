@@ -28,7 +28,9 @@ namespace MTD.CouchBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             server.Greetings = true;
             if(string.IsNullOrEmpty(server.GreetingMessage))
@@ -57,7 +59,9 @@ namespace MTD.CouchBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             server.Greetings = false;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
@@ -80,7 +84,9 @@ namespace MTD.CouchBot.Modules
             var server = new DiscordServer();
 
             if (File.Exists(file))
+            {
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            }
 
             server.GreetingMessage = message;
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
