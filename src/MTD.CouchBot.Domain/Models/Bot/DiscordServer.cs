@@ -58,7 +58,6 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public string StreamOfflineMessage { get; set; }
         public List<ulong> ApprovedAdmins { get; set; }
         public List<string> TwitchTeams { get; set; }
-        public List<string> TwitchGames { get; set; }
         public List<string> ServerGameList { get; set; }
     }
 }

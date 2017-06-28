@@ -1,5 +1,6 @@
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -45,7 +46,11 @@ namespace MTD.CouchBot.Tests
             var response = await _twitchManager.GetChannelFeedPosts(_testChannelId);
 
             Assert.True(response != null && response.posts != null);
-            Assert.True(response.posts.Count > 0);
+
+            if (response != null)
+            {
+                Assert.True(response.posts.Count > 0);
+            }
         }
 
         [Fact]
@@ -95,7 +100,11 @@ namespace MTD.CouchBot.Tests
             var response = await _twitchManager.GetStreamById(_testAlwaysLiveStreamId);
 
             Assert.True(response != null && response.stream != null);
-            Assert.True(response.stream.channel.display_name.Equals("Monstercat"));
+
+            if (response != null)
+            {
+                Assert.True(response.stream.channel.display_name.Equals("Monstercat"));
+            }
         }
 
         [Fact]
@@ -110,10 +119,14 @@ namespace MTD.CouchBot.Tests
         [Fact]
         public async Task CanGetStreamsByIdList()
         {
-            var response = await _twitchManager.GetStreamsByIdList(new System.Collections.Generic.List<string>() { _testAlwaysLiveStreamId });
+            var response = await _twitchManager.GetStreamsByIdList(new List<string> { _testAlwaysLiveStreamId });
 
             Assert.True(response != null && response.streams != null && response.streams.Count > 0);
-            Assert.True(response.streams[0].channel.display_name.Equals("Monstercat"));
+
+            if (response != null)
+            {
+                Assert.True(response.streams[0].channel.display_name.Equals("Monstercat"));
+            }
         }
 
         [Fact]

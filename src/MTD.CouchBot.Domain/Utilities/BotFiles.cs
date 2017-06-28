@@ -10,39 +10,56 @@ namespace MTD.CouchBot.Domain.Utilities
         public static void CheckFolderStructure()
         {
             if (!Directory.Exists(Constants.ConfigRootDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.GuildDirectory))
+            { 
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.GuildDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.UserDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.UserDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory);
+            }
 
-            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
-                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory);
+            if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.MixerDirectory))
+            {
+                Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.MixerDirectory);
+            }
 
             if (!Directory.Exists(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory))
+            {
                 Directory.CreateDirectory(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory);
+            }
         }
 
         public static DiscordServer GetDiscordServer(string guildId)
         {
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildId + ".json";
-            var server = new DiscordServer();
 
-            return server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+            return JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
         }
 
         public static void SaveDiscordServer(DiscordServer server)
@@ -64,7 +81,7 @@ namespace MTD.CouchBot.Domain.Utilities
             return servers;
         }
 
-        public static List<DiscordServer> GetConfiguredServersForTwitchGames()
+        public static List<DiscordServer> GetConfiguredServersWithLiveChannel()
         {
             var servers = new List<DiscordServer>();
 
@@ -79,6 +96,31 @@ namespace MTD.CouchBot.Domain.Utilities
                 }
 
                 if(server.Id == 0 || server.GoLiveChannel == 0)
+                {
+                    continue;
+                }
+
+                servers.Add(server);
+            }
+
+            return servers;
+        }
+
+        public static List<DiscordServer> GetConfiguredServersWithOwnerLiveChannel()
+        {
+            var servers = new List<DiscordServer>();
+
+            // Get Servers
+            foreach (var s in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
+            {
+                var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
+
+                if (!server.AllowLive)
+                {
+                    continue;
+                }
+
+                if (server.Id == 0 || server.OwnerLiveChannel == 0)
                 {
                     continue;
                 }
@@ -113,7 +155,7 @@ namespace MTD.CouchBot.Domain.Utilities
             var liveChannels = new List<LiveChannel>();
 
             // Get Live Channels
-            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
+            foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.MixerDirectory))
             {
                 liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
             }

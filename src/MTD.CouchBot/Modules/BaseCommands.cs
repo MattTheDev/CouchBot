@@ -36,6 +36,8 @@ namespace MTD.CouchBot.Modules
             var serverBeamCount = 0;
             var serverHitboxCount = 0;
             var serverPicartoCount = 0;
+            var twitchGameCount = 0;
+            var twitchTeamCount = 0;
 
             foreach (var s in serverFiles)
             {
@@ -80,6 +82,22 @@ namespace MTD.CouchBot.Modules
                         serverHitboxCount++;
                     }
                 }
+
+                if(server.TwitchTeams != null)
+                {
+                    foreach(var t in server.TwitchTeams)
+                    {
+                        twitchTeamCount++;
+                    }
+                }
+
+                if (server.ServerGameList != null)
+                {
+                    foreach (var g in server.ServerGameList)
+                    {
+                        twitchGameCount++;
+                    }
+                }
             }
 
             int serverCount = 0;
@@ -99,6 +117,8 @@ namespace MTD.CouchBot.Modules
                           "-- Picarto: " + serverPicartoCount + "\r\n" +
                           "-- Smashcast: " + serverHitboxCount + "\r\n" +
                           "-- Twitch: " + serverTwitchCount + "\r\n" +
+                          "-- Twitch Games: " + twitchGameCount + "\r\n" +
+                          "-- Twitch Teams: " + twitchTeamCount + "\r\n" +
                           "-- YouTube: " + serverYouTubeCount + "\r\n" +
                           "-- Total Channels Checked: " + (serverYouTubeCount + serverTwitchCount + serverBeamCount + serverHitboxCount + serverPicartoCount) + "\r\n" +
                           "- Current Memory Usage: " + ((System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024) / 1024) + "MB \r\n" +
@@ -352,6 +372,12 @@ namespace MTD.CouchBot.Modules
             eb.AddField("ECHO!", StringUtilities.ScrubChatMessage(message));
 
             await Context.Channel.SendMessageAsync("", false, eb.Build(), null);
+        }
+
+        [Command("ping")]
+        public async Task Ping()
+        {
+            await Context.Channel.SendMessageAsync("Pong!");
         }
     }
 }
