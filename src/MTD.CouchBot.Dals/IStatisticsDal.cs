@@ -23,5 +23,7 @@ namespace MTD.CouchBot.Dals
         void AddRandomInt(int random);
         void ClearRandomInts();
         int GetHaiBaiCount();
+        int GetFlipCount();
+        void AddToFlipCount();
     }
 }

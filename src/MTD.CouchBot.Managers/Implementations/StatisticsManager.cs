@@ -103,5 +103,15 @@ namespace MTD.CouchBot.Managers.Implementations
         {
             return statisticsDal.GetHaiBaiCount();
         }
+
+        public void AddToFlipCount()
+        {
+            statisticsDal.AddToFlipCount();
+        }
+
+        public int GetFlipCount()
+        {
+            return statisticsDal.GetFlipCount();
+        }
     }
 }

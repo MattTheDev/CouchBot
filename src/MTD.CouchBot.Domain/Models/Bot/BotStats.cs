@@ -15,5 +15,6 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public DateTime LastRestart { get; set; }
         public List<int> BeamSubIds { get; set; }
         public int HaiBaiCount { get; set; }
+        public int FlipCount { get; set; }
     }
 }

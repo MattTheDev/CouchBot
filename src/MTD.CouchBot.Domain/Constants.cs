@@ -49,6 +49,7 @@ namespace MTD.CouchBot.Domain
         public static readonly ulong CouchBotId = Settings.BotConfig.CouchBotId;
         public static readonly string Prefix = Settings.BotConfig.Prefix;
         public static readonly int TotalShards = Settings.BotConfig.TotalShards;
+        public static readonly ulong OwnerId = Settings.BotConfig.OwnerId;
 
         public static readonly int PicartoInterval = Settings.IntervalSettings.Picarto * 1000;
         public static readonly int TwitchInterval = Settings.IntervalSettings.Twitch * 1000;
