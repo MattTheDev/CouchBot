@@ -204,7 +204,7 @@ namespace MTD.CouchBot.Modules
         [Command("invite"), Summary("Provide an invite link via DM.")]
         public async Task Invite()
         {
-            await (await ((IGuildUser)(Context.Message.Author)).CreateDMChannelAsync()).SendMessageAsync("Want me to join your server? Click here: <https://discordapp.com/oauth2/authorize?client_id=308371905667137536&scope=bot&permissions=158720>");
+            await (await ((IGuildUser)(Context.Message.Author)).GetOrCreateDMChannelAsync()).SendMessageAsync("Want me to join your server? Click here: <https://discordapp.com/oauth2/authorize?client_id=308371905667137536&scope=bot&permissions=158720>");
         }
 
         [Command("uptime"), Summary("Get Uptime Statistic Information.")]

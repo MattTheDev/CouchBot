@@ -58,8 +58,20 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="Discord" />
+    <Folder Include="Schemas" />
+    <Folder Include="Activity" />
+    <Folder Include="Platform" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Discord\Server.sql" />
+    <Build Include="Schemas\Discord.sql" />
+    <Build Include="Schemas\Activity.sql" />
+    <Build Include="Schemas\Platform.sql" />
+    <Build Include="Activity\LiveNotification.sql" />
+    <Build Include="Platform\Platform.sql" />
+    <Build Include="Platform\Channel.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
 </Project>

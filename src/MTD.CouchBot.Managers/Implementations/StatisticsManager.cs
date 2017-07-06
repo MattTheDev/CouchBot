@@ -1,5 +1,4 @@
-﻿using System;
-using MTD.CouchBot.Dals;
+﻿using MTD.CouchBot.Dals;
 using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models.Bot;
 
@@ -7,101 +6,101 @@ namespace MTD.CouchBot.Managers.Implementations
 {
     public class StatisticsManager : IStatisticsManager
     {
-        IStatisticsDal statisticsDal;
+        IStatisticsDal _statisticsDal;
 
         public StatisticsManager()
         {
-            statisticsDal = new StatisticsDal();
+            _statisticsDal = new StatisticsDal();
         }
 
         public void AddToBeamAlertCount()
         {
-            statisticsDal.AddToBeamAlertCount();
+            _statisticsDal.AddToBeamAlertCount();
         }
 
         public void AddToTwitchAlertCount()
         {
-            statisticsDal.AddToTwitchAlertCount();
+            _statisticsDal.AddToTwitchAlertCount();
         }
 
         public void AddToYouTubeAlertCount()
         {
-            statisticsDal.AddToYouTubeAlertCount();
+            _statisticsDal.AddToYouTubeAlertCount();
         }
 
         public void AddToHitboxAlertCount()
         {
-            statisticsDal.AddToHitboxAlertCount();
+            _statisticsDal.AddToHitboxAlertCount();
         }
 
         public void AddToPicartoAlertCount()
         {
-            statisticsDal.AddToPicartoAlertCount();
+            _statisticsDal.AddToPicartoAlertCount();
         }
 
         public void AddUptimeMinutes()
         {
-            statisticsDal.AddUptimeMinutes();
+            _statisticsDal.AddUptimeMinutes();
         }
 
         public int GetBeamAlertCount()
         {
-            return statisticsDal.GetBeamAlertCount();
+            return _statisticsDal.GetBeamAlertCount();
         }
 
         public int GetTwitchAlertCount()
         {
-            return statisticsDal.GetTwitchAlertCount();
+            return _statisticsDal.GetTwitchAlertCount();
         }
 
         public int GetUptimeMinutes()
         {
-            return statisticsDal.GetUptimeMinutes();
+            return _statisticsDal.GetUptimeMinutes();
         }
 
         public int GetYouTubeAlertCount()
         {
-            return statisticsDal.GetYouTubeAlertCount();
+            return _statisticsDal.GetYouTubeAlertCount();
         }
 
         public int GetHitboxAlertCount()
         {
-            return statisticsDal.GetHitboxAlertCount();
+            return _statisticsDal.GetHitboxAlertCount();
         }
 
         public BotStats GetBotStats()
         {
-            return statisticsDal.GetBotStats();
+            return _statisticsDal.GetBotStats();
         }
 
         public void LogRestartTime()
         {
-            statisticsDal.LogRestartTime();
+            _statisticsDal.LogRestartTime();
         }
 
         public bool ContainsRandomInt(int random)
         {
-            return statisticsDal.ContainsRandomInt(random);
+            return _statisticsDal.ContainsRandomInt(random);
         }
 
         public void AddRandomInt(int random)
         {
-            statisticsDal.AddRandomInt(random);
+            _statisticsDal.AddRandomInt(random);
         }
 
         public void ClearRandomInts()
         {
-            statisticsDal.ClearRandomInts();
+            _statisticsDal.ClearRandomInts();
         }
 
         public void AddToHaiBaiCount()
         {
-            statisticsDal.AddToHaiBaiCount();
+            _statisticsDal.AddToHaiBaiCount();
         }
 
         public int GetHaiBaiCount()
         {
-            return statisticsDal.GetHaiBaiCount();
+            return _statisticsDal.GetHaiBaiCount();
         }
     }
 }

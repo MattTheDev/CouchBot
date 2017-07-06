@@ -885,7 +885,26 @@ namespace MTD.CouchBot
 
             foreach (var game in gameList)
             {
-                var gameResponse = await twitchManager.GetStreamsByGameName(game.Name);
+                List<TwitchStreamsV5.Stream> gameResponse = null;
+
+                try
+                {
+                    // Query Twitch for our stream.
+                    gameResponse = await twitchManager.GetStreamsByGameName(game.Name); 
+                }
+                catch (Exception wex)
+                {
+                    // Log our error and move to the next user.
+
+                    Logging.LogError("Twitch Team Server Error: " + wex.Message + " in Discord Server Id: " + server.Id);
+                    continue;
+                }
+
+                if(gameResponse == null || gameResponse.Count == 0)
+                {
+                    continue;
+                }
+
                 int count = 0;
 
                 foreach (var stream in gameResponse)

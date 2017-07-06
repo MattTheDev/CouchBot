@@ -7,16 +7,16 @@ namespace MTD.CouchBot.Managers.Implementations
 {
     public class StrawPollManager : IStrawPollManager
     {
-        IStrawpollDal strawPollDal;
+        IStrawpollDal _strawPollDal;
 
         public StrawPollManager()
         {
-            strawPollDal = new StrawPollDal();
+            _strawPollDal = new StrawPollDal();
         }
 
         public async Task<StrawPoll> CreateStrawPoll(StrawPollRequest poll)
         {
-            return await strawPollDal.CreateStrawPoll(poll);
+            return await _strawPollDal.CreateStrawPoll(poll);
         }
     }
 }

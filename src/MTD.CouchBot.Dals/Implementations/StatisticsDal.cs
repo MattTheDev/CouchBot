@@ -46,6 +46,7 @@ namespace MTD.CouchBot.Dals.Implementations
             stats.HitboxAlertCount++;
             SaveBotStats(stats);
         }
+
         public void AddToPicartoAlertCount()
         {
             var stats = GetBotStats();

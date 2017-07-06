@@ -1,14 +1,14 @@
 {
   "Keys": {
-    "DiscordToken": "DISCORDTOKEN",
-    "TwitchClientId": "TWITCHID",
-    "YouTubeApiKey": "YOUTUBEAPI",
-    "ApiAiKey": "APIAIKEY" 
+    "DiscordToken": "MzEzODYxODEwMzQyMDY4MjI1.DD9Rjg.WZsWpTZPh3kAtOmDpQPqZ8HOu30",
+    "TwitchClientId": "3jqbohvo5v4aah7tlkzz37xir7fkls",
+    "YouTubeApiKey": "AIzaSyBWNxag6Ilqo-eV_9M8T-7tQvqc72ukFI0",
+    "ApiAiKey": "APIAIKEY"
   },
   "BotConfiguration": {
-    "CouchBotId": 0,
-    "Prefix": "",
-    "TotalShards":  1
+    "CouchBotId": 313861810342068225,
+    "Prefix": "!fb",
+    "TotalShards": 1
   },
   "Directories": {
     "ConfigRootDirectory": "C:\\programdata\\CouchBot\\",
