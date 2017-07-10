@@ -536,8 +536,6 @@ namespace MTD.CouchBot
                                     string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                     string thumbnailUrl = stream.preview.large;
 
-                                    Logging.LogTwitch(channelName + " has gone online.");
-
                                     var message = await MessagingHelper.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
                                         thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel, null);
 
@@ -552,6 +550,8 @@ namespace MTD.CouchBot
 
                                         File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream.channel._id.ToString() + ".json",
                                             JsonConvert.SerializeObject(channel));
+
+                                        Logging.LogTwitch(channelName + " has gone online.");
                                     }
                                 }
                             }
@@ -641,8 +641,6 @@ namespace MTD.CouchBot
                                 string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                 string thumbnailUrl = stream.preview.large;
 
-                                Logging.LogTwitch(channelName + " has gone online.");
-
                                 var message = await MessagingHelper.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
                                     thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.OwnerLiveChannel, null);
 
@@ -657,6 +655,8 @@ namespace MTD.CouchBot
 
                                     File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream.channel._id.ToString() + ".json",
                                         JsonConvert.SerializeObject(channel));
+
+                                    Logging.LogTwitch(channelName + " has gone online.");
                                 }
                             }
                         }
@@ -828,8 +828,6 @@ namespace MTD.CouchBot
                                         string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                         string thumbnailUrl = stream.preview.large;
 
-                                        Logging.LogTwitch(teamResponse.Name + " team member " + channelName + " has gone online.");
-
                                         var message = await MessagingHelper.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
                                             thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel, teamResponse.DisplayName);
 
@@ -844,6 +842,8 @@ namespace MTD.CouchBot
 
                                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream.channel._id.ToString() + ".json",
                                                 JsonConvert.SerializeObject(channel));
+
+                                            Logging.LogTwitch(teamResponse.Name + " team member " + channelName + " has gone online.");
                                         }
                                     }
                                 }
@@ -896,7 +896,7 @@ namespace MTD.CouchBot
                 {
                     // Log our error and move to the next user.
 
-                    Logging.LogError("Twitch Team Server Error: " + wex.Message + " in Discord Server Id: " + server.Id);
+                    Logging.LogError("Twitch Game Error: " + wex.Message);
                     continue;
                 }
 
@@ -964,8 +964,6 @@ namespace MTD.CouchBot
                             string avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                             string thumbnailUrl = stream.preview.large;
 
-                            Logging.LogTwitch(channelName + " has gone live playing " + game.Name);
-
                             var message = await MessagingHelper.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
                                 thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel, null);
 
@@ -980,6 +978,8 @@ namespace MTD.CouchBot
 
                                 File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory + stream.channel._id.ToString() + ".json",
                                     JsonConvert.SerializeObject(channel));
+
+                                Logging.LogTwitch(channelName + " has gone live playing " + game.Name);
                             }
                         }
                     }
@@ -1108,8 +1108,10 @@ namespace MTD.CouchBot
                                 channel.ChannelMessages = new List<ChannelMessage>();
 
                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.YouTubeGaming, new List<BroadcastMessage>() { message }));
-                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
+
                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + c.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
+
+                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
                         }
                     }
                 }
@@ -1235,8 +1237,10 @@ namespace MTD.CouchBot
                                 channel.ChannelMessages = new List<ChannelMessage>();
 
                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.YouTubeGaming, new List<BroadcastMessage>() { message }));
-                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
+
                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + c.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
+
+                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
                         }
                     }
                 }
@@ -1321,8 +1325,6 @@ namespace MTD.CouchBot
                                             string gameName = stream.livestream[0].category_name == null ? "a game" : stream.livestream[0].category_name;
                                             string url = "http://smashcast.tv/" + hitboxChannel;
 
-                                            Logging.LogSmashcast(hitboxChannel + " has gone online.");
-
                                             var message = await MessagingHelper.BuildMessage(
                                                 hitboxChannel, gameName, stream.livestream[0].media_status, url, "http://edge.sf.hitbox.tv" +
                                                 stream.livestream[0].channel.user_logo, "http://edge.sf.hitbox.tv" +
@@ -1338,6 +1340,8 @@ namespace MTD.CouchBot
                                                 channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Smashcast, new List<BroadcastMessage>() { message }));
 
                                                 File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + hitboxChannel + ".json", JsonConvert.SerializeObject(channel));
+
+                                                Logging.LogSmashcast(hitboxChannel + " has gone online.");
                                             }
                                         }
                                     }
@@ -1425,8 +1429,6 @@ namespace MTD.CouchBot
                                         string gameName = stream.livestream[0].category_name == null ? "a game" : stream.livestream[0].category_name;
                                         string url = "http://smashcast.tv/" + server.OwnerHitboxChannel;
 
-                                        Logging.LogSmashcast(server.OwnerHitboxChannel + " has gone online.");
-
                                         var message = await MessagingHelper.BuildMessage(
                                             server.OwnerHitboxChannel, gameName, stream.livestream[0].media_status, url, "http://edge.sf.hitbox.tv" +
                                             stream.livestream[0].channel.user_logo, "http://edge.sf.hitbox.tv" +
@@ -1442,6 +1444,8 @@ namespace MTD.CouchBot
                                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Smashcast, new List<BroadcastMessage>() { message }));
 
                                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + server.OwnerHitboxChannel + ".json", JsonConvert.SerializeObject(channel));
+
+                                            Logging.LogSmashcast(server.OwnerHitboxChannel + " has gone online.");
                                         }
                                     }
                                 }
@@ -1595,8 +1599,6 @@ namespace MTD.CouchBot
                                                 f.IsInline = false;
                                             });
 
-                                            Logging.LogPicarto(picartoChannel + " has gone online.");
-
                                             var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
 
                                             if (role == null)
@@ -1636,6 +1638,8 @@ namespace MTD.CouchBot
                                                 channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Picarto, new List<BroadcastMessage>() { broadcastMessage }));
 
                                                 File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory + picartoChannel + ".json", JsonConvert.SerializeObject(channel));
+
+                                                Logging.LogPicarto(picartoChannel + " has gone online.");
                                             }
                                         }
                                     }
@@ -1788,8 +1792,6 @@ namespace MTD.CouchBot
                                             f.IsInline = false;
                                         });
 
-                                        Logging.LogPicarto(server.OwnerPicartoChannel + " has gone online.");
-
                                         var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
 
                                         if (role == null)
@@ -1829,6 +1831,8 @@ namespace MTD.CouchBot
                                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.Picarto, new List<BroadcastMessage>() { broadcastMessage }));
 
                                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory + server.OwnerPicartoChannel + ".json", JsonConvert.SerializeObject(channel));
+
+                                            Logging.LogPicarto(server.OwnerPicartoChannel + " has gone online.");
                                         }
                                     }
                                 }

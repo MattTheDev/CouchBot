@@ -1,8 +1,8 @@
 {
   "Keys": {
-    "DiscordToken": "MzEzODYxODEwMzQyMDY4MjI1.DD9Rjg.WZsWpTZPh3kAtOmDpQPqZ8HOu30",
-    "TwitchClientId": "3jqbohvo5v4aah7tlkzz37xir7fkls",
-    "YouTubeApiKey": "AIzaSyBWNxag6Ilqo-eV_9M8T-7tQvqc72ukFI0",
+    "DiscordToken": "DISCORDTOKEN",
+    "TwitchClientId": "TWITCHID",
+    "YouTubeApiKey": "YOUTUBEAPI",
     "ApiAiKey": "APIAIKEY"
   },
   "BotConfiguration": {
