@@ -105,12 +105,12 @@ namespace MTD.CouchBot.Managers.Implementations
 
         public void AddToFlipCount()
         {
-            statisticsDal.AddToFlipCount();
+            _statisticsDal.AddToFlipCount();
         }
 
         public int GetFlipCount()
         {
-            return statisticsDal.GetFlipCount();
+            return _statisticsDal.GetFlipCount();
         }
     }
 }
