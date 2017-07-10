@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
 {
-    public class BaseCommands : ModuleBase
+    public class BaseCommands : BaseModule
     {
         IStatisticsManager statisticsManager;
         IYouTubeManager youtubeManager;
@@ -83,9 +83,9 @@ namespace MTD.CouchBot.Modules
                     }
                 }
 
-                if(server.TwitchTeams != null)
+                if (server.TwitchTeams != null)
                 {
-                    foreach(var t in server.TwitchTeams)
+                    foreach (var t in server.TwitchTeams)
                     {
                         twitchTeamCount++;
                     }
@@ -102,7 +102,7 @@ namespace MTD.CouchBot.Modules
 
             int serverCount = 0;
 
-            foreach(var shard in Program.client.Shards)
+            foreach (var shard in Program.client.Shards)
             {
                 serverCount += shard.Guilds.Count;
             }
@@ -130,7 +130,7 @@ namespace MTD.CouchBot.Modules
 
             await Context.Channel.SendMessageAsync(info);
         }
-        
+
         [Command("servers"), Summary("Get Server Statistic Information.")]
         public async Task Servers()
         {
@@ -146,7 +146,7 @@ namespace MTD.CouchBot.Modules
             {
                 var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
 
-                if(server.GoLiveChannel != 0)
+                if (server.GoLiveChannel != 0)
                 {
                     serversUsingGoLive.Add(server.Id);
                 }
@@ -243,7 +243,7 @@ namespace MTD.CouchBot.Modules
 
             await Context.Channel.SendMessageAsync(info);
         }
-        
+
         [Command("supporters"), Summary("Get Supporter Information")]
         public async Task Supporters()
         {
@@ -255,12 +255,12 @@ namespace MTD.CouchBot.Modules
                           "just in it's use. Thanks to all those out there that have used it, provided feedback, found bugs, and supported me through Patreon.\r\n\r\n" +
                           "Patron List:\r\n";
 
-            foreach(var s in supporters)
+            foreach (var s in supporters)
             {
                 info += "- " + s + "\r\n";
             }
 
-            info +=  "- Your Name Could Be Here. Visit <http://patreon.com/dawgeth> today <3" +
+            info += "- Your Name Could Be Here. Visit <http://patreon.com/dawgeth> today <3" +
                      "- Want to be a one time supporter? <http://paypal.me/dawgeth>" +
                      "```\r\n";
 
@@ -278,7 +278,8 @@ namespace MTD.CouchBot.Modules
             {
                 await Context.Channel.SendMessageAsync("No Results Found.");
             }
-            else {
+            else
+            {
 
                 string channelInfo = "```\r\n";
                 foreach (var channel in channels.items)
@@ -312,10 +313,22 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync("", false, builder.Build());
         }
 
+        [Command("flip")]
+        public async Task Flip()
+        {
+            statisticsManager.AddToFlipCount();
+
+            EmbedBuilder builder = new EmbedBuilder();
+
+            builder.Description = "(╯°□°）╯︵ <:CouchBotSemi10:312758619475279893>\r\n\r\nFlip Count: " + statisticsManager.GetFlipCount();
+
+            await Context.Channel.SendMessageAsync("", false, builder.Build());
+        }
+
         [Command("setbotgame")]
         public async Task SetBotGame(string game)
         {
-            if(Context.User.Id != 93015586698727424)
+            if (Context.User.Id != 93015586698727424)
             {
                 await Context.Channel.SendMessageAsync("*Bbbbbzzztttt* You are not *zzzzt* Dawgeth. Acc *bbrrrttt* Access Denied.");
 
@@ -378,6 +391,97 @@ namespace MTD.CouchBot.Modules
         public async Task Ping()
         {
             await Context.Channel.SendMessageAsync("Pong!");
+        }
+
+        [Command("purge")]
+        public async Task Purge(IGuildUser user)
+        {
+            var deleteList = new List<IMessage>();
+
+            if (!IsAdmin)
+            {
+                return;
+            }
+
+            var messages = Context.Channel.GetMessagesAsync(100);
+
+            var message = (await messages.Flatten()).GetEnumerator();
+
+            while (message.MoveNext())
+            {
+                if (message.Current.Author.Id == user.Id)
+                {
+                    deleteList.Add(message.Current);
+                }
+            }
+
+
+            if (deleteList.Count > 0)
+            {
+                await Context.Channel.DeleteMessagesAsync(deleteList);
+                await Context.Message.DeleteAsync();
+            }
+        }
+
+        [Command("purgeall")]
+        public async Task PurgeAll()
+        {
+            var deleteList = new List<IMessage>();
+
+            if (!IsAdmin)
+            {
+                return;
+            }
+
+            var messages = Context.Channel.GetMessagesAsync(100);
+
+            var message = (await messages.Flatten()).GetEnumerator();
+
+            while (message.MoveNext())
+            {
+                deleteList.Add(message.Current);
+            }
+
+            if (deleteList.Count > 0)
+            {
+                await Context.Channel.DeleteMessagesAsync(deleteList);
+            }
+        }
+
+        [Command("purgeservers")]
+        public async Task PurgeServers()
+        {
+            if (Context.User.Id != Constants.OwnerId)
+            {
+                return;
+            }
+
+            List<ulong> toKeep = new List<ulong>();
+            List<ulong> toDelete = new List<ulong>();
+
+            var guilds = await Context.Client.GetGuildsAsync();
+            var files = BotFiles.GetConfiguredServerFileNames();
+
+            foreach(var guild in guilds)
+            {
+                if(files.Contains(guild.Id.ToString()))
+                {
+                    toKeep.Add(guild.Id);
+                }
+            }
+
+            foreach(var file in files)
+            {
+                if(!toKeep.Contains(ulong.Parse(file)))
+                {
+                    toDelete.Add(ulong.Parse(file));
+                }
+            }
+
+            foreach(var server in toDelete)
+            {
+                File.Move(Constants.ConfigRootDirectory + Constants.GuildDirectory + @"\" + server + ".json", @"C:\temp\" + server + ".json");
+            }
         }
     }
 }

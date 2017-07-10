@@ -154,5 +154,19 @@ namespace MTD.CouchBot.Dals.Implementations
             stats.HaiBaiCount += 1;
             SaveBotStats(stats);
         }
+
+        public void AddToFlipCount()
+        {
+            var stats = GetBotStats();
+            stats.FlipCount += 1;
+            SaveBotStats(stats);
+        }
+
+        public int GetFlipCount()
+        {
+            var stats = GetBotStats();
+
+            return stats.FlipCount;
+        }
     }
 }

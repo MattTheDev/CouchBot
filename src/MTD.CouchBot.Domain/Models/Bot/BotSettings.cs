@@ -28,6 +28,7 @@ namespace MTD.CouchBot.Domain.Models.Bot
             public ulong CouchBotId { get; set; }
             public string Prefix { get; set; }
             public int TotalShards { get; set; }
+            public ulong OwnerId { get; set; }
         }
 
         public class Directories

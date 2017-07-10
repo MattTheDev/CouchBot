@@ -68,6 +68,19 @@ namespace MTD.CouchBot.Domain.Utilities
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
         }
 
+        public static List<string> GetConfiguredServerFileNames()
+        {
+            var servers = new List<string>();
+
+            // Get Servers
+            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
+            {
+                servers.Add(Path.GetFileName(server.Replace(".json", "")));
+            }
+
+            return servers;
+        }
+
         public static List<DiscordServer> GetConfiguredServers()
         {
             var servers = new List<DiscordServer>();
