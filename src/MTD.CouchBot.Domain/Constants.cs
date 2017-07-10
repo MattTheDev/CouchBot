@@ -53,7 +53,7 @@ namespace MTD.CouchBot.Domain
 
         public static readonly int PicartoInterval = Settings.IntervalSettings.Picarto * 1000;
         public static readonly int TwitchInterval = Settings.IntervalSettings.Twitch * 1000;
-        public static readonly int TwitchFeedInterval = Settings.IntervalSettings.TwitchFeed * 1000;
+        public static readonly int TwitchFeedInterval = 120 * 1000;
         public static readonly int SmashcastInterval = Settings.IntervalSettings.Smashcast * 1000;
         public static readonly int YouTubePublishedInterval = Settings.IntervalSettings.YouTubePublished * 1000;
         public static readonly int YouTubeLiveInterval = Settings.IntervalSettings.YouTubeLive * 1000;
