@@ -7,6 +7,7 @@ using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Models.Picarto;
 using MTD.CouchBot.Domain.Models.Smashcast;
 using MTD.CouchBot.Domain.Models.Twitch;
+using MTD.CouchBot.Domain.Models.VidMe;
 using MTD.CouchBot.Domain.Models.YouTube;
 using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
@@ -49,6 +50,8 @@ namespace MTD.CouchBot
         private static Timer twitchGameTimer;
         private static Timer picartoTimer;
         private static Timer picartoOwnerTimer;
+        private static Timer vidMeTimer;
+        private static Timer vidMeOwnerTimer;
 
         private static Timer cleanupTimer;
         private static Timer uptimeTimer;
@@ -60,6 +63,7 @@ namespace MTD.CouchBot
         ISmashcastManager smashcastManager;
         IMixerManager mixerManager;
         IPicartoManager picartoManager;
+        IVidMeManager vidMeManager;
 
         #endregion
 
@@ -99,6 +103,7 @@ namespace MTD.CouchBot
             mixerManager = new MixerManager();
             smashcastManager = new SmashcastManager();
             picartoManager = new PicartoManager();
+            vidMeManager = new VidMeManager();
 
             Logging.LogInfo("Managers Initialized.");
             Logging.LogInfo("Log Last Restart Time and Date.");
@@ -143,6 +148,11 @@ namespace MTD.CouchBot
             if (Constants.EnablePicarto)
             {
                 QueuePicartoChecks();
+            }
+
+            if(Constants.EnableVidMe)
+            {
+                QueueVidMeChecks();
             }
 
             QueueCleanUp();
@@ -371,6 +381,29 @@ namespace MTD.CouchBot
                 sw.Stop();
                 Logging.LogYouTube("Owner YouTube Published Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, Constants.YouTubePublishedInterval);
+        }
+
+        public void QueueVidMeChecks()
+        {
+            vidMeTimer = new Timer(async (e) =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Logging.LogVidMe("Checking VidMe");
+                await CheckVidMe();
+                sw.Stop();
+                Logging.LogVidMe("VidMe Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+            }, null, 0, Constants.VidMeInterval);
+
+            vidMeOwnerTimer = new Timer(async (e) =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Logging.LogVidMe("Checking Owner VidMe Published");
+                await CheckOwnerVidMe();
+                sw.Stop();
+                Logging.LogVidMe("Owner VidMe Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+            }, null, 0, Constants.VidMeInterval);
         }
 
         public void QueuePicartoChecks()
@@ -1847,7 +1880,6 @@ namespace MTD.CouchBot
         {
             var servers = BotFiles.GetConfiguredServers();
             var users = BotFiles.GetConfiguredUsers();
-            var liveChannels = new List<LiveChannel>();
             var now = DateTime.UtcNow;
             var then = now.AddMilliseconds(-(Constants.YouTubePublishedInterval));
 
@@ -1966,51 +1998,36 @@ namespace MTD.CouchBot
                         embed.ImageUrl = server.AllowThumbnails ? video.snippet.thumbnails.high.url + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
                         embed.Footer = footer;
 
-                        var lc = liveChannels.FirstOrDefault(x => x.Name.ToLower() == user.ToLower());
-                        if (lc == null)
+                        var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                        if (role == null)
                         {
-                            lc = new LiveChannel();
-                            lc.Servers = new List<ulong>();
+                            server.MentionRole = 0;
                         }
 
-                        if (lc == null || lc.Servers.Count < 1 || (!lc.Servers.Contains(server.Id) && !lc.Name.Equals(user + "|" + video.snippet.resourceId.videoId)))
+                        var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
+
+                        if (server.UseTextAnnouncements)
                         {
-                            var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
-
-                            if (role == null)
+                            if (!server.AllowThumbnails)
                             {
-                                server.MentionRole = 0;
+                                url = "<" + url + ">";
                             }
 
-                            var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
-
-                            if (server.UseTextAnnouncements)
-                            {
-                                if (!server.AllowThumbnails)
-                                {
-                                    url = "<" + url + ">";
-                                }
-
-                                message += "**[" + Constants.YouTube + "]** " + server.PublishedMessage.Replace("%CHANNEL%", video.snippet.channelTitle).Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
-                            }
-
-                            Logging.LogYouTube(video.snippet.channelTitle + " has published a new video.");
-
-                            await SendMessage(new BroadcastMessage()
-                            {
-                                GuildId = server.Id,
-                                ChannelId = server.PublishedChannel,
-                                UserId = user,
-                                Message = message,
-                                Platform = Constants.YouTube,
-                                Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
-                            });
+                            message += "**[" + Constants.VidMe + "]** " + server.PublishedMessage.Replace("%CHANNEL%", video.snippet.channelTitle).Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
                         }
 
-                        lc.Name = user + "|" + video.snippet.resourceId.videoId;
-                        lc.Servers.Add(server.Id);
+                        Logging.LogYouTube(video.snippet.channelTitle + " has published a new video.");
 
-                        liveChannels.Add(lc);
+                        await SendMessage(new BroadcastMessage()
+                        {
+                            GuildId = server.Id,
+                            ChannelId = server.PublishedChannel,
+                            UserId = user,
+                            Message = message,
+                            Platform = Constants.YouTube,
+                            Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
+                        });
                     }
                 }
             }
@@ -2152,6 +2169,252 @@ namespace MTD.CouchBot
                         GuildId = server.Id,
                         ChannelId = server.OwnerPublishedChannel,
                         UserId = server.OwnerYouTubeChannelId,
+                        Message = message,
+                        Platform = Constants.YouTube,
+                        Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
+                    });
+                }
+            }
+        }
+
+        public async Task CheckVidMe()
+        {
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var now = DateTime.UtcNow;
+            var then = now.AddMilliseconds(-(Constants.VidMeInterval));
+
+            foreach (var server in servers)
+            {
+                // If server isnt set or published channel isnt set, skip it.
+                if (server.Id == 0 || server.PublishedChannel == 0)
+                {
+                    continue;
+                }
+
+                // If they dont allow published, skip it.
+                if (!server.AllowPublished)
+                {
+                    continue;
+                }
+
+                var chat = await DiscordHelper.GetMessageChannel(server.Id, server.PublishedChannel);
+
+                if (chat == null)
+                {
+                    continue;
+                }
+
+                if (server.ServerVidMeChannelIds == null || server.ServerVidMeChannelIds.Count < 0)
+                {
+                    continue;
+                }
+
+                foreach (var channelId in server.ServerVidMeChannelIds)
+                {
+                    if (channelId == 0)
+                    {
+                        continue;
+                    }
+
+                    VidMeUserVideos videoResponse = null;
+
+                    try
+                    {
+                        videoResponse = await vidMeManager.GetChannelVideosById(channelId);
+                        
+                        if (videoResponse == null || videoResponse.videos == null || videoResponse.videos.Count < 1)
+                        {
+                            continue;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logging.LogError("VidMe Published Error: " + ex.Message + " for user: " + channelId + " in Discord Server: " + server.Id);
+                        continue;
+                    }
+
+                    foreach (var video in videoResponse.videos)
+                    {
+                        var publishDate = DateTime.Parse(video.date_published, null, System.Globalization.DateTimeStyles.AdjustToUniversal);
+
+                        if (!(publishDate > then && publishDate < now))
+                        {
+                            continue;
+                        }
+
+                        string url = video.full_url;
+
+                        EmbedBuilder embed = new EmbedBuilder();
+                        EmbedAuthorBuilder author = new EmbedAuthorBuilder();
+                        EmbedFooterBuilder footer = new EmbedFooterBuilder();
+
+                        if (server.PublishedMessage == null)
+                        {
+                            server.PublishedMessage = "%CHANNEL% just published a new video - %TITLE% - %URL%";
+                        }
+
+                        Color red = new Color(179, 18, 23);
+                        author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                        author.Name = Program.client.CurrentUser.Username;
+                        author.Url = url;
+                        footer.Text = "[" + Constants.VidMe + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                        footer.IconUrl = "http://couchbot.io/img/vidme.png";
+                        embed.Author = author;
+                        embed.Color = red;
+                        embed.Description = server.PublishedMessage.Replace("%CHANNEL%", video.user.username).Replace("%GAME%", "a video").Replace("%TITLE%", video.title).Replace("%URL%", url);
+                        embed.Title = video.user.username + " published a new video!";
+                        embed.ThumbnailUrl = video.user.avatar_url;
+                        embed.ImageUrl = video.thumbnail_url;
+                        embed.Footer = footer;
+
+                        var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                        if (role == null)
+                        {
+                            server.MentionRole = 0;
+                        }
+
+                        var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
+
+                        if (server.UseTextAnnouncements)
+                        {
+                            if (!server.AllowThumbnails)
+                            {
+                                url = "<" + url + ">";
+                            }
+
+                            message += "**[" + Constants.VidMe + "]** " + 
+                                server.PublishedMessage.Replace("%CHANNEL%", video.user.username).Replace("%GAME%", "a video").Replace("%TITLE%", video.title).Replace("%URL%", url);
+                        }
+
+                        Logging.LogVidMe(video.user.username + " has published a new video.");
+
+                        await SendMessage(new BroadcastMessage()
+                        {
+                            GuildId = server.Id,
+                            ChannelId = server.PublishedChannel,
+                            UserId = video.user.username,
+                            Message = message,
+                            Platform = Constants.YouTube,
+                            Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
+                        });
+                    }
+                }
+            }
+        }
+
+        public async Task CheckOwnerVidMe()
+        {
+            var servers = BotFiles.GetConfiguredServers();
+            var users = BotFiles.GetConfiguredUsers();
+            var now = DateTime.UtcNow;
+            var then = now.AddMilliseconds(-(Constants.VidMeInterval));
+
+            foreach (var server in servers)
+            {
+                if (!server.AllowPublished)
+                {
+                    continue;
+                }
+
+                // If server isnt set or published channel isnt set, skip it.
+                if (server.Id == 0 || server.OwnerPublishedChannel == 0)
+                {
+                    continue;
+                }
+
+                var chat = await DiscordHelper.GetMessageChannel(server.Id, server.OwnerPublishedChannel);
+
+                if (chat == null)
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(server.OwnerVidMeChannel) || server.OwnerVidMeChannelId == 0)
+                {
+                    continue;
+                }
+
+                var channelId = server.OwnerVidMeChannelId;
+                VidMeUserVideos videoResponse = null;
+
+                try
+                {
+                    videoResponse = await vidMeManager.GetChannelVideosById(channelId);
+
+                    if (videoResponse == null || videoResponse.videos == null || videoResponse.videos.Count < 1)
+                    {
+                        continue;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logging.LogError("VidMe Published Error: " + ex.Message + " for user: " + channelId + " in Discord Server: " + server.Id);
+                    continue;
+                }
+
+                foreach (var video in videoResponse.videos)
+                {
+                    var publishDate = DateTime.Parse(video.date_published, null, System.Globalization.DateTimeStyles.AdjustToUniversal);
+
+                    if (!(publishDate > then && publishDate < now))
+                    {
+                        continue;
+                    }
+
+                    string url = video.full_url;
+
+                    EmbedBuilder embed = new EmbedBuilder();
+                    EmbedAuthorBuilder author = new EmbedAuthorBuilder();
+                    EmbedFooterBuilder footer = new EmbedFooterBuilder();
+
+                    if (server.PublishedMessage == null)
+                    {
+                        server.PublishedMessage = "%CHANNEL% just published a new video - %TITLE% - %URL%";
+                    }
+
+                    Color red = new Color(179, 18, 23);
+                    author.IconUrl = client.CurrentUser.GetAvatarUrl() + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                    author.Name = Program.client.CurrentUser.Username;
+                    author.Url = url;
+                    footer.Text = "[" + Constants.VidMe + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
+                    footer.IconUrl = "http://couchbot.io/img/vidme.png";
+                    embed.Author = author;
+                    embed.Color = red;
+                    embed.Description = server.PublishedMessage.Replace("%CHANNEL%", video.user.username).Replace("%GAME%", "a video").Replace("%TITLE%", video.title).Replace("%URL%", url);
+                    embed.Title = video.user.username + " published a new video!";
+                    embed.ThumbnailUrl = video.user.avatar_url;
+                    embed.ImageUrl = video.thumbnail_url;
+                    embed.Footer = footer;
+
+                    var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+
+                    if (role == null)
+                    {
+                        server.MentionRole = 0;
+                    }
+
+                    var message = (server.AllowEveryone ? server.MentionRole != 0 ? role.Mention : "@everyone " : "");
+
+                    if (server.UseTextAnnouncements)
+                    {
+                        if (!server.AllowThumbnails)
+                        {
+                            url = "<" + url + ">";
+                        }
+
+                        message += "**[" + Constants.VidMe + "]** " +
+                            server.PublishedMessage.Replace("%CHANNEL%", video.user.username).Replace("%GAME%", "a video").Replace("%TITLE%", video.title).Replace("%URL%", url);
+                    }
+
+                    Logging.LogVidMe(video.user.username + " has published a new video.");
+
+                    await SendMessage(new BroadcastMessage()
+                    {
+                        GuildId = server.Id,
+                        ChannelId = server.OwnerPublishedChannel,
+                        UserId = video.user.username,
                         Message = message,
                         Platform = Constants.YouTube,
                         Embed = (!server.UseTextAnnouncements ? embed.Build() : null)

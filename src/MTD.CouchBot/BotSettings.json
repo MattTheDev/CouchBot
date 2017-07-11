@@ -6,8 +6,8 @@
     "ApiAiKey": "APIAIKEY"
   },
   "BotConfiguration": {
-    "CouchBotId": 313861810342068225,
-    "Prefix": "!fb",
+    "CouchBotId": 0,
+    "Prefix": "",
     "TotalShards": 1
   },
   "Directories": {
@@ -36,6 +36,6 @@
     "TwitchFeed": 300,
     "YouTubePublished": 900,
     "YouTubeLive": 300,
-    "VidMe":  900
+    "VidMe": 900
   }
 }

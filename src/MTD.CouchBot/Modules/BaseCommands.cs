@@ -136,29 +136,39 @@ namespace MTD.CouchBot.Modules
         {
             var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
 
+            int serverCount = 0;
+
+            foreach (var shard in Program.client.Shards)
+            {
+                serverCount += shard.Guilds.Count;
+            }
+
             List<ulong> serversUsingNone = new List<ulong>();
             List<ulong> serversUsingGoLive = new List<ulong>();
             List<ulong> serversUsingAnnouncements = new List<ulong>();
             List<ulong> serversUsingPublished = new List<ulong>();
             List<ulong> serversUsingGreetings = new List<ulong>();
+            List<ulong> serversUsingTeams = new List<ulong>();
+            List<ulong> serversUsingGames = new List<ulong>();
+            List<ulong> serversUsingFeeds = new List<ulong>();
 
             foreach (var s in serverFiles)
             {
                 var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
 
-                if (server.GoLiveChannel != 0)
+                if (server.GoLiveChannel != 0 || server.OwnerLiveChannel != 0)
                 {
                     serversUsingGoLive.Add(server.Id);
                 }
 
-                if (server.AnnouncementsChannel != 0)
-                {
-                    serversUsingAnnouncements.Add(server.Id);
-                }
-
-                if (server.PublishedChannel != 0)
+                if (server.PublishedChannel != 0 || server.OwnerPublishedChannel != 0)
                 {
                     serversUsingPublished.Add(server.Id);
+                }
+
+                if(server.TwitchFeedChannel != 0 || server.OwnerTwitchFeedChannel != 0)
+                {
+                    serversUsingFeeds.Add(server.Id);
                 }
 
                 if (server.GreetingsChannel != 0)
@@ -166,7 +176,19 @@ namespace MTD.CouchBot.Modules
                     serversUsingGreetings.Add(server.Id);
                 }
 
-                if (server.GoLiveChannel == 0 && server.AnnouncementsChannel == 0 && server.PublishedChannel == 0 && server.GreetingsChannel == 0)
+                if(server.TwitchTeams != null && server.TwitchTeams.Count > 0)
+                {
+                    serversUsingTeams.Add(server.Id);
+                }
+
+                if (server.ServerGameList != null && server.ServerGameList.Count > 0)
+                {
+                    serversUsingGames.Add(server.Id);
+                }
+
+                if (server.GoLiveChannel == 0 && server.OwnerLiveChannel == 0
+                    && server.PublishedChannel == 0 && server.OwnerPublishedChannel == 0
+                    && server.GreetingsChannel == 0 && server.OwnerTwitchFeedChannel == 0 && server.TwitchFeedChannel == 0)
                 {
                     serversUsingNone.Add(server.Id);
                 }
@@ -174,11 +196,14 @@ namespace MTD.CouchBot.Modules
 
             string info = "```Markdown\r\n" +
                           "# " + Program.client.CurrentUser.Username + "\r\n" +
-                          "- Servers: " + serverFiles.Length + "\r\n" +
+                          "- Connected Servers: " + serverCount + "\r\n" +
+                          "- Server Configurations: " + serverFiles.Length + "\r\n" +
                           "- Servers Announcing Livestreams: " + serversUsingGoLive.Count + "\r\n" +
-                          "- Servers Announcing Announcements: " + serversUsingAnnouncements.Count + "\r\n" +
                           "- Servers Announcing Published Content: " + serversUsingPublished.Count + "\r\n" +
                           "- Servers Announcing Greetings: " + serversUsingGreetings.Count + "\r\n" +
+                          "- Servers Announcing Twitch Channel Feeds: " + serversUsingFeeds.Count + "\r\n" +
+                          "- Servers Announcing Twitch Games: " + serversUsingGames.Count + "\r\n" +
+                          "- Servers Announcing Twitch Teams: " + serversUsingTeams.Count + "\r\n" +
                           "- Servers Announcing Nothing: " + serversUsingNone.Count + "\r\n" +
                           "```\r\n";
 
@@ -458,11 +483,22 @@ namespace MTD.CouchBot.Modules
 
             List<ulong> toKeep = new List<ulong>();
             List<ulong> toDelete = new List<ulong>();
+            List<IGuild> guilds = new List<IGuild>();
 
-            var guilds = await Context.Client.GetGuildsAsync();
             var files = BotFiles.GetConfiguredServerFileNames();
 
-            foreach(var guild in guilds)
+            foreach (var shard in Program.client.Shards)
+            {
+                foreach (var guild in shard.Guilds)
+                {
+                    if (!guilds.Contains(guild))
+                    {
+                        guilds.Add(guild);
+                    }
+                }
+            }
+
+            foreach (var guild in guilds)
             {
                 if(files.Contains(guild.Id.ToString()))
                 {
@@ -481,6 +517,80 @@ namespace MTD.CouchBot.Modules
             foreach(var server in toDelete)
             {
                 File.Move(Constants.ConfigRootDirectory + Constants.GuildDirectory + @"\" + server + ".json", @"C:\temp\" + server + ".json");
+            }
+        }
+
+        [Command("muppet")]
+        public async Task Muppet()
+        {
+            if (Context.User.Id != Constants.OwnerId)
+            {
+                return;
+            }
+
+            List<ulong> configExists = new List<ulong>();
+            List<ulong> configDoesntExist = new List<ulong>();
+            List<IGuild> guilds = new List<IGuild>();
+
+            var files = BotFiles.GetConfiguredServerFileNames();
+
+            foreach (var shard in Program.client.Shards)
+            {
+                foreach(var guild in shard.Guilds)
+                {
+                    if(!guilds.Contains(guild))
+                    {
+                        guilds.Add(guild);
+                    }
+                }
+            }
+
+            await Context.Channel.SendMessageAsync("Checking " + guilds.Count + " Guilds.");
+
+            foreach (var guild in guilds)
+            {
+                if (!files.Contains(guild.Id.ToString()))
+                {
+                    configDoesntExist.Add(guild.Id);
+                }
+            }
+
+            var message = "```";
+
+            foreach(var guild in configDoesntExist)
+            {
+                var g = await Context.Client.GetGuildAsync(guild);
+                var o = await g.GetOwnerAsync();
+
+                message += "Name: " + g.Name + " (" + g.Id + ") - Owner: " + o.Username + " (" + o.Id + ")\r\n";
+            }
+
+            message += "```";
+
+            await Context.Channel.SendMessageAsync(message);
+        }
+
+        [Command("leaveservers")]
+        public async Task LeaveServers()
+        {
+            if (Context.User.Id != Constants.OwnerId)
+            {
+                return;
+            }
+
+            var serverFiles = Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory);
+
+            foreach (var s in serverFiles)
+            {
+                var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
+
+                if (server.GoLiveChannel == 0 && server.OwnerLiveChannel == 0
+                && server.PublishedChannel == 0 && server.OwnerPublishedChannel == 0
+                && server.GreetingsChannel == 0 && server.OwnerTwitchFeedChannel == 0 && server.TwitchFeedChannel == 0)
+                {
+                    var guild = await Context.Client.GetGuildAsync(server.Id);
+                    await guild.LeaveAsync();
+                }
             }
         }
     }
