@@ -2014,7 +2014,7 @@ namespace MTD.CouchBot
                                 url = "<" + url + ">";
                             }
 
-                            message += "**[" + Constants.VidMe + "]** " + server.PublishedMessage.Replace("%CHANNEL%", video.snippet.channelTitle).Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
+                            message += "**[" + Constants.YouTube + "]** " + server.PublishedMessage.Replace("%CHANNEL%", video.snippet.channelTitle).Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
                         }
 
                         Logging.LogYouTube(video.snippet.channelTitle + " has published a new video.");

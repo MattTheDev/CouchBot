@@ -158,6 +158,7 @@ namespace MTD.CouchBot.Modules
                           "-- Twitch: " + serverTwitchCount + "\r\n" +
                           "-- Twitch Games: " + twitchGameCount + "\r\n" +
                           "-- Twitch Teams: " + twitchTeamCount + "\r\n" +
+                          "-- Vid.me: " + vidMeCount + "\r\n" +
                           "-- YouTube: " + serverYouTubeCount + "\r\n" +
                           "-- Total Channels Checked: " + (serverYouTubeCount + serverTwitchCount + serverBeamCount + serverHitboxCount + serverPicartoCount) + "\r\n" +
                           "- Current Memory Usage: " + ((System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024) / 1024) + "MB \r\n" +
@@ -301,6 +302,7 @@ namespace MTD.CouchBot.Modules
                     "Picarto - " + botStats.PicartoAlertCount + "\r\n" +
                     "Smashcast - " + botStats.HitboxAlertCount + "\r\n" +
                     "Twitch - " + botStats.TwitchAlertCount + "\r\n" +
+                    "Vid.me - " + botStats.VidMeAlertCount + "\r\n" +
                     "YouTube - " + botStats.YouTubeAlertCount + "\r\n" +
                     "Total Alerts Sent - " + (botStats.YouTubeAlertCount + botStats.BeamAlertCount + botStats.TwitchAlertCount + botStats.HitboxAlertCount) + "\r\n" +
                     "```\r\n";
