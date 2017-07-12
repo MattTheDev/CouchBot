@@ -167,5 +167,19 @@ namespace MTD.CouchBot.Dals.Implementations
 
             return stats.FlipCount;
         }
+
+        public void AddToUnflipCount()
+        {
+            var stats = GetBotStats();
+            stats.UnflipCount += 1;
+            SaveBotStats(stats);
+        }
+
+        public int GetUnflipCount()
+        {
+            var stats = GetBotStats();
+
+            return stats.UnflipCount;
+        }
     }
 }

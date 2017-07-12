@@ -25,5 +25,7 @@ namespace MTD.CouchBot.Dals
         int GetHaiBaiCount();
         int GetFlipCount();
         void AddToFlipCount();
+        int GetUnflipCount();
+        void AddToUnflipCount();
     }
 }

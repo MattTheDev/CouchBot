@@ -325,6 +325,18 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync("", false, builder.Build());
         }
 
+        [Command("unflip")]
+        public async Task Unflip()
+        {
+            statisticsManager.AddToUnflipCount();
+
+            EmbedBuilder builder = new EmbedBuilder();
+
+            builder.Description = "<:couchbot:312752764247736320> ノ( ゜-゜ノ)\r\n\r\nUnflip Count: " + statisticsManager.GetUnflipCount();
+
+            await Context.Channel.SendMessageAsync("", false, builder.Build());
+        }
+
         [Command("setbotgame")]
         public async Task SetBotGame(string game)
         {
@@ -462,23 +474,24 @@ namespace MTD.CouchBot.Modules
             var guilds = await Context.Client.GetGuildsAsync();
             var files = BotFiles.GetConfiguredServerFileNames();
 
-            foreach(var guild in guilds)
+            foreach (var guild in guilds)
             {
-                if(files.Contains(guild.Id.ToString()))
+                if (files.Contains(guild.Id.ToString()))
                 {
                     toKeep.Add(guild.Id);
                 }
             }
 
-            foreach(var file in files)
+            foreach (var file in files)
             {
-                if(!toKeep.Contains(ulong.Parse(file)))
+                Console.WriteLine("File: " + file);
+                if (!toKeep.Contains(ulong.Parse(file)))
                 {
                     toDelete.Add(ulong.Parse(file));
                 }
             }
 
-            foreach(var server in toDelete)
+            foreach (var server in toDelete)
             {
                 File.Move(Constants.ConfigRootDirectory + Constants.GuildDirectory + @"\" + server + ".json", @"C:\temp\" + server + ".json");
             }
