@@ -322,6 +322,10 @@ namespace MTD.CouchBot.Bot
                         {
                             statisticsManager.AddToPicartoAlertCount();
                         }
+                        else if(platform.Equals(Constants.VidMe))
+                        {
+                            statisticsManager.AddToVidMeAlertCount();
+                        }
 
                     }
                     catch (Exception ex)

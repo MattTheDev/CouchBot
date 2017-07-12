@@ -38,6 +38,7 @@ namespace MTD.CouchBot.Modules
             var serverPicartoCount = 0;
             var twitchGameCount = 0;
             var twitchTeamCount = 0;
+            var vidMeCount = 0;
 
             foreach (var s in serverFiles)
             {
@@ -51,12 +52,22 @@ namespace MTD.CouchBot.Modules
                     }
                 }
 
+                if(!string.IsNullOrEmpty(server.OwnerPicartoChannel))
+                {
+                    serverPicartoCount++;
+                }
+
                 if (server.ServerBeamChannels != null)
                 {
                     foreach (var u in server.ServerBeamChannels)
                     {
                         serverBeamCount++;
                     }
+                }
+
+                if (!string.IsNullOrEmpty(server.OwnerBeamChannel))
+                {
+                    serverBeamCount++;
                 }
 
                 if (server.ServerTwitchChannelIds != null)
@@ -67,6 +78,11 @@ namespace MTD.CouchBot.Modules
                     }
                 }
 
+                if (!string.IsNullOrEmpty(server.OwnerTwitchChannel))
+                {
+                    serverTwitchCount++;
+                }
+
                 if (server.ServerYouTubeChannelIds != null)
                 {
                     foreach (var u in server.ServerYouTubeChannelIds)
@@ -75,12 +91,35 @@ namespace MTD.CouchBot.Modules
                     }
                 }
 
+                if (!string.IsNullOrEmpty(server.OwnerYouTubeChannelId))
+                {
+                    serverYouTubeCount++;
+                }
+
                 if (server.ServerHitboxChannels != null)
                 {
                     foreach (var u in server.ServerHitboxChannels)
                     {
                         serverHitboxCount++;
                     }
+                }
+
+                if (!string.IsNullOrEmpty(server.OwnerHitboxChannel))
+                {
+                    serverHitboxCount++;
+                }
+
+                if (server.ServerVidMeChannelIds != null)
+                {
+                    foreach (var u in server.ServerVidMeChannelIds)
+                    {
+                        vidMeCount++;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(server.OwnerVidMeChannel))
+                {
+                    vidMeCount++;
                 }
 
                 if (server.TwitchTeams != null)

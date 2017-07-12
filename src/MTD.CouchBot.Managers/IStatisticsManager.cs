@@ -26,5 +26,7 @@ namespace MTD.CouchBot.Managers
         void AddToFlipCount();
         int GetUnflipCount();
         void AddToUnflipCount();
+        void AddToVidMeAlertCount();
+        int GetVidMeAlertCount();
     }
 }
