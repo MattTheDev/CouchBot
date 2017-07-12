@@ -44,7 +44,7 @@ namespace MTD.CouchBot.Modules
                 await Context.Channel.SendMessageAsync("Live Message has been set.");
             }
 
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
         }
 
         [Command("published")]
@@ -76,7 +76,7 @@ namespace MTD.CouchBot.Modules
                 await Context.Channel.SendMessageAsync("Published Message has been set.");
             }
 
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
         }
 
         [Command("offline")]
@@ -108,7 +108,7 @@ namespace MTD.CouchBot.Modules
                 await Context.Channel.SendMessageAsync("Stream Offline Message has been set.");
             }
 
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
         }
 
         [Command("testlive")]

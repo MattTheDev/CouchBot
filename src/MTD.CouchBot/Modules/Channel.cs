@@ -2,6 +2,7 @@
 using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System.IO;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.AnnouncementsChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("The Announce Channel has been set.");
         }
 
@@ -49,7 +50,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.GoLiveChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("The Live Channel has been set.");
         }
 
@@ -70,7 +71,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.OwnerLiveChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("The Owner Live Channel has been set.");
         }
 
@@ -91,7 +92,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.GreetingsChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("The Greetings Channel has been set.");
         }
 
@@ -112,7 +113,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.PublishedChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("The Published Channel has been set.");
         }
 
@@ -133,7 +134,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.OwnerPublishedChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("The Owner Published Channel has been set.");
         }
 
@@ -154,7 +155,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.OwnerTwitchFeedChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("The Owner Twitch Channel Feed Channel has been set.");
         }
 
@@ -175,7 +176,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.TwitchFeedChannel = guildChannel.Id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("The Twitch Channel Feed Channel has been set.");
         }
 
@@ -252,7 +253,7 @@ namespace MTD.CouchBot.Modules
 
                 if (!string.IsNullOrEmpty(label))
                 {
-                    File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                    await BotFiles.SaveDiscordServer(server, Context.Guild);
                     await Context.Channel.SendMessageAsync(label + " settings have been reset.");
                 }
             }

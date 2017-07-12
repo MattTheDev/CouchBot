@@ -3,6 +3,7 @@ using Discord.Commands;
 using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System.IO;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.TimeZoneOffset = offset;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Your Server Time Zone Offset has been set.");
         }
 
@@ -59,7 +60,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.UseTextAnnouncements = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Text announcements has been set to: " + trueFalse);
         }
 
@@ -165,7 +166,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.UseYouTubeGamingPublished = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Publised YTG has been set to: " + trueFalse);
         }
 
@@ -194,7 +195,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.DeleteWhenOffline = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Delete Offline has been set to: " + trueFalse);
         }
 
@@ -224,7 +225,7 @@ namespace MTD.CouchBot.Modules
                 server.MentionRole = role.Id;
             }
 
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Mention Role has been set to: " + role.Name);
         }
     }

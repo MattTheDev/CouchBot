@@ -2,6 +2,7 @@
 using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -45,7 +46,7 @@ namespace MTD.CouchBot.Modules
             }
 
             server.ApprovedAdmins.Add(user.Id);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
 
             await Context.Channel.SendMessageAsync(user.Username + " has been added to the approved admin list for this server.");
         }
@@ -78,7 +79,7 @@ namespace MTD.CouchBot.Modules
             }
 
             server.ApprovedAdmins.Remove(user.Id);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
 
             await Context.Channel.SendMessageAsync(user.Username + " has been removed from the approved admin list for this server.");
         }

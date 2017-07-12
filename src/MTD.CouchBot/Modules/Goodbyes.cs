@@ -2,6 +2,7 @@
 using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System.IO;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace MTD.CouchBot.Modules
                 server.GoodbyeMessage = "Good bye, %USER%, thanks for hanging out!";
             }
 
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Goodbyes have been turned on.");
         }
 
@@ -59,7 +60,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.Goodbyes = false;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Goodbyes have been turned off.");
         }
 
@@ -82,7 +83,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.GoodbyeMessage = message;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Goodbye Message has been set.");
         }
     }

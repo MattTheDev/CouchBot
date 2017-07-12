@@ -62,7 +62,7 @@ namespace MTD.DiscordBot.Modules
             {
                 server.ServerVidMeChannels.Add(name.ToLower());
                 server.ServerVidMeChannelIds.Add(id);
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
                 await Context.Channel.SendMessageAsync("Added " + name + " to the server Vid.me list.");
             }
             else
@@ -94,7 +94,7 @@ namespace MTD.DiscordBot.Modules
             {
                 server.ServerVidMeChannels.Remove(name.ToLower());
                 server.ServerVidMeChannelIds.Remove(id);
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
                 await Context.Channel.SendMessageAsync("Removed " + name + " from the server Vid.me list.");
             }
             else
@@ -138,7 +138,7 @@ namespace MTD.DiscordBot.Modules
 
             server.OwnerVidMeChannel = name;
             server.OwnerVidMeChannelId = id;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Owner Vid.me channel has been set to " + name + ".");
         }
 
@@ -158,7 +158,7 @@ namespace MTD.DiscordBot.Modules
 
             server.OwnerVidMeChannel = null;
             server.OwnerVidMeChannelId = 0;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Owner Vid.me channel has been reset.");
         }
     }

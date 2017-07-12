@@ -1,7 +1,9 @@
-﻿using MTD.CouchBot.Domain.Models.Bot;
+﻿using Discord;
+using MTD.CouchBot.Domain.Models.Bot;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Domain.Utilities
 {
@@ -68,6 +70,18 @@ namespace MTD.CouchBot.Domain.Utilities
             File.WriteAllText(file, JsonConvert.SerializeObject(server));
         }
 
+        public async static Task SaveDiscordServer(DiscordServer server, IGuild guild)
+        {
+            var guildOwner = await guild.GetOwnerAsync();
+            server.Id = guild.Id;
+            server.Name = guild.Name;
+            server.OwnerId = guild.OwnerId;
+            server.OwnerName = guildOwner == null ? "" : guildOwner.Username;
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + server.Id + ".json";
+            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+        }
+
         public static List<string> GetConfiguredServerFileNames()
         {
             var servers = new List<string>();
@@ -89,6 +103,19 @@ namespace MTD.CouchBot.Domain.Utilities
             foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
             {
                 servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
+            }
+
+            return servers;
+        }
+
+        public static List<string> GetConfiguredServerPaths()
+        {
+            var servers = new List<string>();
+
+            // Get Servers
+            foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
+            {
+                servers.Add(server);
             }
 
             return servers;

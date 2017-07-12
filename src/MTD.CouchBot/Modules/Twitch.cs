@@ -68,7 +68,7 @@ namespace MTD.DiscordBot.Modules
             {
                 server.ServerTwitchChannels.Add(channelName.ToLower());
                 server.ServerTwitchChannelIds.Add(await _twitchManager.GetTwitchIdByLogin(channelName));
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
 
                 await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Twitch streamer list.");
             }
@@ -101,7 +101,7 @@ namespace MTD.DiscordBot.Modules
 
                 server.ServerTwitchChannels.Remove(channel.ToLower());
                 server.ServerTwitchChannelIds.Remove(twitchId);
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
 
                 await Context.Channel.SendMessageAsync("Removed " + channel + " from the server Twitch streamer list.");
             }
@@ -144,7 +144,7 @@ namespace MTD.DiscordBot.Modules
 
             server.OwnerTwitchChannel = channel;
             server.OwnerTwitchChannelId = twitchChannelId;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Owner Twitch Channel has been set to " + channel + ".");
         }
 
@@ -164,7 +164,7 @@ namespace MTD.DiscordBot.Modules
 
             server.OwnerTwitchChannel = null;
             server.OwnerTwitchChannelId = null;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Owner Twitch Channel has been reset.");
         }
 
@@ -254,7 +254,7 @@ namespace MTD.DiscordBot.Modules
             if (!server.ServerGameList.Contains(gameName, StringComparer.CurrentCultureIgnoreCase))
             {
                 server.ServerGameList.Add(gameName);
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
 
                 await Context.Channel.SendMessageAsync("Added " + gameName + " to the server Twitch game list.");
             }
@@ -288,7 +288,7 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerGameList.Contains(gameName, StringComparer.CurrentCultureIgnoreCase))
             {
                 server.ServerGameList.Remove(gameName);
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
 
                 await Context.Channel.SendMessageAsync("Removed " + gameName + " from the server Twitch game list.");
             }
@@ -367,7 +367,7 @@ namespace MTD.DiscordBot.Modules
             if (!server.TwitchTeams.Contains(teamName, StringComparer.CurrentCultureIgnoreCase))
             {
                 server.TwitchTeams.Add(teamName);
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
 
                 await Context.Channel.SendMessageAsync("Added " + team.DisplayName + " (" + teamName + ") to the server Twitch team list.");
             }
@@ -403,7 +403,7 @@ namespace MTD.DiscordBot.Modules
                 var team = await _twitchManager.GetTwitchTeamByName(teamName);
 
                 server.TwitchTeams.Remove(teamName);
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
 
                 await Context.Channel.SendMessageAsync("Removed " + team.DisplayName + " (" + teamName + ") from the server Twitch team list.");
             }

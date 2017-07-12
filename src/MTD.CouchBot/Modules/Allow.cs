@@ -2,6 +2,7 @@
 using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System.IO;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.AllowEveryone = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Allow everyone has been set to: " + trueFalse);
         }
 
@@ -66,7 +67,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.AllowThumbnails = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Allow thumbnails has been set to: " + trueFalse);
         }
 
@@ -95,7 +96,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.AllowLive = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Allow live has been set to: " + trueFalse);
         }
 
@@ -124,7 +125,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.AllowPublished = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Allow published has been set to: " + trueFalse);
         }
 
@@ -153,7 +154,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.BroadcastSubGoals = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Allow sub goals has been set to: " + trueFalse);
         }
 
@@ -182,7 +183,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.AllowChannelFeed = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Allow channel feed has been set to: " + trueFalse);
         }
 
@@ -211,7 +212,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.AllowOwnerChannelFeed = bool.Parse(trueFalse);
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Allow owner channel feed has been set to: " + trueFalse);
         }
     }

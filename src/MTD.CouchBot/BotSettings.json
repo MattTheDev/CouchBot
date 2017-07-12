@@ -8,7 +8,8 @@
   "BotConfiguration": {
     "CouchBotId": 0,
     "Prefix": "",
-    "TotalShards": 1
+    "TotalShards": 1,
+    "OwnerId": 0
   },
   "Directories": {
     "ConfigRootDirectory": "C:\\programdata\\CouchBot\\",

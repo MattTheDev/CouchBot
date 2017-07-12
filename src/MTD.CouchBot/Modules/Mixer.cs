@@ -3,6 +3,7 @@ using MTD.CouchBot;
 using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models.Bot;
@@ -87,7 +88,7 @@ namespace MTD.DiscordBot.Modules
                     await Program.beamClient.SubscribeToLiveAnnouncements(channel.id.Value.ToString());
                 }
 
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
                 await Context.Channel.SendMessageAsync("Added " + channelName + " to the server Mixer streamer list.");
             }
             else
@@ -122,7 +123,7 @@ namespace MTD.DiscordBot.Modules
                 var beamChannel = await _mixerManager.GetChannelByName(channel);
                 server.ServerBeamChannels.Remove(channel.ToLower());
                 server.ServerBeamChannelIds.Remove(beamChannel.id.Value.ToString());
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
                 await Context.Channel.SendMessageAsync("Removed " + channel + " from the server Mixer streamer list.");
             }
             else
@@ -167,7 +168,7 @@ namespace MTD.DiscordBot.Modules
             server.OwnerBeamChannel = channel;
             server.OwnerBeamChannelId = beamChannel.id.Value.ToString();
             await Program.beamClient.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Owner Mixer Channel has been set to " + channel + ".");
         }
 
@@ -189,7 +190,7 @@ namespace MTD.DiscordBot.Modules
 
             server.OwnerBeamChannel = null;
             server.OwnerBeamChannelId = null;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Owner Mixer Channel has been reset.");
         }
 

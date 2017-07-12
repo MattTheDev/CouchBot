@@ -52,6 +52,7 @@ namespace MTD.CouchBot
         private static Timer picartoOwnerTimer;
         private static Timer vidMeTimer;
         private static Timer vidMeOwnerTimer;
+        private static Timer guildCheckTimer;
 
         private static Timer cleanupTimer;
         private static Timer uptimeTimer;
@@ -157,6 +158,7 @@ namespace MTD.CouchBot
 
             QueueCleanUp();
             QueueUptimeCheckIn();
+            QueueHealthChecks();
 
             Logging.LogInfo("Timer Jobs Queued - All Set.");
 
@@ -427,6 +429,19 @@ namespace MTD.CouchBot
                 sw.Stop();
                 Logging.LogPicarto("Owner Picarto Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
             }, null, 0, Constants.PicartoInterval);
+        }
+
+        public void QueueHealthChecks()
+        {
+            guildCheckTimer = new Timer((e) =>
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Logging.LogInfo("Checking Guild Configurations.");
+                CheckGuildConfigurations();
+                sw.Stop();
+                Logging.LogInfo("Guild Configuration Check Complete - Elapsed Runtime: " + sw.ElapsedMilliseconds + " milliseconds.");
+            }, null, 0, 600000);
         }
 
         public async Task BroadcastMessage(string message)
@@ -2014,7 +2029,7 @@ namespace MTD.CouchBot
                                 url = "<" + url + ">";
                             }
 
-                            message += "**[" + Constants.VidMe + "]** " + server.PublishedMessage.Replace("%CHANNEL%", video.snippet.channelTitle).Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
+                            message += "**[" + Constants.YouTube + "]** " + server.PublishedMessage.Replace("%CHANNEL%", video.snippet.channelTitle).Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
                         }
 
                         Logging.LogYouTube(video.snippet.channelTitle + " has published a new video.");
@@ -2819,6 +2834,41 @@ namespace MTD.CouchBot
             }
 
             return null; // we never get here :(
+        }
+
+        private void CheckGuildConfigurations()
+        {
+            var files = BotFiles.GetConfiguredServerPaths();
+            var badConfigurations = new List<DiscordServer>();
+
+            foreach(var file in files)
+            {
+                var path = Path.GetFileNameWithoutExtension(file);
+                var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+                if(server.Id != ulong.Parse(path))
+                {
+                    Logging.LogInfo("Bad Configuration Found: " + path);
+
+                    var guild = client.GetGuild(ulong.Parse(path));
+
+                    if(guild == null)
+                    {
+                        continue;
+                    }
+
+                    var guildOwner = client.GetUser(guild.OwnerId);
+
+                    server.Id = guild.Id;
+                    server.Name = guild.Name;
+                    server.OwnerId = guild.OwnerId;
+                    server.OwnerName = guildOwner == null ? "" : guildOwner.Username;
+
+                    BotFiles.SaveDiscordServer(server);
+
+                    Logging.LogInfo("Server Configuration Fixed: " + path);
+                }
+            }
         }
     }
 }

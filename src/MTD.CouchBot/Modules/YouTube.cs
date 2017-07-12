@@ -2,6 +2,7 @@
 using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models.Bot;
@@ -65,7 +66,7 @@ namespace MTD.DiscordBot.Modules
             if (!server.ServerYouTubeChannelIds.Contains(channelId))
             {
                 server.ServerYouTubeChannelIds.Add(channelId);
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
                 await Context.Channel.SendMessageAsync("Added " + channelId + " to the server YouTube streamer list.");
             }
             else
@@ -94,7 +95,7 @@ namespace MTD.DiscordBot.Modules
             if (server.ServerYouTubeChannelIds.Contains(channel))
             {
                 server.ServerYouTubeChannelIds.Remove(channel);
-                File.WriteAllText(file, JsonConvert.SerializeObject(server));
+                await BotFiles.SaveDiscordServer(server, Context.Guild);
                 await Context.Channel.SendMessageAsync("Removed " + channel + " from the server YouTube streamer list.");
             }
             else
@@ -131,9 +132,6 @@ namespace MTD.DiscordBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            if (server.Id == 0)
-                return;
-
             if (server.ServerYouTubeChannelIds != null && server.ServerYouTubeChannelIds.Contains(channelId.ToLower()))
             {
                 await Context.Channel.SendMessageAsync("The channel " + channel + " is in the list of server YouTube Channels. " +
@@ -143,7 +141,7 @@ namespace MTD.DiscordBot.Modules
             }
 
             server.OwnerYouTubeChannelId = channelId;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Owner YouTube Channel ID has been set to " + channelId + ".");
         }
 
@@ -162,7 +160,7 @@ namespace MTD.DiscordBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
             server.OwnerYouTubeChannelId = null;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Owner YouTube Channel ID has been reset.");
         }
 

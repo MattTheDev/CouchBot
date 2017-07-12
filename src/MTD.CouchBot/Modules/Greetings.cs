@@ -2,6 +2,7 @@
 using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System.IO;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace MTD.CouchBot.Modules
                 server.GoodbyeMessage = "Good bye, %USER%, thanks for hanging out!";
             }
 
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Greetings have been turned on.");
         }
 
@@ -64,7 +65,7 @@ namespace MTD.CouchBot.Modules
             }
 
             server.Greetings = false;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Greetings have been turned off.");
         }
 
@@ -89,7 +90,7 @@ namespace MTD.CouchBot.Modules
             }
 
             server.GreetingMessage = message;
-            File.WriteAllText(file, JsonConvert.SerializeObject(server));
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Greeting has been set.");
         }
     }
