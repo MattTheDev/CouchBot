@@ -2826,6 +2826,11 @@ namespace MTD.CouchBot
                     {
                         statisticsManager.AddToHitboxAlertCount();
                     }
+
+                    if (message.Platform.Equals(Constants.VidMe))
+                    {
+                        statisticsManager.AddToVidMeAlertCount();
+                    }
                 }
                 catch (Exception ex)
                 {

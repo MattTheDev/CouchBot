@@ -1,4 +1,5 @@
-﻿using MTD.CouchBot.Dals;
+﻿using System;
+using MTD.CouchBot.Dals;
 using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models.Bot;
 
@@ -111,6 +112,26 @@ namespace MTD.CouchBot.Managers.Implementations
         public int GetFlipCount()
         {
             return _statisticsDal.GetFlipCount();
+        }
+
+        public void AddToUnflipCount()
+        {
+            _statisticsDal.AddToUnflipCount();
+        }
+
+        public int GetUnflipCount()
+        {
+            return _statisticsDal.GetUnflipCount();
+        }
+
+        public void AddToVidMeAlertCount()
+        {
+            _statisticsDal.AddToVidMeAlertCount();
+        }
+
+        public int GetVidMeAlertCount()
+        {
+            return GetVidMeAlertCount();
         }
     }
 }

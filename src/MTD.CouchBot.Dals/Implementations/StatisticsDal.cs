@@ -20,6 +20,7 @@ namespace MTD.CouchBot.Dals.Implementations
                 stats.TwitchAlertCount = 0;
                 stats.UptimeMinutes = 0;
                 stats.YouTubeAlertCount = 0;
+                stats.VidMeAlertCount = 0;
                 stats.PicartoAlertCount = 0;
                 stats.LoggingStartDate = DateTime.UtcNow;
                 File.WriteAllText(path, JsonConvert.SerializeObject(stats));
@@ -167,6 +168,32 @@ namespace MTD.CouchBot.Dals.Implementations
             var stats = GetBotStats();
 
             return stats.FlipCount;
+        }
+
+        public void AddToUnflipCount()
+        {
+            var stats = GetBotStats();
+            stats.UnflipCount += 1;
+            SaveBotStats(stats);
+        }
+
+        public int GetUnflipCount()
+        {
+            var stats = GetBotStats();
+
+            return stats.UnflipCount;
+        }
+
+        public void AddToVidMeAlertCount()
+        {
+            var stats = GetBotStats();
+            stats.VidMeAlertCount++;
+            SaveBotStats(stats);
+        }
+
+        public int GetVidMeAlertCount()
+        {
+            return GetBotStats().VidMeAlertCount;
         }
     }
 }

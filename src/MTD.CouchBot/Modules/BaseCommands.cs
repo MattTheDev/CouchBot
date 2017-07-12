@@ -38,6 +38,7 @@ namespace MTD.CouchBot.Modules
             var serverPicartoCount = 0;
             var twitchGameCount = 0;
             var twitchTeamCount = 0;
+            var vidMeCount = 0;
 
             foreach (var s in serverFiles)
             {
@@ -51,12 +52,22 @@ namespace MTD.CouchBot.Modules
                     }
                 }
 
+                if(!string.IsNullOrEmpty(server.OwnerPicartoChannel))
+                {
+                    serverPicartoCount++;
+                }
+
                 if (server.ServerBeamChannels != null)
                 {
                     foreach (var u in server.ServerBeamChannels)
                     {
                         serverBeamCount++;
                     }
+                }
+
+                if (!string.IsNullOrEmpty(server.OwnerBeamChannel))
+                {
+                    serverBeamCount++;
                 }
 
                 if (server.ServerTwitchChannelIds != null)
@@ -67,6 +78,11 @@ namespace MTD.CouchBot.Modules
                     }
                 }
 
+                if (!string.IsNullOrEmpty(server.OwnerTwitchChannel))
+                {
+                    serverTwitchCount++;
+                }
+
                 if (server.ServerYouTubeChannelIds != null)
                 {
                     foreach (var u in server.ServerYouTubeChannelIds)
@@ -75,12 +91,35 @@ namespace MTD.CouchBot.Modules
                     }
                 }
 
+                if (!string.IsNullOrEmpty(server.OwnerYouTubeChannelId))
+                {
+                    serverYouTubeCount++;
+                }
+
                 if (server.ServerHitboxChannels != null)
                 {
                     foreach (var u in server.ServerHitboxChannels)
                     {
                         serverHitboxCount++;
                     }
+                }
+
+                if (!string.IsNullOrEmpty(server.OwnerHitboxChannel))
+                {
+                    serverHitboxCount++;
+                }
+
+                if (server.ServerVidMeChannelIds != null)
+                {
+                    foreach (var u in server.ServerVidMeChannelIds)
+                    {
+                        vidMeCount++;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(server.OwnerVidMeChannel))
+                {
+                    vidMeCount++;
                 }
 
                 if (server.TwitchTeams != null)
@@ -119,6 +158,7 @@ namespace MTD.CouchBot.Modules
                           "-- Twitch: " + serverTwitchCount + "\r\n" +
                           "-- Twitch Games: " + twitchGameCount + "\r\n" +
                           "-- Twitch Teams: " + twitchTeamCount + "\r\n" +
+                          "-- Vid.me: " + vidMeCount + "\r\n" +
                           "-- YouTube: " + serverYouTubeCount + "\r\n" +
                           "-- Total Channels Checked: " + (serverYouTubeCount + serverTwitchCount + serverBeamCount + serverHitboxCount + serverPicartoCount) + "\r\n" +
                           "- Current Memory Usage: " + ((System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024) / 1024) + "MB \r\n" +
@@ -262,6 +302,7 @@ namespace MTD.CouchBot.Modules
                     "Picarto - " + botStats.PicartoAlertCount + "\r\n" +
                     "Smashcast - " + botStats.HitboxAlertCount + "\r\n" +
                     "Twitch - " + botStats.TwitchAlertCount + "\r\n" +
+                    "Vid.me - " + botStats.VidMeAlertCount + "\r\n" +
                     "YouTube - " + botStats.YouTubeAlertCount + "\r\n" +
                     "Total Alerts Sent - " + (botStats.YouTubeAlertCount + botStats.BeamAlertCount + botStats.TwitchAlertCount + botStats.HitboxAlertCount) + "\r\n" +
                     "```\r\n";
@@ -346,6 +387,18 @@ namespace MTD.CouchBot.Modules
             EmbedBuilder builder = new EmbedBuilder();
 
             builder.Description = "(╯°□°）╯︵ <:CouchBotSemi10:312758619475279893>\r\n\r\nFlip Count: " + statisticsManager.GetFlipCount();
+
+            await Context.Channel.SendMessageAsync("", false, builder.Build());
+        }
+
+        [Command("unflip")]
+        public async Task Unflip()
+        {
+            statisticsManager.AddToUnflipCount();
+
+            EmbedBuilder builder = new EmbedBuilder();
+
+            builder.Description = "<:couchbot:312752764247736320> ノ( ゜-゜ノ)\r\n\r\nUnflip Count: " + statisticsManager.GetUnflipCount();
 
             await Context.Channel.SendMessageAsync("", false, builder.Build());
         }
@@ -506,15 +559,16 @@ namespace MTD.CouchBot.Modules
                 }
             }
 
-            foreach(var file in files)
+            foreach (var file in files)
             {
-                if(!toKeep.Contains(ulong.Parse(file)))
+                Console.WriteLine("File: " + file);
+                if (!toKeep.Contains(ulong.Parse(file)))
                 {
                     toDelete.Add(ulong.Parse(file));
                 }
             }
 
-            foreach(var server in toDelete)
+            foreach (var server in toDelete)
             {
                 File.Move(Constants.ConfigRootDirectory + Constants.GuildDirectory + @"\" + server + ".json", @"C:\temp\" + server + ".json");
             }

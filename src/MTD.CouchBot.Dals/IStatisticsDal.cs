@@ -15,6 +15,8 @@ namespace MTD.CouchBot.Dals
         void AddToBeamAlertCount();
         void AddToHitboxAlertCount();
         void AddToPicartoAlertCount();
+        void AddToVidMeAlertCount();
+        int GetVidMeAlertCount();
         void AddToHaiBaiCount();
         void AddUptimeMinutes();
         BotStats GetBotStats();
@@ -25,5 +27,7 @@ namespace MTD.CouchBot.Dals
         int GetHaiBaiCount();
         int GetFlipCount();
         void AddToFlipCount();
+        int GetUnflipCount();
+        void AddToUnflipCount();
     }
 }
