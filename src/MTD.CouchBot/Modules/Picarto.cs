@@ -2,6 +2,7 @@
 using Discord.Commands;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Modules;
