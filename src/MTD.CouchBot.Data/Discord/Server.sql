@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Server]
+﻿CREATE TABLE [Discord].[Server]
 (
 	[Id] NUMERIC(20) NOT NULL PRIMARY KEY,
 	[Name] nvarchar(128) NOT NULL,

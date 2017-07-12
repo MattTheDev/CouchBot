@@ -3,32 +3,31 @@ using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models.Twitch;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
     public class TwitchManager : ITwitchManager
     {
-        ITwitchDal twitchDal;
+        ITwitchDal _twitchDal;
 
         public TwitchManager()
         {
-            twitchDal = new TwitchDal();
+            _twitchDal = new TwitchDal();
         }
 
         public async Task<TwitchStreamV5> GetStreamById(string twitchId)
         {
-            return await twitchDal.GetStreamById(twitchId);
+            return await _twitchDal.GetStreamById(twitchId);
         }
 
         public async Task<TwitchFollowers> GetFollowersByName(string name)
         {
-            return await twitchDal.GetFollowersByName(name);
+            return await _twitchDal.GetFollowersByName(name);
         }
 
         public async Task<string> GetTwitchIdByLogin(string name)
         {
-            return await twitchDal.GetTwitchIdByLogin(name);
+            return await _twitchDal.GetTwitchIdByLogin(name);
         }
 
         public async Task<TwitchStreamsV5> GetStreamsByIdList(List<string> twitchIdList)
@@ -41,37 +40,37 @@ namespace MTD.CouchBot.Managers.Implementations
 
             list = list.TrimEnd(',');
 
-            return await twitchDal.GetStreamsByIdList(list);
+            return await _twitchDal.GetStreamsByIdList(list);
         }
 
         public async Task<TwitchStreamsV5> GetStreamsByIdList(string twitchIdList)
         {
-            return await twitchDal.GetStreamsByIdList(twitchIdList);
+            return await _twitchDal.GetStreamsByIdList(twitchIdList);
         }
 
         public async Task<TwitchChannelFeed> GetChannelFeedPosts(string twitchId)
         {
-            return await twitchDal.GetChannelFeedPosts(twitchId);
+            return await _twitchDal.GetChannelFeedPosts(twitchId);
         }
         
         public async Task<TwitchTeam> GetTwitchTeamByName(string name)
         {
-            return await twitchDal.GetTwitchTeamByName(name);
+            return await _twitchDal.GetTwitchTeamByName(name);
         }
 
         public async Task<string> GetDelimitedListOfTwitchMemberIds(string teamToken)
         {
-            return await twitchDal.GetDelimitedListOfTwitchMemberIds(teamToken);
+            return await _twitchDal.GetDelimitedListOfTwitchMemberIds(teamToken);
         }
 
         public async Task<List<TwitchStreamsV5.Stream>> GetStreamsByGameName(string gameName)
         {
-            return await twitchDal.GetStreamsByGameName(gameName);
+            return await _twitchDal.GetStreamsByGameName(gameName);
         }
 
         public async Task<TwitchGameSearchResponse> SearchForGameByName(string gameName)
         {
-            return await twitchDal.SearchForGameByName(gameName);
+            return await _twitchDal.SearchForGameByName(gameName);
         }
     }
 }

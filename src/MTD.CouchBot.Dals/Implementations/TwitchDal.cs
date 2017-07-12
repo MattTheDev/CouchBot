@@ -186,7 +186,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
                 return JsonConvert.DeserializeObject<TwitchGameSearchResponse>(responseText);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }

@@ -96,6 +96,21 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
+        public static void LogVidMe(string message)
+        {
+            lock (_messageLog)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Write("[" + DateTime.UtcNow + "] - ");
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write("[" + Constants.VidMe + "]");
+                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(" " + message);
+                Console.ResetColor();
+            }
+        }
+
         public static void LogSmashcast(string message)
         {
             lock (_messageLog)

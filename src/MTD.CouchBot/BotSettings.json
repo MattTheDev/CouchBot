@@ -3,7 +3,7 @@
     "DiscordToken": "DISCORDTOKEN",
     "TwitchClientId": "TWITCHID",
     "YouTubeApiKey": "YOUTUBEAPI",
-    "ApiAiKey": "APIAIKEY" 
+    "ApiAiKey": "APIAIKEY"
   },
   "BotConfiguration": {
     "CouchBotId": 0,
@@ -37,6 +37,6 @@
     "TwitchFeed": 300,
     "YouTubePublished": 900,
     "YouTubeLive": 300,
-    "VidMe":  900
+    "VidMe": 900
   }
 }

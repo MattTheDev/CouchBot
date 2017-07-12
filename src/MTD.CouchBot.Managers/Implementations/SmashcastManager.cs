@@ -7,16 +7,16 @@ namespace MTD.CouchBot.Managers.Implementations
 {
     public class SmashcastManager : ISmashcastManager
     {
-        ISmashcastDal smashcastDal;
+        ISmashcastDal _smashcastDal;
 
         public SmashcastManager()
         {
-            smashcastDal = new SmashcastDal();
+            _smashcastDal = new SmashcastDal();
         }
 
         public async Task<SmashcastChannel> GetChannelByName(string name)
         {
-            return await smashcastDal.GetChannelByName(name);
+            return await _smashcastDal.GetChannelByName(name);
         }
     }
 }

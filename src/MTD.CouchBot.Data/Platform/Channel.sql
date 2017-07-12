@@ -1,0 +1,7 @@
+﻿CREATE TABLE [Platform].[Channel]
+(
+	[Id] INT NOT NULL PRIMARY KEY,
+	[PlatformId] NVARCHAR(32) NOT NULL,
+	[Name] NVARCHAR(32) NOT NULL,
+	[CreatedDate] DATETIME NOT NULL
+)
