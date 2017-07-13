@@ -257,7 +257,7 @@ namespace MTD.CouchBot.Domain.Utilities
 
         public static void DeleteLiveBeamChannel(string beamId)
         {
-            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory + beamId + ".json");
+            File.Delete(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.MixerDirectory + beamId + ".json");
         }
     }
 }

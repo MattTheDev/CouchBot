@@ -254,7 +254,8 @@ namespace MTD.CouchBot.Bot
                 UserId = channelId,
                 Message = message,
                 Platform = platform,
-                Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
+                Embed = (!server.UseTextAnnouncements ? embed.Build() : null),
+                DeleteOffline = server.DeleteWhenOffline
             };
 
             return broadcastMessage;
