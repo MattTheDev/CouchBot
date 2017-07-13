@@ -1156,7 +1156,7 @@ namespace MTD.CouchBot
                                 channel.ChannelMessages = new List<ChannelMessage>();
 
                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.YouTubeGaming, new List<BroadcastMessage>() { message }));
-
+                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + c.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
 
                             Logging.LogYouTubeGaming(channelTitle + " has gone online.");
@@ -1285,7 +1285,7 @@ namespace MTD.CouchBot
                                 channel.ChannelMessages = new List<ChannelMessage>();
 
                             channel.ChannelMessages.AddRange(await MessagingHelper.SendMessages(Constants.YouTubeGaming, new List<BroadcastMessage>() { message }));
-
+                            Logging.LogYouTubeGaming(channelTitle + " has gone online.");
                             File.WriteAllText(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory + c.YouTubeChannelId + ".json", JsonConvert.SerializeObject(channel));
 
                             Logging.LogYouTubeGaming(channelTitle + " has gone online.");
