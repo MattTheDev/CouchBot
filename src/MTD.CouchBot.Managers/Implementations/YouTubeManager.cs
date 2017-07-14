@@ -53,5 +53,10 @@ namespace MTD.CouchBot.Managers.Implementations
         {
             return await _youtubeDal.GetYouTubeChannelSnippetById(channelId);
         }
+
+        public async Task<string> GetPreviewUrl(string videoId)
+        {
+            return await _youtubeDal.GetPreviewUrl(videoId);
+        }
     }
 }

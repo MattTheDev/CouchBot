@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using MTD.CouchBot.Bot;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
@@ -198,6 +199,20 @@ namespace MTD.DiscordBot.Modules
             var message = await MessagingHelper.BuildMessage(channelTitle, "a game", video.snippet.title, url, avatarUrl, thumbnailUrl,
                 Constants.YouTubeGaming, video.snippet.channelId, server, server.GoLiveChannel, null);
             await MessagingHelper.SendMessages(Constants.YouTube, new List<BroadcastMessage>() { message });
+        }
+
+        [Command("preview")]
+        public async Task Preview(string videoId)
+        {
+            await Context.Channel.SendMessageAsync(await _youTubeManager.GetPreviewUrl(videoId));
+        }
+
+        [Command("embedpreview")]
+        public async Task EmbedPreview(string videoId)
+        {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.ImageUrl = await _youTubeManager.GetPreviewUrl(videoId);
+            await Context.Channel.SendMessageAsync("", false, builder.Build());
         }
     }
 }
