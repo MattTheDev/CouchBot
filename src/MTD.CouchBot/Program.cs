@@ -1827,18 +1827,18 @@ namespace MTD.CouchBot
                                             f.IsInline = true;
                                         });
 
-                                        string tags = "";
-                                        foreach (var t in stream.Tags)
-                                        {
-                                            tags += t + ", ";
-                                        }
+                                        //string tags = "";
+                                        //foreach (var t in stream.Tags)
+                                        //{
+                                        //    tags += t + ", ";
+                                        //}
 
-                                        embedBuilder.AddField(f =>
-                                        {
-                                            f.Name = "Stream Tags";
-                                            f.Value = tags.Trim().TrimEnd(',');
-                                            f.IsInline = false;
-                                        });
+                                        //embedBuilder.AddField(f =>
+                                        //{
+                                        //    f.Name = "Stream Tags";
+                                        //    f.Value = tags.Trim().TrimEnd(',');
+                                        //    f.IsInline = false;
+                                        //});
 
                                         var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
 
