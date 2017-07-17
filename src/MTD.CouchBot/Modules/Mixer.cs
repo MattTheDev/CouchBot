@@ -86,6 +86,11 @@ namespace MTD.DiscordBot.Modules
                 if (Constants.EnableMixer)
                 {
                     await Program.beamClient.SubscribeToLiveAnnouncements(channel.id.Value.ToString());
+
+                    if(channel.online)
+                    {
+                        await Announce(channel.token);
+                    }
                 }
 
                 await BotFiles.SaveDiscordServer(server, Context.Guild);

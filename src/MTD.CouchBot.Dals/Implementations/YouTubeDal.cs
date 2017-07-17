@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using System;
 
 namespace MTD.CouchBot.Dals.Implementations
 {
@@ -111,6 +112,27 @@ namespace MTD.CouchBot.Dals.Implementations
                 str = streamReader.ReadToEnd();
 
             return JsonConvert.DeserializeObject<YouTubeChannelUpcomingEvents>(str);
+        }
+
+        public async Task<string> GetPreviewUrl(string videoId)
+        {
+            var url = "https://i.ytimg.com/an_webp/" + videoId + "/mqdefault_6s.webp?du=3000&amp;sqp=CLyroMsF&amp;rs=";
+            var webRequest = (HttpWebRequest)WebRequest.Create(
+                "https://www.youtube.com/results?search_query=" + videoId);
+            webRequest.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36";
+
+            string str = "";
+
+            using (StreamReader streamReader = new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()))
+                str = streamReader.ReadToEnd();
+
+            var start = str.IndexOf(url);
+            str = str.Substring(start);
+            str = str.Replace(url, "");
+            start = str.IndexOf('"');
+            str = str.Substring(0, start);
+
+            return url.Replace("&amp;","&") + str;
         }
     }
 }

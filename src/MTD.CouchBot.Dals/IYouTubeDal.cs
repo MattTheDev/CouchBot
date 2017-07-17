@@ -14,5 +14,6 @@ namespace MTD.CouchBot.Dals
         Task<YouTubeChannelSearchList> GetYouTubeChannelByQuery(string name);
         Task<YouTubeChannelSnippet> GetYouTubeChannelSnippetById(string channelId);
         Task<YouTubeChannelUpcomingEvents> GetChannelUpcomingEvents(string channelId);
+        Task<string> GetPreviewUrl(string videoId);
     }
 }
