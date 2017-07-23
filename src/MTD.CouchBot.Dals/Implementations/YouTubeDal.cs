@@ -116,7 +116,7 @@ namespace MTD.CouchBot.Dals.Implementations
 
         public async Task<string> GetPreviewUrl(string videoId)
         {
-            var url = "https://i.ytimg.com/an_webp/" + videoId + "/mqdefault_6s.webp?du=3000&amp;sqp=CLyroMsF&amp;rs=";
+            var url = "https://i.ytimg.com/an_webp/" + videoId + "/mqdefault_6s.webp";//?du=3000&amp;sqp=CLyroMsF&amp;rs=";
             var webRequest = (HttpWebRequest)WebRequest.Create(
                 "https://www.youtube.com/results?search_query=" + videoId);
             webRequest.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36";
@@ -132,7 +132,7 @@ namespace MTD.CouchBot.Dals.Implementations
             start = str.IndexOf('"');
             str = str.Substring(0, start);
 
-            return url.Replace("&amp;","&") + str;
+            return (url + str).Replace("&amp;", "&");
         }
     }
 }

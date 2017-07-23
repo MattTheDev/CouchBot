@@ -211,7 +211,8 @@ namespace MTD.DiscordBot.Modules
         public async Task EmbedPreview(string videoId)
         {
             EmbedBuilder builder = new EmbedBuilder();
-            builder.ImageUrl = await _youTubeManager.GetPreviewUrl(videoId);
+            var url = await _youTubeManager.GetPreviewUrl(videoId);
+            builder.ImageUrl = url;
             await Context.Channel.SendMessageAsync("", false, builder.Build());
         }
     }
