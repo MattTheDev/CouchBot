@@ -58,13 +58,6 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static DiscordServer GetDiscordServer(string guildId)
-        {
-            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guildId + ".json";
-
-            return JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-        }
-
         public static void SaveDiscordServer(DiscordServer server)
         {
             var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + server.Id + ".json";
@@ -103,7 +96,14 @@ namespace MTD.CouchBot.Domain.Utilities
             // Get Servers
             foreach (var server in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
             {
-                servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
+                try
+                {
+                    servers.Add(JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(server)));
+                }
+                catch(Exception ex)
+                {
+                    continue;
+                }
             }
 
             return servers;
@@ -129,19 +129,26 @@ namespace MTD.CouchBot.Domain.Utilities
             // Get Servers
             foreach (var s in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
             {
-                var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
+                try
+                {
+                    var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
 
-                if(!server.AllowLive)
+                    if (!server.AllowLive)
+                    {
+                        continue;
+                    }
+
+                    if (server.Id == 0 || server.GoLiveChannel == 0)
+                    {
+                        continue;
+                    }
+
+                    servers.Add(server);
+                }
+                catch(Exception ex)
                 {
                     continue;
                 }
-
-                if(server.Id == 0 || server.GoLiveChannel == 0)
-                {
-                    continue;
-                }
-
-                servers.Add(server);
             }
 
             return servers;
@@ -154,19 +161,26 @@ namespace MTD.CouchBot.Domain.Utilities
             // Get Servers
             foreach (var s in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.GuildDirectory))
             {
-                var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
+                try
+                {
+                    var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
 
-                if (!server.AllowLive)
+                    if (!server.AllowLive)
+                    {
+                        continue;
+                    }
+
+                    if (server.Id == 0 || server.OwnerLiveChannel == 0)
+                    {
+                        continue;
+                    }
+
+                    servers.Add(server);
+                }
+                catch(Exception ex)
                 {
                     continue;
                 }
-
-                if (server.Id == 0 || server.OwnerLiveChannel == 0)
-                {
-                    continue;
-                }
-
-                servers.Add(server);
             }
 
             return servers;
@@ -174,8 +188,16 @@ namespace MTD.CouchBot.Domain.Utilities
 
         public static DiscordServer GetConfiguredServerById(ulong id)
         {
-            return JsonConvert.DeserializeObject<DiscordServer>(
-                File.ReadAllText(Constants.ConfigRootDirectory + Constants.GuildDirectory + id + ".json"));
+            try
+            {
+                return JsonConvert.DeserializeObject<DiscordServer>(
+                    File.ReadAllText(Constants.ConfigRootDirectory + Constants.GuildDirectory + id + ".json"));
+            }
+            catch(Exception ex)
+            {
+                // Error on finding file.
+                return null;
+            }
         }
 
         public static List<User> GetConfiguredUsers()
@@ -185,7 +207,14 @@ namespace MTD.CouchBot.Domain.Utilities
             // Get Users
             foreach (var user in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.UserDirectory))
             {
-                users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
+                try
+                {
+                    users.Add(JsonConvert.DeserializeObject<User>(File.ReadAllText(user)));
+                }
+                catch(Exception ex)
+                {
+                    continue;
+                }
             }
 
             return users;

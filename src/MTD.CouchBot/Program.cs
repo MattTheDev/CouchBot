@@ -976,6 +976,11 @@ namespace MTD.CouchBot
                     {
                         var server = BotFiles.GetConfiguredServerById(s);
 
+                        if(server == null)
+                        {
+                            continue;
+                        }
+
                         var channel = liveChannels.FirstOrDefault(x => x.Name == stream.channel._id.ToString());
 
                         var chat = await DiscordHelper.GetMessageChannel(server.Id, server.GoLiveChannel);
@@ -1094,6 +1099,12 @@ namespace MTD.CouchBot
                     foreach (var s in c.Servers)
                     {
                         var server = BotFiles.GetConfiguredServerById(s);
+
+                        if (server == null)
+                        {
+                            continue;
+                        }
+
                         var channel = liveChannels.FirstOrDefault(x => x.Name.ToLower() == c.YouTubeChannelId.ToLower());
                         bool allowEveryone = server.AllowEveryone;
                         var chat = await DiscordHelper.GetMessageChannel(server.Id, server.GoLiveChannel);
@@ -1223,6 +1234,12 @@ namespace MTD.CouchBot
                     foreach (var s in c.Servers)
                     {
                         var server = BotFiles.GetConfiguredServerById(s);
+
+                        if (server == null)
+                        {
+                            continue;
+                        }
+
                         var channel = liveChannels.FirstOrDefault(x => x.Name.ToLower() == c.YouTubeChannelId.ToLower());
                         bool allowEveryone = server.AllowEveryone;
                         var chat = await DiscordHelper.GetMessageChannel(server.Id, server.OwnerLiveChannel);
