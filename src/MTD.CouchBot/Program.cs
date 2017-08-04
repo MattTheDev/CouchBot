@@ -2311,7 +2311,7 @@ namespace MTD.CouchBot
                             ChannelId = server.PublishedChannel,
                             UserId = video.user.username,
                             Message = message,
-                            Platform = Constants.YouTube,
+                            Platform = Constants.VidMe,
                             Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
                         });
                     }
@@ -2431,7 +2431,7 @@ namespace MTD.CouchBot
                         ChannelId = server.OwnerPublishedChannel,
                         UserId = video.user.username,
                         Message = message,
-                        Platform = Constants.YouTube,
+                        Platform = Constants.VidMe,
                         Embed = (!server.UseTextAnnouncements ? embed.Build() : null)
                     });
                 }

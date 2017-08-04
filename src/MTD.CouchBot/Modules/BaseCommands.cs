@@ -468,7 +468,11 @@ namespace MTD.CouchBot.Modules
         [Command("ping")]
         public async Task Ping()
         {
-            await Context.Channel.SendMessageAsync("Pong!");
+            var then = Context.Message.Timestamp;
+            var now = DateTime.UtcNow;
+            TimeSpan ts = now - then;
+
+            await Context.Channel.SendMessageAsync("Pong! *(" + ts.TotalMilliseconds + "ms)*");
         }
 
         [Command("purge")]

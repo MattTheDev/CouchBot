@@ -1,6 +1,7 @@
 ﻿using Discord;
 using MTD.CouchBot.Domain.Models.Bot;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -197,7 +198,14 @@ namespace MTD.CouchBot.Domain.Utilities
             // Get Live Channels
             foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.MixerDirectory))
             {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                try
+                {
+                    liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                }
+                catch(Exception ex)
+                {
+                    continue;
+                }
             }
 
             return liveChannels;
@@ -210,7 +218,14 @@ namespace MTD.CouchBot.Domain.Utilities
             // Get Live Channels
             foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.YouTubeDirectory))
             {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                try
+                {
+                    liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
             }
 
             return liveChannels;
@@ -223,7 +238,14 @@ namespace MTD.CouchBot.Domain.Utilities
             // Get Live Channels
             foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.TwitchDirectory))
             {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                try
+                {
+                    liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
             }
 
             return liveChannels;
@@ -236,7 +258,14 @@ namespace MTD.CouchBot.Domain.Utilities
             // Get Live Channels
             foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.SmashcastDirectory))
             {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                try
+                {
+                    liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
             }
 
             return liveChannels;
@@ -249,7 +278,14 @@ namespace MTD.CouchBot.Domain.Utilities
             // Get Live Channels
             foreach (var live in Directory.GetFiles(Constants.ConfigRootDirectory + Constants.LiveDirectory + Constants.PicartoDirectory))
             {
-                liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                try
+                {
+                    liveChannels.Add(JsonConvert.DeserializeObject<LiveChannel>(File.ReadAllText(live)));
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
             }
 
             return liveChannels;
