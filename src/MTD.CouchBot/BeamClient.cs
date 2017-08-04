@@ -49,7 +49,7 @@ namespace MTD.CouchBot.Bot
                 {
                     var data = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-                    if (data.ToLower().Contains("{\"online\": true}"))
+                    if (data.Replace(" ", "").ToLower().Contains("{\"online\":true}"))
                     {
                         var payload = JsonConvert.DeserializeObject<MixerPayload>(data);
                         var channelData = payload.data.channel.Split(':');
@@ -59,7 +59,7 @@ namespace MTD.CouchBot.Bot
                         Logging.LogMixer(channel.token + " has gone online.");
                         await BeamHelper.AnnounceLiveChannel(channelId);
                     }
-                    else if(data.ToLower().Contains("{\"online\": false}"))
+                    else if(data.Replace(" ", "").ToLower().Contains("{\"online\":false}"))
                     {
                         var payload = JsonConvert.DeserializeObject<MixerPayload>(data);
                         var channelData = payload.data.channel.Split(':');
