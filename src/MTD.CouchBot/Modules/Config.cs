@@ -105,10 +105,24 @@ namespace MTD.CouchBot.Modules
                 var ownerTwitchFeedChannel = ownerTwitchFeed != null ? ownerTwitchFeed.Name : "Not Set";
 
                 var role = await DiscordHelper.GetRoleByGuildAndId(server.Id, server.MentionRole);
+                var roleName = "";
 
                 if (role == null)
                 {
                     server.MentionRole = 0;
+                }
+
+                if(server.MentionRole == 0)
+                {
+                    roleName = "Everyone";
+                }
+                else if(server.MentionRole == 1)
+                {
+                    roleName = "Here";
+                }
+                else
+                {
+                    roleName = role.Name.Replace("@", "");
                 }
 
                 string info = "```Markdown\r\n" +
@@ -133,7 +147,7 @@ namespace MTD.CouchBot.Modules
                               "- Greeting Message: " + (string.IsNullOrEmpty(server.GreetingMessage) ? "Default" : server.GreetingMessage) + "\r\n" +
                               "- Goodbye Message: " + (string.IsNullOrEmpty(server.GoodbyeMessage) ? "Default" : server.GoodbyeMessage) + "\r\n" +
                               "- Stream Offline Message: " + (string.IsNullOrEmpty(server.StreamOfflineMessage) ? "Default" : server.StreamOfflineMessage) + "\r\n" +
-                              "- Mention Role: " + ((server.MentionRole == 0 ) ? "Everyone" : role.Name.Replace("@","")) + "\r\n" +
+                              "- Mention Role: " + roleName + "\r\n" +
                               "- Time Zone Offset: " + server.TimeZoneOffset + "\r\n" +
                               "```\r\n";
 
@@ -198,6 +212,35 @@ namespace MTD.CouchBot.Modules
             await BotFiles.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Delete Offline has been set to: " + trueFalse);
         }
+
+        [Command("mentionrole"), Summary("Set the role to mention instead of Everyone.")]
+        public async Task MentionRole(string role)
+        {
+            var guild = ((IGuildUser)Context.Message.Author).Guild;
+            var user = ((IGuildUser)Context.Message.Author);
+
+            if (!user.GuildPermissions.ManageGuild)
+            {
+                return;
+            }
+
+            if(!role.ToLower().Contains("here"))
+            {
+                return;
+            }
+
+            var file = Constants.ConfigRootDirectory + Constants.GuildDirectory + guild.Id + ".json";
+            var server = new DiscordServer();
+
+            if (File.Exists(file))
+                server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+            server.MentionRole = 1;
+
+            await BotFiles.SaveDiscordServer(server, Context.Guild);
+            await Context.Channel.SendMessageAsync("Mention Role has been set to: " + role);
+        }
+
 
         [Command("mentionrole"), Summary("Set the role to mention instead of Everyone.")]
         public async Task MentionRole(IRole role)
