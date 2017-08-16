@@ -16,7 +16,6 @@ namespace MTD.CouchBot.Modules
     {
         IYouTubeManager _youtubeManager;
         IMixerManager _mixerManager;
-        ISmashcastManager _smashcastManager;
         ITwitchManager _twitchManager;
         IVidMeManager _vidMeManager;
 
@@ -24,6 +23,8 @@ namespace MTD.CouchBot.Modules
         {
             _youtubeManager = new YouTubeManager();
             _vidMeManager = new VidMeManager();
+            _twitchManager = new TwitchManager();
+            _mixerManager = new MixerManager();
         }
 
         [Command("list"), Summary("List server streamers")]
@@ -59,17 +60,21 @@ namespace MTD.CouchBot.Modules
 
             count = 0;
 
-            if (guildObject.ServerTwitchChannels != null && guildObject.ServerTwitchChannels.Count > 0)
+            if (guildObject.ServerTwitchChannelIds != null && guildObject.ServerTwitchChannelIds.Count > 0)
             {
-                foreach (var streamer in guildObject.ServerTwitchChannels)
+                foreach (var streamer in guildObject.ServerTwitchChannelIds)
                 {
+                    var twitchChannel = await _twitchManager.GetTwitchChannelById(streamer);
+
+                    var name = twitchChannel == null ? streamer + " (Streamer Not Found)" : twitchChannel.DisplayName;
+
                     if (count == 0)
                     {
-                        twitch += streamer;
+                        twitch += name;
                     }
                     else
                     {
-                        twitch += ", " + streamer;
+                        twitch += ", " + name;
                     }
 
                     count++;

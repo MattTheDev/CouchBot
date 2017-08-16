@@ -3,6 +3,7 @@ using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models.Twitch;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
@@ -71,6 +72,11 @@ namespace MTD.CouchBot.Managers.Implementations
         public async Task<TwitchGameSearchResponse> SearchForGameByName(string gameName)
         {
             return await _twitchDal.SearchForGameByName(gameName);
+        }
+
+        public async Task<TwitchChannelResponse> GetTwitchChannelById(string twitchId)
+        {
+            return await _twitchDal.GetTwitchChannelById(twitchId);
         }
     }
 }

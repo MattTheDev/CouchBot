@@ -191,5 +191,27 @@ namespace MTD.CouchBot.Dals.Implementations
                 return null;
             }
         }
+
+        public async Task<TwitchChannelResponse> GetTwitchChannelById(string twitchId)
+        {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + twitchId + "?api_version=5");
+                request.Headers["Client-Id"] = Constants.TwitchClientId;
+                var response = await request.GetResponseAsync();
+                var responseText = "";
+
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                {
+                    responseText = sr.ReadToEnd();
+                }
+
+                return JsonConvert.DeserializeObject<TwitchChannelResponse>(responseText);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

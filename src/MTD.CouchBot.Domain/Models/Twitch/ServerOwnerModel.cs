@@ -4,10 +4,9 @@ using System.Text;
 
 namespace MTD.CouchBot.Domain.Models.Twitch
 {
-    public class TwitchChannelServerModel
+    public class ServerOwnerModel
     {
-        public string TwitchChannelId { get; set; }
+        public ulong ServerId { get; set; }
         public bool IsOwner { get; set; }
-        public List<ServerOwnerModel> Servers { get; set; }
     }
 }

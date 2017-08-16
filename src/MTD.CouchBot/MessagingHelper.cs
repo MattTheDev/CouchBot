@@ -68,7 +68,7 @@ namespace MTD.CouchBot.Bot
             }
             else
             {
-                roleName = role.Name;
+                roleName = role.Mention;
             }
 
             var message = (server.AllowEveryone ? roleName + " " : "");
@@ -171,7 +171,7 @@ namespace MTD.CouchBot.Bot
             }
             else
             {
-                roleName = role.Name;
+                roleName = role.Mention;
             }
 
             var message = (server.AllowEveryone ? roleName + " " : "");
@@ -274,7 +274,7 @@ namespace MTD.CouchBot.Bot
             }
             else
             {
-                roleName = role.Name;
+                roleName = role.Mention;
             }
 
             var message = (server.AllowEveryone ? roleName + " " : "");
