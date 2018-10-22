@@ -1,4 +1,7 @@
 # CouchBot
+
+Master: [![Build status](https://ci.appveyor.com/api/projects/status/rpym43rngw9bo76k/branch/master?svg=true)](https://ci.appveyor.com/project/dawgeth/couchbot/branch/master)
+
 Let your Discord community know when you go live on Mixer (formerly Beam), Mobcrush, Smashcast (formerly Hitbox), Twitch, or YouTube Gaming! Want to let your friends know when you publish a new YouTube or Vid.me Video? Want to make a list of your favorite streamers, and get notified when they go live? CouchBot does that too!
 
 **Platforms Supported**
