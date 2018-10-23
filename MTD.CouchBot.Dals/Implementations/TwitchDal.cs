@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using MTD.CouchBot.Domain.Dtos.Twitch;
 using MTD.CouchBot.Domain.Exceptions;
 using Newtonsoft.Json;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Dals.Implementations
 {

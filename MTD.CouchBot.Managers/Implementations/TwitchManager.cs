@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using MTD.CouchBot.Dals;
+﻿using MTD.CouchBot.Dals;
 using MTD.CouchBot.Domain.Dtos.Twitch;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {

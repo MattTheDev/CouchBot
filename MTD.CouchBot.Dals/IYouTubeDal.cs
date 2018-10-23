@@ -1,6 +1,5 @@
-﻿using MTD.CouchBot.Domain.Dtos.Twitch;
+﻿using MTD.CouchBot.Domain.Dtos.YouTube;
 using System.Threading.Tasks;
-using MTD.CouchBot.Domain.Dtos.YouTube;
 
 namespace MTD.CouchBot.Dals
 {

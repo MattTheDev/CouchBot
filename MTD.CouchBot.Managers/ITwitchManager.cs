@@ -1,7 +1,4 @@
 ﻿using MTD.CouchBot.Domain.Dtos.Twitch;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers

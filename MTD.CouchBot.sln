@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTD.CouchBot.Services", "MT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTD.CouchBot.Domain", "MTD.CouchBot.Domain\MTD.CouchBot.Domain.csproj", "{2BF47ACD-932F-48C1-BACB-4988698EF42E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTD.CouchBot.Localization", "MTD.CouchBot.Localization\MTD.CouchBot.Localization.csproj", "{22396289-2EBC-4EE3-866F-7B39786E96E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTD.CouchBot.Localization", "MTD.CouchBot.Localization\MTD.CouchBot.Localization.csproj", "{22396289-2EBC-4EE3-866F-7B39786E96E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

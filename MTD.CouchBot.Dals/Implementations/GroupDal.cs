@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Dapper;
+﻿using Dapper;
 using Dapper.Contrib.Extensions;
+using Microsoft.Extensions.Configuration;
 using MTD.CouchBot.Domain.Dtos.Discord;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace MTD.CouchBot.Dals.Implementations
 {

@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using MTD.CouchBot.Domain.Dtos.Mixer;
+﻿using MTD.CouchBot.Domain.Dtos.Mixer;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers
 {

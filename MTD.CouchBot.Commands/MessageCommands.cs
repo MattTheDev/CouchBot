@@ -3,9 +3,7 @@ using Microsoft.Extensions.Configuration;
 using MTD.CouchBot.Localization;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Services;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Commands
@@ -14,13 +12,11 @@ namespace MTD.CouchBot.Commands
     public class MessageCommands : Command
     {
         private readonly IGroupManager _groupManager;
-        private readonly GuildInteractionService _guildInteractionService;
 
         public MessageCommands(List<Translation> translations, IGuildManager guildManager, IGroupManager groupManager, 
             IConfiguration configuration, GuildInteractionService guildInteractionService) : base(translations, guildManager, groupManager, configuration)
         {
             _groupManager = groupManager;
-            _guildInteractionService = guildInteractionService;
         }
 
         [Command("Live")]

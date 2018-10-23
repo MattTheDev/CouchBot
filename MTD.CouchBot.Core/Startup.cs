@@ -55,7 +55,6 @@ namespace MTD.CouchBot.Core
             var provider = services.BuildServiceProvider();
             var startup = provider.GetRequiredService<StartupService>();
             startup.CreateRequiredDirectories();
-            var logger = provider.GetRequiredService<LoggingService>();
             provider.GetRequiredService<CommandHandler>();
 
             await startup.StartAsync();

@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using MTD.CouchBot.Dals;
+﻿using MTD.CouchBot.Dals;
 using MTD.CouchBot.Domain.Dtos.Discord;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {

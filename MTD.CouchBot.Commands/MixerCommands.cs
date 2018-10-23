@@ -3,7 +3,6 @@ using Discord.Commands;
 using Microsoft.Extensions.Configuration;
 using MTD.CouchBot.Localization;
 using MTD.CouchBot.Managers;
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;

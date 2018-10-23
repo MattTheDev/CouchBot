@@ -5,7 +5,6 @@ using MTD.CouchBot.Localization;
 using MTD.CouchBot.Managers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Commands
@@ -15,12 +14,10 @@ namespace MTD.CouchBot.Commands
     {
         private readonly IGuildManager _guildManager;
         private readonly List<Translation> _translations;
-        private readonly IConfiguration _configuration;
 
         public LanguageCommands(List<Translation> translations, IGuildManager guildManager, IGroupManager groupManager, IConfiguration configuration) : base(translations, guildManager, groupManager, configuration)
         {
             _guildManager = guildManager;
-            _configuration = configuration;
             _translations = translations;
         }
 

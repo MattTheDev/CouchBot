@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Microsoft.Extensions.Configuration;
 using MTD.CouchBot.Domain.Dtos.Discord;
 using MTD.CouchBot.Localization;
 using MTD.CouchBot.Managers;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Commands
 {

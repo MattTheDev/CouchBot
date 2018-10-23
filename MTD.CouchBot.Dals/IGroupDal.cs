@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using MTD.CouchBot.Domain.Dtos.Discord;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using MTD.CouchBot.Domain.Dtos.Discord;
 
 namespace MTD.CouchBot.Dals
 {

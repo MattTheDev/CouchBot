@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using MTD.CouchBot.Domain.Dtos.Discord;
 using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
+using System;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Services
 {

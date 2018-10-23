@@ -1,11 +1,11 @@
-﻿using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using MTD.CouchBot.Domain.Exceptions;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Services
 {
