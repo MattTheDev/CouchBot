@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +10,13 @@ using MTD.CouchBot.Managers;
 using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Core
 {
@@ -95,6 +95,10 @@ namespace MTD.CouchBot.Core
             .AddSingleton<IGroupDal, GroupDal>()
             .AddSingleton<IGroupManager, GroupManager>()
             .AddSingleton<ITwitchManager, TwitchManager>()
+            .AddSingleton<IMixerManager, MixerManager>()
+            .AddSingleton<IMixerDal, MixerDal>()
+            .AddSingleton<IYouTubeDal, YouTubeDal>()
+            .AddSingleton<IYouTubeManager, YouTubeManager>()
             .AddSingleton(Configuration)
             .AddSingleton(Translations);
         }
