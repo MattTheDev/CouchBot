@@ -21,7 +21,6 @@ namespace MTD.CouchBot.Services
         {
             _twitchTimer = new Timer(async (e) =>
             {
-                _loggingService.LogToConsole("Checking Twitch Creators.");
             }, null, 0, int.Parse(_configuration["Timers:TwitchTimer"]) * 1000);
         }
     }

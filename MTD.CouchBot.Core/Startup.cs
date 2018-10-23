@@ -63,7 +63,6 @@ namespace MTD.CouchBot.Core
 
             while (discord.CurrentUser == null)
             {
-                logger.LogToConsole("Waiting for User to Log In...");
                 Thread.Sleep(1000);
             }
 

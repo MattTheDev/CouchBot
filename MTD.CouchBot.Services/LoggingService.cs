@@ -33,16 +33,5 @@ namespace MTD.CouchBot.Services
             return Console.Out.WriteLineAsync(logText);
         }
 
-        public void LogToConsole(string message)
-        {
-            var logText = $"{DateTime.UtcNow:hh:mm:ss} {message}";
-            Console.WriteLine(logText);
-        }
-
-        public async Task LogError(string message)
-        {
-            var logText = $"{DateTime.UtcNow:hh:mm:ss} [ERROR] {message}";
-            await File.AppendAllTextAsync(ErrorLogFile, $"{logText}\r\n");
-        }
     }
 }
