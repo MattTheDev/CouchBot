@@ -10,5 +10,6 @@
         public GroupCommands GroupCommands { get; set; }
         public Labels Labels { get; set; }
         public ChannelCommands ChannelCommands { get; set; }
+        public MessageCommands MessageCommands { get; set; }
     }
 }

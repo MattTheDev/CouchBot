@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MTD.CouchBot.Localization\MTD.CouchBot.Localization.csproj" />
     <ProjectReference Include="..\MTD.CouchBot.Managers\MTD.CouchBot.Managers.csproj" />
+    <ProjectReference Include="..\MTD.CouchBot.Services\MTD.CouchBot.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -91,8 +91,10 @@ namespace MTD.CouchBot.Core
             .AddSingleton<GuildInteractionService>()
             .AddSingleton<IGuildDal, GuildDal>()
             .AddSingleton<IGuildManager, GuildManager>()
+            .AddSingleton<ITwitchDal, TwitchDal>()
             .AddSingleton<IGroupDal, GroupDal>()
             .AddSingleton<IGroupManager, GroupManager>()
+            .AddSingleton<ITwitchManager, TwitchManager>()
             .AddSingleton(Configuration)
             .AddSingleton(Translations);
         }

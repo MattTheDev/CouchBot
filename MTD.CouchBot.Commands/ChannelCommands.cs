@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Configuration;
+using MTD.CouchBot.Domain.Enums;
 using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Localization;
 using MTD.CouchBot.Managers;
@@ -39,7 +40,8 @@ namespace MTD.CouchBot.Commands
 
             if (group == null)
             {
-                await Context.Channel.SendMessageAsync($"{translation.ChannelCommands.GroupDoesntExist} '{groupName}'");
+                await Context.Channel.SendMessageAsync($"{translation.GroupCommands.InvalidGroupName} '{Prefix} group list'");
+                return;
             }
 
             group.StreamChannelId = Cryptography.Encrypt(channel.Id.ToString());
@@ -52,19 +54,32 @@ namespace MTD.CouchBot.Commands
         [Command("Vod")]
         public async Task Vod(IChannel channel)
         {
-            if (!IsOwner)
-            {
-                return;
-            }
+            await Vod(channel, "Default");
         }
 
         [Command("Vod")]
         public async Task Vod(IChannel channel, string groupName)
         {
+            var translation = await GetTranslation();
+
             if (!IsOwner)
             {
                 return;
             }
+
+            var group = await _groupManager.GetGuildGroupByGuildIdAndName(Context.Guild.Id, groupName);
+
+            if (group == null)
+            {
+                await Context.Channel.SendMessageAsync($"{translation.GroupCommands.InvalidGroupName} '{Prefix} group list'");
+                return;
+            }
+
+            group.VodChannelId = Cryptography.Encrypt(channel.Id.ToString());
+
+            await _groupManager.UpdateGuildGroup(group);
+
+            await Context.Channel.SendMessageAsync($"{translation.ChannelCommands.VodChannelSet}");
         }
     }
 }

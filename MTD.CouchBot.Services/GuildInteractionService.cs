@@ -90,5 +90,10 @@ namespace MTD.CouchBot.Services
                 });
             }
         }
+
+        public async Task<bool> GuildGroupExists(ulong guildId, string groupName)
+        {
+            return (await _groupManager.GetGuildGroupByGuildIdAndName(guildId, groupName)) != null;
+        }
     }
 }

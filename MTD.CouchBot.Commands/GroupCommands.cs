@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using MTD.CouchBot.Domain.Dtos.Discord;
 using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Localization;
 using MTD.CouchBot.Managers;
@@ -99,6 +101,72 @@ namespace MTD.CouchBot.Commands
             builder.Footer = footer;
 
             await Context.Channel.SendMessageAsync("", false, builder.Build());
+        }
+
+        [Command("Add")]
+        public async Task Add(string groupName)
+        {
+            var translation = await GetTranslation();
+
+            if(!IsOwner)
+            {
+                return;
+            }
+
+            if(groupName.Equals("Default", StringComparison.CurrentCultureIgnoreCase))
+            {
+                await Context.Channel.SendMessageAsync(translation.GroupCommands.NoCreateDefault);
+                return;
+            }
+
+            var guildGroup = await _groupManager.GetGuildGroupByGuildIdAndName(Context.Guild.Id, groupName);
+
+            if(guildGroup != null)
+            {
+                await Context.Channel.SendMessageAsync(translation.GroupCommands.NoCreateExists);
+            }
+
+            guildGroup = new GuildGroup
+            {
+                GuildId = Cryptography.Encrypt(Context.Guild.Id.ToString()),
+                Name = groupName,
+                StreamChannelId = null,
+                VodChannelId = null,
+                MentionRoleId = null,
+                LiveMessage = translation.Defaults.LiveMessage,
+                VodMessage = translation.Defaults.VodMessage
+            };
+
+            await _groupManager.CreateGuildGroup(guildGroup);
+            await Context.Channel.SendMessageAsync(translation.GroupCommands.CreatedSuccessfully);
+        }
+
+        [Command("Remove")]
+        public async Task Remove(string groupName)
+        {
+            var translation = await GetTranslation();
+
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            if (groupName.Equals("Default", StringComparison.CurrentCultureIgnoreCase))
+            {
+                await Context.Channel.SendMessageAsync(translation.GroupCommands.DefaultNoRemove);
+                return;
+            }
+
+            var guildGroup = await _groupManager.GetGuildGroupByGuildIdAndName(Context.Guild.Id, groupName);
+
+            if (guildGroup == null)
+            {
+                await Context.Channel.SendMessageAsync($"{translation.GroupCommands.InvalidGroupName} '{Prefix} group list'");
+                return;
+            }
+
+            await _groupManager.DeleteGuildGroup(guildGroup);
+            await Context.Channel.SendMessageAsync(translation.GroupCommands.RemovedSuccessfully);
         }
     }
 }
