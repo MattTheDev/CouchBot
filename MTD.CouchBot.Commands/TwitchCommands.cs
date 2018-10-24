@@ -99,5 +99,51 @@ namespace MTD.CouchBot.Commands
 
             await Context.Channel.SendMessageAsync("This new Twitch channel has been added.");
         }
+
+        [Command("Remove")]
+        public async Task Remove(string loginName)
+        {
+            await Remove(loginName, "Default");
+        }
+
+        [Command("Remove")]
+        public async Task Remove(string loginName, string groupName)
+        {
+            var translation = await GetTranslation();
+
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            var twitchChannel = await _twitchManager.GetTwitchUserByLoginName(loginName);
+
+            if (twitchChannel == null || twitchChannel.Users.Count < 1)
+            {
+                await Context.Channel.SendMessageAsync("Sorry, a Twitch channel with that name does not exist.");
+                return;
+            }
+
+            var group = await _groupManager.GetGuildGroupByGuildIdAndName(Context.Guild.Id, groupName);
+
+            if (group == null)
+            {
+                await Context.Channel.SendMessageAsync($"{translation.GroupCommands.InvalidGroupName} '{Prefix} group list'");
+                return;
+            }
+
+            var groupChannel =
+                await _channelManager.GetChannelByGuildGroupIdAndChannelId(group.Id, twitchChannel.Users[0].Id);
+
+            if (groupChannel == null)
+            {
+                await Context.Channel.SendMessageAsync("Sorry, this Twitch channel isn't assigned to this group.");
+                return;
+            }
+
+            await _channelManager.RemoveChannel(groupChannel);
+
+            await Context.Channel.SendMessageAsync("This Twitch channel has been removed.");
+        }
     }
 }

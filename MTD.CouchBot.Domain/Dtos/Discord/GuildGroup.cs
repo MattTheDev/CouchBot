@@ -12,6 +12,5 @@ namespace MTD.CouchBot.Domain.Dtos.Discord
         public string MentionRoleId { get; set; }
         public string LiveMessage { get; set; }
         public string VodMessage { get; set; }
-        public List<GuildGroupChannel> GuildGroupChannels { get; set; }
     }
 }

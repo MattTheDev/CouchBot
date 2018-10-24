@@ -107,7 +107,8 @@ namespace MTD.CouchBot.Core
         {
             using (var client = new WebClient())
             {
-                client.DownloadFile(new Uri(Configuration["Localization:TranslationFiles"]), "LocalizationFiles.zip");
+                var url = Configuration["Localization:TranslationFiles"];
+                client.DownloadFile(new Uri(url), "LocalizationFiles.zip");
             }
         }
 

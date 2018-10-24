@@ -18,9 +18,9 @@ namespace MTD.CouchBot.Dals.Implementations
             _configuration = configuration;
         }
 
-        public async Task<TwitchUserQueryResponse> GetTwitchUserByLoginName(string loginName)
+        private async Task<TwitchUserQueryResponse> GetTwitchUserQueryResponse(string url)
         {
-            if(string.IsNullOrEmpty(_configuration["Keys:TwitchClientId"]))
+            if (string.IsNullOrEmpty(_configuration["Keys:TwitchClientId"]))
             {
                 throw new TwitchClientIdMissingException("BotConfig.json is missing your Twitch Client-Id");
             }
@@ -30,18 +30,38 @@ namespace MTD.CouchBot.Dals.Implementations
                 using (var client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Add("Client-Id", _configuration["Keys:TwitchClientId"]);
-                    var response = await client.GetAsync($"{_baseApiUrl}users?login={loginName}");
+                    var response = await client.GetAsync(url);
 
                     response.EnsureSuccessStatusCode();
 
                     return JsonConvert.DeserializeObject<TwitchUserQueryResponse>(await response.Content.ReadAsStringAsync());
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // TODO ERROR LOGGING DAMN YOU
                 return null;
             }
+        }
+
+        public async Task<TwitchUserQueryResponse> GetTwitchUserById(string id)
+        {
+            return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?id={id}");
+        }
+
+        public async Task<TwitchUserQueryResponse> GetTwitchUserByLoginName(string loginName)
+        {
+            return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?login={loginName}");
+        }
+
+        public async Task<TwitchUserQueryResponse> GetTwitchUsersByIdsDelimitedList(string ids)
+        {
+            return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?{ids}");
+        }
+
+        public async Task<TwitchUserQueryResponse> GetTwitchUsersByLoginNameDelimitedList(string loginNames)
+        {
+            return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?{loginNames}");
         }
     }
 }
