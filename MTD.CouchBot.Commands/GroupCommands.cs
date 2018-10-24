@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Commands
 {
     [Group("Group")]
-    public class GroupCommands : Command
+    public class GroupCommands : BaseCommand
     {
         private readonly IConfiguration _configuration;
         private readonly List<Translation> _translations;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Commands
 {
     [Group("Set")]
-    public class SetCommands : Command
+    public class SetCommands : BaseCommand
     {
         private readonly IGuildManager _guildManager;
 

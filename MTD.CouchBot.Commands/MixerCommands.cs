@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Commands
 {
     [Group("Mixer")]
-    public class MixerCommands : Command
+    public class MixerCommands : BaseCommand
     {
         private readonly IMixerManager _mixerManager;
         private readonly IGroupManager _groupManager;

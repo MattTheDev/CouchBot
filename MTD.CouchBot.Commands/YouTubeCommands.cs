@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Commands
 {
     [Group("YouTube")]
-    public class YouTubeCommands : Command
+    public class YouTubeCommands : BaseCommand
     {
         private readonly IYouTubeManager _youTubeManager;
         private readonly IGroupManager _groupManager;

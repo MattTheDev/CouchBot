@@ -7,23 +7,29 @@ using MTD.CouchBot.Localization;
 using MTD.CouchBot.Managers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Commands
 {
     [Group("Creator"), Alias("C")]
-    public class CreatorCommands : Command
+    public class CreatorCommands : BaseCommand
     {
         private readonly IGroupManager _groupManager;
         private readonly IChannelManager _channelManager;
         private readonly ITwitchManager _twitchManager;
+        private readonly IMixerManager _mixerManager;
+        private readonly IYouTubeManager _youTubeManager;
 
         public CreatorCommands(List<Translation> translations, IGuildManager guildManager, IGroupManager groupManager, 
-            IConfiguration configuration, IChannelManager channelManager, ITwitchManager twitchManager) : base(translations, guildManager, groupManager, configuration)
+            IConfiguration configuration, IChannelManager channelManager, ITwitchManager twitchManager, IMixerManager mixerManager,
+            IYouTubeManager youTubeManager) : base(translations, guildManager, groupManager, configuration)
         {
             _groupManager = groupManager;
             _channelManager = channelManager;
             _twitchManager = twitchManager;
+            _mixerManager = mixerManager;
+            _youTubeManager = youTubeManager;
         }
 
         [Command("List")]
@@ -57,26 +63,72 @@ namespace MTD.CouchBot.Commands
 
             if (guildGroupChannels != null && guildGroupChannels.Count > 0)
             {
-                var twitchUsers = new TwitchUserQueryResponse();
-                if (guildGroupChannels.Count == 1)
+                switch (platform)
                 {
-                    twitchUsers =
-                        await _twitchManager.GetTwitchUserById(guildGroupChannels[0].ChannelId);
-                }
-                else
-                {
-                    twitchUsers =
-                        await _twitchManager.GetTwitchUsersByIdsDelimitedList($"&id={string.Join("&id=", guildGroupChannels.Select(ggc => ggc.ChannelId))}");
-                }
+                    case Platform.Twitch:
+                        var twitchUsers = new TwitchUserQueryResponse();
+                        if (guildGroupChannels.Count == 1)
+                        {
+                            twitchUsers =
+                                await _twitchManager.GetTwitchUserById(guildGroupChannels.FirstOrDefault()?.ChannelId);
+                        }
+                        else
+                        {
+                            twitchUsers =
+                                await _twitchManager.GetTwitchUsersByIdsDelimitedList($"&id={string.Join("&id=", guildGroupChannels.Select(ggc => ggc.ChannelId))}");
+                        }
 
-                if (twitchUsers != null && twitchUsers.Users.Count > 0)
-                {
-                    builder.Fields.Add(new EmbedFieldBuilder
-                    {
-                        Name = $"{platform} Creators",
-                        Value = string.Join(", ", twitchUsers.Users.Select(u => u.Login)),
-                        IsInline = false
-                    });
+                        if (twitchUsers != null && twitchUsers.Users.Count > 0)
+                        {
+                            builder.Fields.Add(new EmbedFieldBuilder
+                            {
+                                Name = $"{platform} Creators",
+                                Value = string.Join(", ", twitchUsers.Users.Select(u => u.Login)),
+                                IsInline = false
+                            });
+                        }
+                        break;
+                    case Platform.Mixer:
+                        var mixerCreatorList = new List<string>();
+                        foreach (var creator in guildGroupChannels)
+                        {
+                            var mixerUser =
+                                await _mixerManager.GetMixerChannelByChannelName(creator.ChannelId);
+
+                            if (mixerUser != null)
+                            {
+                                mixerCreatorList.Add(mixerUser._User.Username);
+                            }
+                        }
+
+                        builder.Fields.Add(new EmbedFieldBuilder
+                        {
+                            Name = $"{platform} Creators",
+                            Value = string.Join(", ", mixerCreatorList),
+                            IsInline = false
+                        });
+                        break;
+                    case Platform.YouTube:
+                        var youTubeCreatorList = new List<string>();
+                        foreach (var creator in guildGroupChannels)
+                        {
+                            var youtubeChannel =
+                                await _youTubeManager.GetYouTubeChannelByChannelId(creator.ChannelId);
+
+                            if (youtubeChannel != null)
+                            {
+                                youTubeCreatorList.Add(
+                                    $"{youtubeChannel.Items.FirstOrDefault()?.Snippet.Title} ({creator.ChannelId})");
+                            }
+                        }
+
+                        builder.Fields.Add(new EmbedFieldBuilder
+                        {
+                            Name = $"{platform} Creators",
+                            Value = string.Join(", ", youTubeCreatorList),
+                            IsInline = false
+                        });
+                        break;
                 }
             }       
             else

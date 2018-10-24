@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Commands
 {
     [Group("Channel")]
-    public class ChannelCommands : Command
+    public class ChannelCommands : BaseCommand
     {
         private readonly IGroupManager _groupManager;
 

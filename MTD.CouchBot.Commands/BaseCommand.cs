@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Commands
 {
-    public class Command : ModuleBase
+    public class BaseCommand : ModuleBase
     {
         private readonly IConfiguration _configuration;
         private readonly List<Translation> _translations;
         private readonly IGuildManager _guildManager;
         private readonly IGroupManager _groupManager;
 
-        public Command(List<Translation> translations, IGuildManager guildManager, IGroupManager groupManager, IConfiguration configuration)
+        public BaseCommand(List<Translation> translations, IGuildManager guildManager, IGroupManager groupManager, IConfiguration configuration)
         {
             _translations = translations;
             _guildManager = guildManager;

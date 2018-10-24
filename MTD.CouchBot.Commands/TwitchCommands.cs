@@ -12,7 +12,7 @@ using MTD.CouchBot.Domain.Enums;
 namespace MTD.CouchBot.Commands
 {
     [Group("Twitch")]
-    public class TwitchCommands : Command
+    public class TwitchCommands : BaseCommand
     {
         private readonly ITwitchManager _twitchManager;
         private readonly IGroupManager _groupManager;

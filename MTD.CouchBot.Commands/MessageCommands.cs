@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Commands
 {
     [Group("Message")]
-    public class MessageCommands : Command
+    public class MessageCommands : BaseCommand
     {
         private readonly IGroupManager _groupManager;
 

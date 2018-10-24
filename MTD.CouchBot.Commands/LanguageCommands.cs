@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Commands
 {
     [Group("Language")]
-    public class LanguageCommands : Command
+    public class LanguageCommands : BaseCommand
     {
         private readonly IGuildManager _guildManager;
         private readonly List<Translation> _translations;
