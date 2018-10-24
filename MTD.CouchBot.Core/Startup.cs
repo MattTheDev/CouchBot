@@ -97,6 +97,8 @@ namespace MTD.CouchBot.Core
             .AddSingleton<IMixerDal, MixerDal>()
             .AddSingleton<IYouTubeDal, YouTubeDal>()
             .AddSingleton<IYouTubeManager, YouTubeManager>()
+            .AddSingleton<IChannelDal, ChannelDal>()
+            .AddSingleton<IChannelManager, ChannelManager>()
             .AddSingleton(Configuration)
             .AddSingleton(Translations);
         }
