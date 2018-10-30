@@ -13,6 +13,16 @@ namespace MTD.CouchBot.Managers.Implementations
             _twitchDal = twitchDal;
         }
 
+        public async Task<TwitchStreamQueryResponse> GetTwitchStreamByUserId(string id)
+        {
+            return await _twitchDal.GetTwitchStreamByUserId(id);
+        }
+
+        public async Task<TwitchStreamQueryResponse> GetTwitchStreamsByUserIdsDelimitedList(string ids)
+        {
+            return await _twitchDal.GetTwitchStreamsByUserIdsDelimitedList(ids);
+        }
+
         public async Task<TwitchUserQueryResponse> GetTwitchUserById(string id)
         {
             return await _twitchDal.GetTwitchUserById(id);

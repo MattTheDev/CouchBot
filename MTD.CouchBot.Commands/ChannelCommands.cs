@@ -14,9 +14,10 @@ namespace MTD.CouchBot.Commands
     {
         private readonly IGroupManager _groupManager;
 
-        public ChannelCommands(List<Translation> translations, IGuildManager guildManager, IGroupManager groupManager, IConfiguration configuration, IGroupManager groupManager1) : base(translations, guildManager, groupManager, configuration)
+        public ChannelCommands(List<Translation> translations, IGuildManager guildManager, IGroupManager groupManager, 
+            IConfiguration configuration) : base(translations, guildManager, groupManager, configuration)
         {
-            _groupManager = groupManager1;
+            _groupManager = groupManager;
         }
 
         [Command("Live")]

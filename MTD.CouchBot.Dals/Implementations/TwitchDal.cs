@@ -44,6 +44,32 @@ namespace MTD.CouchBot.Dals.Implementations
             }
         }
 
+        private async Task<TwitchStreamQueryResponse> GetTwitchStreamQueryResponse(string url)
+        {
+            if (string.IsNullOrEmpty(_configuration["Keys:TwitchClientId"]))
+            {
+                throw new TwitchClientIdMissingException("BotConfig.json is missing your Twitch Client-Id");
+            }
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("Client-Id", _configuration["Keys:TwitchClientId"]);
+                    var response = await client.GetAsync(url);
+
+                    response.EnsureSuccessStatusCode();
+
+                    return JsonConvert.DeserializeObject<TwitchStreamQueryResponse>(await response.Content.ReadAsStringAsync());
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO ERROR LOGGING DAMN YOU
+                return null;
+            }
+        }
+
         public async Task<TwitchUserQueryResponse> GetTwitchUserById(string id)
         {
             return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?id={id}");
@@ -62,6 +88,16 @@ namespace MTD.CouchBot.Dals.Implementations
         public async Task<TwitchUserQueryResponse> GetTwitchUsersByLoginNameDelimitedList(string loginNames)
         {
             return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?{loginNames}");
+        }
+
+        public async Task<TwitchStreamQueryResponse> GetTwitchStreamByUserId(string id)
+        {
+            return await GetTwitchStreamQueryResponse($"{_baseApiUrl}streams?user_id={id}");
+        }
+
+        public async Task<TwitchStreamQueryResponse> GetTwitchStreamsByUserIdsDelimitedList(string ids)
+        {
+            return await GetTwitchStreamQueryResponse($"{_baseApiUrl}streams?{ids}");
         }
     }
 }

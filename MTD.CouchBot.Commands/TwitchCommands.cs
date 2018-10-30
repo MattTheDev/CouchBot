@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MTD.CouchBot.Domain.Dtos.Discord;
 using MTD.CouchBot.Domain.Enums;
+using System.Linq;
 
 namespace MTD.CouchBot.Commands
 {
@@ -144,6 +145,25 @@ namespace MTD.CouchBot.Commands
             await _channelManager.RemoveChannel(groupChannel);
 
             await Context.Channel.SendMessageAsync("This Twitch channel has been removed.");
+        }
+
+        [Command("Announce")]
+        public async Task Announce(string streamOne)
+        {
+            var test = await _twitchManager.GetTwitchStreamByUserId((await _twitchManager.GetTwitchUserByLoginName(streamOne)).Users[0].Id);
+        }
+        [Command("Announce")]
+        public async Task Announce(string streamOne, string streamTwo)
+        {
+            var testList = new List<string>
+            {
+                (await _twitchManager.GetTwitchUserByLoginName(streamOne)).Users[0].Id,
+                (await _twitchManager.GetTwitchUserByLoginName(streamTwo)).Users[0].Id
+            };
+
+            // await _twitchManager.GetTwitchUsersByIdsDelimitedList();
+            //(await _twitchManager.GetTwitchUserByLoginName(streamOne)).Users[0].Id, (await _twitchManager.GetTwitchUserByLoginName(streamTwo)).Users[0].Id
+            var test = await _twitchManager.GetTwitchStreamsByUserIdsDelimitedList($"&user_id={string.Join("&user_id=", testList.Select(ggc => ggc))}");
         }
     }
 }

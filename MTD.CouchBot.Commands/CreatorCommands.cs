@@ -7,7 +7,6 @@ using MTD.CouchBot.Localization;
 using MTD.CouchBot.Managers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Commands
