@@ -37,7 +37,7 @@ namespace MTD.CouchBot.Dals.Implementations
                     return JsonConvert.DeserializeObject<TwitchUserQueryResponse>(await response.Content.ReadAsStringAsync());
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO ERROR LOGGING DAMN YOU
                 return null;
@@ -63,7 +63,7 @@ namespace MTD.CouchBot.Dals.Implementations
                     return JsonConvert.DeserializeObject<TwitchStreamQueryResponse>(await response.Content.ReadAsStringAsync());
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO ERROR LOGGING DAMN YOU
                 return null;

@@ -17,15 +17,12 @@ namespace MTD.CouchBot.Commands
     [Group("Group")]
     public class GroupCommands : BaseCommand
     {
-        private readonly IConfiguration _configuration;
-        private readonly List<Translation> _translations;
         private readonly IGroupManager _groupManager;
         private readonly DiscordSocketClient _discord;
 
         public GroupCommands(List<Translation> translations, IGuildManager guildManager, IGroupManager groupManager, IConfiguration configuration, DiscordSocketClient discord)
             : base(translations, guildManager, groupManager, configuration)
         {
-            _translations = translations;
             _groupManager = groupManager;
             _discord = discord;
         }
@@ -96,8 +93,9 @@ namespace MTD.CouchBot.Commands
             
             var builder = new EmbedBuilder();
             builder.AddField($"{translation.Labels.Details}",details.ToString());
-            var footer = new EmbedFooterBuilder();
-            footer.Text = $"{translation.GroupCommands.InfoFooter} '{Prefix} group list'";
+            var footer =
+                new EmbedFooterBuilder {Text = $"{translation.GroupCommands.InfoFooter} '{Prefix} group list'"};
+
             builder.Footer = footer;
 
             await Context.Channel.SendMessageAsync("", false, builder.Build());

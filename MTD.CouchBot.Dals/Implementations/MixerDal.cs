@@ -37,7 +37,7 @@ namespace MTD.CouchBot.Dals.Implementations
                     return JsonConvert.DeserializeObject<MixerChannelQueryResponse>(await response.Content.ReadAsStringAsync());
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO ERROR LOGGING DAMN YOU
                 return null;

@@ -4,6 +4,7 @@ using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using System;
 using System.Threading.Tasks;
+using Discord;
 
 namespace MTD.CouchBot.Services
 {
@@ -92,6 +93,30 @@ namespace MTD.CouchBot.Services
         public async Task<bool> GuildGroupExists(ulong guildId, string groupName)
         {
             return (await _groupManager.GetGuildGroupByGuildIdAndName(guildId, groupName)) != null;
+        }
+
+        public IRole GetRoleByGuildAndId(ulong guildId, ulong roleId)
+        {
+            IRole role = null;
+
+            if (guildId != 0 && roleId != 0)
+            {
+                IGuild guild = _discord.GetGuild(guildId);
+
+                if (guild != null)
+                {
+                    try
+                    {
+                        role = guild.GetRole(roleId);
+                    }
+                    catch (Exception)
+                    {
+                        role = null;
+                    }
+                }
+            }
+
+            return role;
         }
     }
 }

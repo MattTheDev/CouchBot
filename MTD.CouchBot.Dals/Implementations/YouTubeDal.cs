@@ -36,7 +36,7 @@ namespace MTD.CouchBot.Dals.Implementations
                     return JsonConvert.DeserializeObject<YouTubeChannelQueryByChannelIdResponse>(await response.Content.ReadAsStringAsync());
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO ERROR LOGGING DAMN YOU
                 return null;

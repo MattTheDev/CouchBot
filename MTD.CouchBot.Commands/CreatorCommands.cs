@@ -32,12 +32,6 @@ namespace MTD.CouchBot.Commands
         }
 
         [Command("List")]
-        public async Task List()
-        {
-            // TODO - This should prompt user to provide a platform. Do not display actual creators.
-        }
-
-        [Command("List")]
         public async Task List(Platform platform)
         {
             await List(platform, "Default");
@@ -57,8 +51,7 @@ namespace MTD.CouchBot.Commands
 
             var guildGroupChannels = await _channelManager.GetChannelsByGuildGroupIdAndPlatform(guildGroup.Id, platform);
 
-            var builder = new EmbedBuilder();
-            builder.Description = $"Your list of {platform} creators in the {groupName} group";
+            var builder = new EmbedBuilder {Description = $"Your list of {platform} creators in the {groupName} group"};
 
             if (guildGroupChannels != null && guildGroupChannels.Count > 0)
             {
