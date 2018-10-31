@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTD.CouchBot.Domain", "MTD.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTD.CouchBot.Localization", "MTD.CouchBot.Localization\MTD.CouchBot.Localization.csproj", "{22396289-2EBC-4EE3-866F-7B39786E96E6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{82738AF5-A86B-49B3-BFD9-D356D81E5E6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTD.CouchBot.Tests.Dals", "MTD.CouchBot.Tests.Dals\MTD.CouchBot.Tests.Dals.csproj", "{DE9486A7-FDE9-4F93-97A5-BF97147521D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,9 +55,16 @@ Global
 		{22396289-2EBC-4EE3-866F-7B39786E96E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22396289-2EBC-4EE3-866F-7B39786E96E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22396289-2EBC-4EE3-866F-7B39786E96E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE9486A7-FDE9-4F93-97A5-BF97147521D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE9486A7-FDE9-4F93-97A5-BF97147521D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE9486A7-FDE9-4F93-97A5-BF97147521D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE9486A7-FDE9-4F93-97A5-BF97147521D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DE9486A7-FDE9-4F93-97A5-BF97147521D3} = {82738AF5-A86B-49B3-BFD9-D356D81E5E6F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C7C12D4-B656-437E-8F40-9F4A228FA419}

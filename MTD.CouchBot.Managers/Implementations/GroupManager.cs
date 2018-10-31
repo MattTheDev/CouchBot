@@ -15,6 +15,16 @@ namespace MTD.CouchBot.Managers.Implementations
             _groupDal = groupDal;
         }
 
+        public async Task<List<GuildGroup>> GetAllGuildGroups()
+        {
+            return await _groupDal.GetAllGuildGroups();
+        }
+
+        public async Task<List<GuildGroup>> GetAllGuildGroupsWithGroupChannels()
+        {
+            return await _groupDal.GetAllGuildGroupsWithGroupChannels();
+        }
+
         public async Task<GuildGroup> GetGuildGroupByGuildIdAndName(ulong guildId, string name)
         {
             return await _groupDal.GetGuildGroupByGuildIdAndName(Cryptography.Encrypt(guildId.ToString()), name);

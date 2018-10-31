@@ -19,7 +19,7 @@ namespace MTD.CouchBot.Dals.Implementations
             _configuration = configuration;
         }
 
-        public async Task<List<GuildGroupChannel>> GetAllChannelsByGuildId(int guildGroupId)
+        public async Task<List<GuildGroupChannel>> GetAllChannelsByGuildGroupId(int guildGroupId)
         {
             using (var connection = new MySqlConnection(_configuration["ConnectionStrings:CouchBot"]))
             {

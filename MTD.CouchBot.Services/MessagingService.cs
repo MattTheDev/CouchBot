@@ -22,17 +22,18 @@ namespace MTD.CouchBot.Services
             _configuration = configuration;
         }
 
-        public async Task<BroadcastMessage> BuildMessage(string channel, string gameName, string title, string url,
-            string avatarUrl, string thumbnailUrl, string platform, string channelId)
-        {
-            var embed = new EmbedBuilder();
-            var author = new EmbedAuthorBuilder();
-            var footer = new EmbedFooterBuilder();
+        //public async Task<BroadcastMessage> BuildMessage(string baseMessage, string channel, string gameName, string title, string url,
+        //    string avatarUrl, string thumbnailUrl, string platform, string channelId, ulong discordChannelId, string teamName, )
+        //{
+        //    var embed = new EmbedBuilder();
+        //    var author = new EmbedAuthorBuilder();
+        //    var footer = new EmbedFooterBuilder();
 
-            var botName = _discord.CurrentUser.Username;
+            
 
-            return new BroadcastMessage();
-        }
+
+        //    return new BroadcastMessage();
+        //}
 
         //public async Task<BroadcastMessage> BuildMessage(string channel,
         //    string gameName, string title, string url, string avatarUrl, string thumbnailUrl, string platform,

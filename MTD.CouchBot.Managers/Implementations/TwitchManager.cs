@@ -1,4 +1,5 @@
-﻿using MTD.CouchBot.Dals;
+﻿using System.Collections.Generic;
+using MTD.CouchBot.Dals;
 using MTD.CouchBot.Domain.Dtos.Twitch;
 using System.Threading.Tasks;
 
@@ -18,9 +19,9 @@ namespace MTD.CouchBot.Managers.Implementations
             return await _twitchDal.GetTwitchStreamByUserId(id);
         }
 
-        public async Task<TwitchStreamQueryResponse> GetTwitchStreamsByUserIdsDelimitedList(string ids)
+        public async Task<TwitchStreamQueryResponse> GetTwitchStreamsByUserIdsDelimitedList(List<string> ids)
         {
-            return await _twitchDal.GetTwitchStreamsByUserIdsDelimitedList(ids);
+            return await _twitchDal.GetTwitchStreamsByUserIdsDelimitedList($"&user_id={string.Join("&user_id=", ids)}");
         }
 
         public async Task<TwitchUserQueryResponse> GetTwitchUserById(string id)

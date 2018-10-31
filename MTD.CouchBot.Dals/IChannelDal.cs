@@ -7,7 +7,7 @@ namespace MTD.CouchBot.Dals
 {
     public interface IChannelDal
     {
-        Task<List<GuildGroupChannel>> GetAllChannelsByGuildId(int guildGroupId);
+        Task<List<GuildGroupChannel>> GetAllChannelsByGuildGroupId(int guildGroupId);
         Task<List<GuildGroupChannel>> GetChannelsByGuildIdAndPlatform(int guildGroupId, Platform platform);
         Task<List<GuildGroupChannel>> GetChannelByChannelId(string channelId);
         Task<GuildGroupChannel> GetChannelByGuildIdAndChannelId(int guildGroupId, string channelId);

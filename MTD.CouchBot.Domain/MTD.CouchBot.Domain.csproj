@@ -5,12 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DapperExtensions" Version="1.6.3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Discord.Net.Core">
-      <HintPath>..\..\..\Users\msmith\.nuget\packages\discord.net.core\2.0.0-beta\lib\netstandard1.3\Discord.Net.Core.dll</HintPath>
+      <HintPath>..\..\..\Users\dawge\.nuget\packages\discord.net.core\2.0.0-beta\lib\netstandard1.3\Discord.Net.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

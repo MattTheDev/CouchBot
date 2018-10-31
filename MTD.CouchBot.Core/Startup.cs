@@ -22,6 +22,8 @@ namespace MTD.CouchBot.Core
 {
     public class Startup
     {
+
+        private PlatformService PlatformService { get; set; }
         private IConfiguration Configuration { get; }
         private List<Translation> Translations { get; set; }
 
@@ -66,6 +68,7 @@ namespace MTD.CouchBot.Core
             }
 
             provider.GetRequiredService<GuildInteractionService>().Init();
+            await provider.GetRequiredService<TimerService>().Init();
 
             await Task.Delay(-1).ConfigureAwait(false);
         }
@@ -87,6 +90,8 @@ namespace MTD.CouchBot.Core
             .AddSingleton<CommandHandler>()
             .AddSingleton<LoggingService>()
             .AddSingleton<GuildInteractionService>()
+            .AddSingleton<PlatformService>()
+            .AddSingleton<TimerService>()
             .AddSingleton<IGuildDal, GuildDal>()
             .AddSingleton<IGuildManager, GuildManager>()
             .AddSingleton<ITwitchDal, TwitchDal>()

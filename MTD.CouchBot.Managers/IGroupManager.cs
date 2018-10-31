@@ -6,6 +6,8 @@ namespace MTD.CouchBot.Managers
 {
     public interface IGroupManager
     {
+        Task<List<GuildGroup>> GetAllGuildGroups();
+        Task<List<GuildGroup>> GetAllGuildGroupsWithGroupChannels();
         Task<GuildGroup> GetGuildGroupByGuildIdAndName(ulong guildId, string name);
         Task<List<GuildGroup>> GetGuildGroupsByGuildId(ulong guildId);
         Task CreateGuildGroup(GuildGroup guildGroup);

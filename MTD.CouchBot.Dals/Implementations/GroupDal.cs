@@ -12,10 +12,37 @@ namespace MTD.CouchBot.Dals.Implementations
     public class GroupDal : IGroupDal
     {
         private readonly IConfiguration _configuration;
+        private readonly IChannelDal _channelDal;
 
-        public GroupDal(IConfiguration configuration)
+        public GroupDal(IConfiguration configuration, IChannelDal channelDal)
         {
             _configuration = configuration;
+            _channelDal = channelDal;
+        }
+
+        public async Task<List<GuildGroup>> GetAllGuildGroups()
+        {
+            using (var connection = new MySqlConnection(_configuration["ConnectionStrings:CouchBot"]))
+            {
+                await connection.OpenAsync();
+
+                var query = "SELECT * FROM couchbot.guildgroups";
+
+                return (await connection.QueryAsync<GuildGroup>(query)).ToList();
+            }
+        }
+
+        public async Task<List<GuildGroup>> GetAllGuildGroupsWithGroupChannels()
+        {
+            var groups = await GetAllGuildGroups();
+
+            foreach (var group in groups)
+            {
+                group.Channels = new List<GuildGroupChannel>();
+                group.Channels = await _channelDal.GetAllChannelsByGuildGroupId(group.Id);
+            }
+
+            return groups;
         }
 
         public async Task<GuildGroup> GetGuildGroupByGuildIdAndName(string guildId, string name)

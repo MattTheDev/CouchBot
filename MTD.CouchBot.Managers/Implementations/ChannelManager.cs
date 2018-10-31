@@ -18,7 +18,7 @@ namespace MTD.CouchBot.Managers.Implementations
 
         public async Task<List<GuildGroupChannel>> GetAllChannelsByGuildGroupId(int guildGroupId)
         {
-            return await _channelDal.GetAllChannelsByGuildId(guildGroupId);
+            return await _channelDal.GetAllChannelsByGuildGroupId(guildGroupId);
         }
 
         public async Task<List<GuildGroupChannel>> GetChannelsByGuildGroupIdAndPlatform(int guildGroupId, Platform platform)

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using DapperExtensions.Mapper;
+using System.Collections.Generic;
+using MTD.CouchBot.Domain.Utilities;
 
 namespace MTD.CouchBot.Domain.Dtos.Discord
 {
@@ -12,5 +14,18 @@ namespace MTD.CouchBot.Domain.Dtos.Discord
         public string MentionRoleId { get; set; }
         public string LiveMessage { get; set; }
         public string VodMessage { get; set; }
+
+        public List<GuildGroupChannel> Channels { get; set; }
+    }
+
+    // ReSharper disable once UnusedMember.Global
+    public class GuildGroupMapper : ClassMapper<GuildGroup>
+    {
+        public GuildGroupMapper()
+        {
+            Table("guildgroups");
+            Map(gg => gg.Channels).Ignore();
+            AutoMap();
+        }
     }
 }

@@ -11,6 +11,6 @@ namespace MTD.CouchBot.Managers
         Task<TwitchUserQueryResponse> GetTwitchUserById(string id);
         Task<TwitchUserQueryResponse> GetTwitchUsersByIdsDelimitedList(string ids);
         Task<TwitchStreamQueryResponse> GetTwitchStreamByUserId(string id);
-        Task<TwitchStreamQueryResponse> GetTwitchStreamsByUserIdsDelimitedList(string ids);
+        Task<TwitchStreamQueryResponse> GetTwitchStreamsByUserIdsDelimitedList(List<string> ids);
     }
 }

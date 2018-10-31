@@ -6,6 +6,8 @@ namespace MTD.CouchBot.Dals
 {
     public interface IGroupDal
     {
+        Task<List<GuildGroup>> GetAllGuildGroups();
+        Task<List<GuildGroup>> GetAllGuildGroupsWithGroupChannels();
         Task<GuildGroup> GetGuildGroupByGuildIdAndName(string guildId, string name);
         Task<List<GuildGroup>> GetGuildGroupsByGuildId(string guildId);
         Task CreateGuildGroup(GuildGroup guildGroup);

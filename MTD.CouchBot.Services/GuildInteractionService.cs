@@ -118,5 +118,10 @@ namespace MTD.CouchBot.Services
 
             return role;
         }
+
+        public IMessageChannel GetChannelById(ulong channelId)
+        {
+            return (IMessageChannel) _discord.GetChannel(channelId);
+        }
     }
 }
