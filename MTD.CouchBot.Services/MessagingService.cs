@@ -5,6 +5,8 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Domain;
+using MTD.CouchBot.Domain.Enums;
+using MTD.CouchBot.Domain.Utilities;
 
 namespace MTD.CouchBot.Services
 {
@@ -22,6 +24,95 @@ namespace MTD.CouchBot.Services
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseMessage"></param>
+        /// <param name="platform"></param>
+        /// <param name="guildId"></param>
+        /// <param name="channelId"></param>
+        /// <param name="avatarUrl"></param>
+        /// <param name="gameName"></param>
+        /// <param name="creatorContentTitle"></param>
+        /// <param name="creatorContentUrl"></param>
+        /// <param name="creatorChannelId"></param>
+        /// <param name="creatorChannelName"></param>
+        /// <returns></returns>
+        public async Task<BroadcastMessage> BuildMessage(string baseMessage, Platform platform, string guildId,
+            string channelId, string avatarUrl, string creatorChannelId, string creatorChannelName, string gameName,
+            string creatorContentTitle, string creatorContentUrl, int followers, int totalViews, string thumbnailUrl)
+        {
+            var embed = new EmbedBuilder();
+            var author = new EmbedAuthorBuilder();
+            var footer = new EmbedFooterBuilder();
+
+            switch (platform)
+            {
+                case Platform.Mixer:
+                    embed.Color = Constants.Blue;
+                    embed.ThumbnailUrl = avatarUrl != null ?
+                            avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
+                            "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                    footer.IconUrl = "http://couchbot.io/img/mixer2.png";
+                    break;
+                case Platform.Twitch:
+                    embed.Color = Constants.Purple;
+                    embed.ThumbnailUrl = avatarUrl != null ?
+                            avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
+                            "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
+                    footer.IconUrl = "http://couchbot.io/img/twitch.jpg";
+                    break;
+                case Platform.YouTube:
+                    embed.Color = Constants.Red;
+                    embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                    footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
+                    break;
+            }
+
+            embed.Description = baseMessage
+                    .Replace("%CHANNEL%", Format.Sanitize(creatorChannelName))
+                    .Replace("%GAME%", gameName)
+                    .Replace("%TITLE%", creatorContentTitle)
+                    .Replace("%URL%", creatorContentUrl);
+
+            if (!string.IsNullOrEmpty(gameName))
+            {
+                embed.Fields.Add(new EmbedFieldBuilder()
+                {
+                    IsInline = true,
+                    Name = "Game",
+                    Value = gameName
+                });
+            }
+
+            embed.Fields.Add(new EmbedFieldBuilder()
+            {
+                IsInline = true,
+                Name = "Followers",
+                Value = followers
+            });
+
+            embed.Fields.Add(new EmbedFieldBuilder()
+            {
+                IsInline = true,
+                Name = "Total Views",
+                Value = totalViews
+            });
+
+            embed.ImageUrl = thumbnailUrl.Replace("{height}", "648").Replace("{width}", "1152");
+
+            return new BroadcastMessage
+            {
+                Platform = platform,
+                ChannelId = channelId,
+                DeleteOffline = true,
+                Embed = embed.Build(),
+                GuildId = guildId,
+                Message = baseMessage,
+                CreatorChannelID = creatorChannelId
+            };
+        }
+
         //public async Task<BroadcastMessage> BuildMessage(string baseMessage, string channel, string gameName, string title, string url,
         //    string avatarUrl, string thumbnailUrl, string platform, string channelId, ulong discordChannelId, string teamName, )
         //{
@@ -29,7 +120,7 @@ namespace MTD.CouchBot.Services
         //    var author = new EmbedAuthorBuilder();
         //    var footer = new EmbedFooterBuilder();
 
-            
+
 
 
         //    return new BroadcastMessage();
@@ -71,27 +162,16 @@ namespace MTD.CouchBot.Services
 
         //    if (platform.Equals(Constants.Mixer))
         //    {
-        //        embed.Color = Constants.Blue;
-        //        embed.ThumbnailUrl = avatarUrl != null ?
-        //                avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
-        //                "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
-        //        footer.IconUrl = "http://couchbot.io/img/mixer2.png";
+
         //        allowEveryone = owner ? server.AllowMentionOwnerMixerLive : server.AllowMentionMixerLive;
         //    }
         //    else if (platform.Equals(Constants.YouTubeGaming))
         //    {
-        //        embed.Color = Constants.Red;
-        //        embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-        //        footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
-        //        allowEveryone = owner ? server.AllowMentionOwnerYouTubeLive : server.AllowMentionYouTubeLive;
+
         //    }
         //    else if (platform.Equals(Constants.Twitch))
         //    {
-        //        embed.Color = Constants.Purple;
-        //        embed.ThumbnailUrl = avatarUrl != null ?
-        //                avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
-        //                "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
-        //        footer.IconUrl = "http://couchbot.io/img/twitch.jpg";
+
         //        allowEveryone = owner ? server.AllowMentionOwnerTwitchLive : server.AllowMentionTwitchLive;
         //    }
         //    else if (platform.Equals(Constants.Smashcast))
@@ -109,11 +189,7 @@ namespace MTD.CouchBot.Services
         //        allowEveryone = owner ? server.AllowMentionOwnerMobcrushLive : server.AllowMentionMobcrushLive;
         //    }
 
-        //    embed.Description = server.LiveMessage
-        //        .Replace("%CHANNEL%", Format.Sanitize(channel))
-        //        .Replace("%GAME%", gameName)
-        //        .Replace("%TITLE%", title)
-        //        .Replace("%URL%", url);
+
         //    embed.Title = channel + (string.IsNullOrEmpty(teamName) ? "" : " from the team '" + teamName + "'") + " has gone live!";
         //    embed.ImageUrl = server.AllowThumbnails ? thumbnailUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
         //    embed.Footer = footer;

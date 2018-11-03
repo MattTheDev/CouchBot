@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using MTD.CouchBot.Domain.Dtos.Discord;
+using MTD.CouchBot.Domain.Enums;
 using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 
@@ -12,12 +13,14 @@ namespace MTD.CouchBot.Services
         private readonly ITwitchManager _twitchManager;
         private readonly IGroupManager _groupManager;
         private readonly GuildInteractionService _guildInteractionService;
+        private readonly MessagingService _messagingService;
 
-        public PlatformService(IGroupManager groupManager, ITwitchManager twitchManager, GuildInteractionService guildInteractionService)
+        public PlatformService(IGroupManager groupManager, ITwitchManager twitchManager, GuildInteractionService guildInteractionService, MessagingService messagingService)
         {
             _groupManager = groupManager;
             _twitchManager = twitchManager;
             _guildInteractionService = guildInteractionService;
+            _messagingService = messagingService;
         }
 
         public async Task CheckTwitchStreams()
@@ -48,9 +51,15 @@ namespace MTD.CouchBot.Services
                 {
                     var guildId = Cryptography.Decrypt(group.GuildId);
                     var channelId = Cryptography.Decrypt(group.StreamChannelId);
-
                     var channel = _guildInteractionService.GetChannelById(ulong.Parse(channelId));
-                    await channel.SendMessageAsync($"Look who is live now ... {stream.Username} - {stream.Title}");
+
+                    // TODO Get Users for the Avatar, Username, Followers, TotalViews
+                    // TODO Get Game endpoint
+                    var message = await _messagingService.BuildMessage(group.LiveMessage, Platform.Twitch, guildId, channelId,
+                        null, stream.Id, stream.Username, stream.GameId, stream.Title,
+                        $"https://twitch.tv/{stream.Username}", 0, 0, stream.ThumbnailUrl);
+
+                    await channel.SendMessageAsync($" ", false, message.Embed);
                 }
             }
         }
