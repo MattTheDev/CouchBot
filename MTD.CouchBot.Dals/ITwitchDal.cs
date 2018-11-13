@@ -11,5 +11,6 @@ namespace MTD.CouchBot.Dals
         Task<TwitchUserQueryResponse> GetTwitchUsersByIdsDelimitedList(string ids);
         Task<TwitchStreamQueryResponse> GetTwitchStreamByUserId(string id);
         Task<TwitchStreamQueryResponse> GetTwitchStreamsByUserIdsDelimitedList(string ids);
+        Task<TwitchGameQueryResponse> GetTwitchGamesByIdsDelimitedList(string ids);
     }
 }

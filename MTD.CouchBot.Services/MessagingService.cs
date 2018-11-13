@@ -113,6 +113,79 @@ namespace MTD.CouchBot.Services
             };
         }
 
+        public async Task<BroadcastMessage> BuildMessage(StreamToAnnounce streamToAnnounce, string baseMessage, string avatarUrl)
+        {
+            var embed = new EmbedBuilder();
+            var author = new EmbedAuthorBuilder();
+            var footer = new EmbedFooterBuilder();
+
+            switch (streamToAnnounce.Platform)
+            {
+                case Platform.Mixer:
+                    embed.Color = Constants.Blue;
+                    embed.ThumbnailUrl = avatarUrl != null ?
+                            avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
+                            "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                    footer.IconUrl = "http://couchbot.io/img/mixer2.png";
+                    break;
+                case Platform.Twitch:
+                    embed.Color = Constants.Purple;
+                    embed.ThumbnailUrl = avatarUrl != null ?
+                            avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
+                            "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
+                    footer.IconUrl = "http://couchbot.io/img/twitch.jpg";
+                    break;
+                case Platform.YouTube:
+                    embed.Color = Constants.Red;
+                    embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+                    footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
+                    break;
+            }
+
+            embed.Description = baseMessage
+                    .Replace("%CHANNEL%", Format.Sanitize(streamToAnnounce.CreatorChannelName))
+                    .Replace("%GAME%", streamToAnnounce.Game)
+                    .Replace("%TITLE%", streamToAnnounce.Title)
+                    .Replace("%URL%", streamToAnnounce.CreatorChannelUrl);
+
+            if (!string.IsNullOrEmpty(streamToAnnounce.Game))
+            {
+                embed.Fields.Add(new EmbedFieldBuilder()
+                {
+                    IsInline = true,
+                    Name = "Game",
+                    Value = streamToAnnounce.Game
+                });
+            }
+
+            embed.Fields.Add(new EmbedFieldBuilder()
+            {
+                IsInline = true,
+                Name = "Followers",
+                Value = followers
+            });
+
+            embed.Fields.Add(new EmbedFieldBuilder()
+            {
+                IsInline = true,
+                Name = "Total Views",
+                Value = totalViews
+            });
+
+            embed.ImageUrl = thumbnailUrl.Replace("{height}", "648").Replace("{width}", "1152");
+
+            return new BroadcastMessage
+            {
+                Platform = platform,
+                ChannelId = channelId,
+                DeleteOffline = true,
+                Embed = embed.Build(),
+                GuildId = guildId,
+                Message = baseMessage,
+                CreatorChannelID = creatorChannelId
+            };
+        }
+
         //public async Task<BroadcastMessage> BuildMessage(string baseMessage, string channel, string gameName, string title, string url,
         //    string avatarUrl, string thumbnailUrl, string platform, string channelId, ulong discordChannelId, string teamName, )
         //{
