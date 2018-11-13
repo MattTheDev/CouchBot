@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MTD.CouchBot.Domain.Dtos.Twitch
 {
-    public class TwitchStreamQueryResponse
+    public class TwitchStreamQueryResponse : ITwitchQueryResponse
     {
         [JsonProperty("data")]
         public List<Stream> Streams { get; set; }

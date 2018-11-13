@@ -89,6 +89,7 @@ namespace MTD.CouchBot.Core
             .AddSingleton<StartupService>()
             .AddSingleton<CommandHandler>()
             .AddSingleton<LoggingService>()
+            .AddSingleton<MessagingService>()
             .AddSingleton<GuildInteractionService>()
             .AddSingleton<PlatformService>()
             .AddSingleton<TimerService>()

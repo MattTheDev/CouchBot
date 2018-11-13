@@ -18,7 +18,7 @@ namespace MTD.CouchBot.Dals.Implementations
             _configuration = configuration;
         }
 
-        private async Task<TwitchUserQueryResponse> GetTwitchUserQueryResponse(string url)
+        private async Task<T> GetTwitchQueryResponse<T>(string url) where T : ITwitchQueryResponse
         {
             if (string.IsNullOrEmpty(_configuration["Keys:TwitchClientId"]))
             {
@@ -34,70 +34,49 @@ namespace MTD.CouchBot.Dals.Implementations
 
                     response.EnsureSuccessStatusCode();
 
-                    return JsonConvert.DeserializeObject<TwitchUserQueryResponse>(await response.Content.ReadAsStringAsync());
+                    return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
                 }
             }
             catch (Exception)
             {
                 // TODO ERROR LOGGING DAMN YOU
-                return null;
-            }
-        }
-
-        private async Task<TwitchStreamQueryResponse> GetTwitchStreamQueryResponse(string url)
-        {
-            if (string.IsNullOrEmpty(_configuration["Keys:TwitchClientId"]))
-            {
-                throw new TwitchClientIdMissingException("BotConfig.json is missing your Twitch Client-Id");
-            }
-
-            try
-            {
-                using (var client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Add("Client-Id", _configuration["Keys:TwitchClientId"]);
-                    var response = await client.GetAsync(url);
-
-                    response.EnsureSuccessStatusCode();
-
-                    return JsonConvert.DeserializeObject<TwitchStreamQueryResponse>(await response.Content.ReadAsStringAsync());
-                }
-            }
-            catch (Exception)
-            {
-                // TODO ERROR LOGGING DAMN YOU
-                return null;
+                return default(T);
             }
         }
 
         public async Task<TwitchUserQueryResponse> GetTwitchUserById(string id)
         {
-            return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?id={id}");
+            return await GetTwitchQueryResponse<TwitchUserQueryResponse>($"{_baseApiUrl}users?id={id}");
         }
 
         public async Task<TwitchUserQueryResponse> GetTwitchUserByLoginName(string loginName)
         {
-            return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?login={loginName}");
+            return await GetTwitchQueryResponse<TwitchUserQueryResponse>($"{_baseApiUrl}users?login={loginName}");
         }
 
         public async Task<TwitchUserQueryResponse> GetTwitchUsersByIdsDelimitedList(string ids)
         {
-            return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?{ids}");
+            return await GetTwitchQueryResponse<TwitchUserQueryResponse>($"{_baseApiUrl}users?{ids}");
         }
 
         public async Task<TwitchUserQueryResponse> GetTwitchUsersByLoginNameDelimitedList(string loginNames)
         {
-            return await GetTwitchUserQueryResponse($"{_baseApiUrl}users?{loginNames}");
+            return await GetTwitchQueryResponse<TwitchUserQueryResponse>($"{_baseApiUrl}users?{loginNames}");
         }
 
         public async Task<TwitchStreamQueryResponse> GetTwitchStreamByUserId(string id)
         {
-            return await GetTwitchStreamQueryResponse($"{_baseApiUrl}streams?user_id={id}");
+            return await GetTwitchQueryResponse<TwitchStreamQueryResponse>($"{_baseApiUrl}streams?user_id={id}");
         }
 
         public async Task<TwitchStreamQueryResponse> GetTwitchStreamsByUserIdsDelimitedList(string ids)
         {
-            return await GetTwitchStreamQueryResponse($"{_baseApiUrl}streams?{ids}");
+            return await GetTwitchQueryResponse<TwitchStreamQueryResponse>($"{_baseApiUrl}streams?{ids}");
+        }
+
+        public async Task<TwitchGameQueryResponse> GetTwitchGamesByIdsDelimitedList(string ids)
+        {
+            return await GetTwitchQueryResponse<TwitchGameQueryResponse>($"{_baseApiUrl}games?id={ids}");
         }
     }
 }

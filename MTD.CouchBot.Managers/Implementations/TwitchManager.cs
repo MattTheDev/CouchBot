@@ -24,6 +24,11 @@ namespace MTD.CouchBot.Managers.Implementations
             return await _twitchDal.GetTwitchStreamsByUserIdsDelimitedList($"&user_id={string.Join("&user_id=", ids)}");
         }
 
+        public async Task<TwitchGameQueryResponse> GetTwitchGamesByIdsDelimitedList(List<string> ids)
+        {
+            return await _twitchDal.GetTwitchGamesByIdsDelimitedList($"&id={string.Join("&id=", ids)}");
+        }
+
         public async Task<TwitchUserQueryResponse> GetTwitchUserById(string id)
         {
             return await _twitchDal.GetTwitchUserById(id);

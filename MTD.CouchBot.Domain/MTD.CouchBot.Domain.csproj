@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <Reference Include="Discord.Net.Core">
-      <HintPath>..\..\..\Users\dawge\.nuget\packages\discord.net.core\2.0.0-beta\lib\netstandard1.3\Discord.Net.Core.dll</HintPath>
+      <HintPath>..\..\..\Users\msmith\.nuget\packages\discord.net.core\2.0.0-beta\lib\netstandard1.3\Discord.Net.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 
