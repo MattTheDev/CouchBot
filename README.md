@@ -19,4 +19,3 @@ A self host version of this bot will come out eventually. For more info, check o
 The CouchBot simple tutorial can be found in the CouchBot Wiki: https://github.com/dawgeth/CouchBot/wiki/Setup-Tutorial
 
 Twitter: http://twitter.com/mattthedev
-
