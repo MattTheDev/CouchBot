@@ -374,7 +374,7 @@ namespace MTD.CouchBot.Services
                                         embedBuilder.Description = server.LiveMessage
                                             .Replace("%CHANNEL%", Format.Sanitize(stream.User.Username))
                                             .Replace("%TITLE%", stream.Title)
-                                            .Replace("%URL%", streamUrl); 
+                                            .Replace("%URL%", streamUrl);
 
                                         embedBuilder.AddField(f =>
                                         {
@@ -1465,7 +1465,7 @@ namespace MTD.CouchBot.Services
                                 continue;
                             }
 
-                            if(!server.AllowVodcasts && stream.stream_type == Constants.TwitchTypeVodcast)
+                            if (!server.AllowVodcasts && stream.stream_type == Constants.TwitchTypeVodcast)
                             {
                                 continue;
                             }
@@ -1519,7 +1519,7 @@ namespace MTD.CouchBot.Services
                                         {
                                             channel.ChannelMessages.AddRange(
                                                 await _messagingService.SendMessages(Constants.Twitch,
-                                                    new List<BroadcastMessage> {message}));
+                                                    new List<BroadcastMessage> { message }));
                                         }
 
                                         File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.TwitchDirectory + stream.channel._id.ToString() + ".json",
@@ -1600,7 +1600,7 @@ namespace MTD.CouchBot.Services
 
                             // Get currently live channel from Live/Twitch, if it exists.
                             var channel = liveChannels.FirstOrDefault(x => x.Name == stream.channel._id.ToString());
-                            
+
                             if (stream != null)
                             {
                                 var chat = await _discordService.GetMessageChannel(server.Id, server.GoLiveChannel);
@@ -1844,7 +1844,7 @@ namespace MTD.CouchBot.Services
                 // TODO TEST THIS AND LINE # 2034 AND LINE # 2038
                 var users = await guild.GetUsersAsync();
                 var streamingUsers = users.Where(u => u.Activity != null && u.Activity.Type == Discord.ActivityType.Streaming).ToList();
-                
+
                 if (streamingUsers == null || streamingUsers.Count == 0)
                 {
                     continue;
@@ -1859,40 +1859,41 @@ namespace MTD.CouchBot.Services
                         StreamingGame activity;
                         try
                         {
-                            activity = (StreamingGame) u.Activity;
+                            activity = (StreamingGame)u.Activity;
+
+
+                            if (activity.Url.Contains("twitch.tv") && !activity.Name.Contains("nowlivebot") && !activity.Url.Contains("nowlivebot.com"))
+                            {
+                                var details = new ChannelDetails
+                                {
+                                    Name = activity.Url.Replace("https://twitch.tv/", "").Replace("https://www.twitch.tv/", "").Replace("http://www.twitch.tv/", "").Replace("'", "").Replace("%20", ""),
+                                    DiscordUserId = u.Id
+                                };
+
+                                twitchChannelDetailsList.Add(details);
+
+                                if (server.LiveTwitchRole != 0)
+                                {
+                                    var role = guild.GetRole(server.LiveTwitchRole);
+
+                                    if (role != null)
+                                    {
+                                        try
+                                        {
+                                            await u.AddRoleAsync(role);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Logging.LogError($"Error Adding Role in Server {server.Id}: {e.Message} - {e.StackTrace}");
+                                        }
+                                    }
+                                }
+                            }
                         }
                         catch (Exception ex)
                         {
                             // Invalid game
                             continue;
-                        }
-
-                        if (activity.Url.Contains("twitch.tv") && !activity.Name.Contains("nowlivebot") && !activity.Url.Contains("nowlivebot.com"))
-                        {
-                            var details = new ChannelDetails
-                            {
-                                Name = activity.Url.Replace("https://twitch.tv/", "").Replace("https://www.twitch.tv/", "").Replace("http://www.twitch.tv/", "").Replace("'", "").Replace("%20", ""),
-                                DiscordUserId = u.Id
-                            };
-
-                            twitchChannelDetailsList.Add(details);
-
-                            if (server.LiveTwitchRole != 0)
-                            {
-                                var role = guild.GetRole(server.LiveTwitchRole);
-
-                                if (role != null)
-                                {
-                                    try
-                                    {
-                                        await u.AddRoleAsync(role);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Logging.LogError($"Error Adding Role in Server {server.Id}: {e.Message} - {e.StackTrace}");
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -2476,7 +2477,7 @@ namespace MTD.CouchBot.Services
             }
             catch (Exception ex)
             {
-// Do nothing
+                // Do nothing
             }
         }
 
