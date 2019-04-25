@@ -1,22 +1,20 @@
-﻿using Discord;
-using Discord.Commands;
-using Microsoft.Extensions.Options;
-using MTD.CouchBot.Domain;
-using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Domain.Utilities;
-using MTD.CouchBot.Managers;
-using MTD.CouchBot.Models.Bot;
-using MTD.CouchBot.Modules;
-using MTD.CouchBot.Services;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Microsoft.Extensions.Options;
+using MTD.CouchBot.Domain;
+using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Managers;
+using MTD.CouchBot.Models.Bot;
+using MTD.CouchBot.Services;
+using Newtonsoft.Json;
 
-namespace MTD.DiscordBot.Modules
+namespace MTD.CouchBot.Modules
 {
     [Group("twitch")]
     public class Twitch : BaseModule
@@ -43,7 +41,6 @@ namespace MTD.DiscordBot.Modules
             }
 
             var twitchChannelId = await _twitchManager.GetTwitchIdByLogin(name);
-            var twitchChannel = await _twitchManager.GetTwitchChannelById(twitchChannelId);
 
             if (string.IsNullOrEmpty(twitchChannelId))
             {
@@ -95,7 +92,6 @@ namespace MTD.DiscordBot.Modules
             }
 
             var twitchChannelId = await _twitchManager.GetTwitchIdByLogin(name);
-            var twitchChannel = await _twitchManager.GetTwitchChannelById(twitchChannelId);
 
             if (string.IsNullOrEmpty(twitchChannelId))
             {
@@ -139,7 +135,6 @@ namespace MTD.DiscordBot.Modules
             }
 
             var twitchChannelId = await _twitchManager.GetTwitchIdByLogin(name);
-            var twitchChannel = await _twitchManager.GetTwitchChannelById(twitchChannelId);
 
             if (string.IsNullOrEmpty(twitchChannelId))
             {
@@ -227,7 +222,7 @@ namespace MTD.DiscordBot.Modules
             
             var url = stream.channel.url;
             var name = Format.Sanitize(stream.channel.display_name);
-            var avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
+            var avatarUrl = stream.channel.logo ?? "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
             var thumbnailUrl = stream.preview.large;
             
             var message = await _messagingService.BuildMessage(name, stream.game, stream.channel.status, url, avatarUrl,
@@ -482,7 +477,6 @@ namespace MTD.DiscordBot.Modules
 
             foreach (var u in users)
             {
-                // TODO - I changed this.
                 if (u.Activity != null && u.Activity.Type == ActivityType.Streaming)
                 {
                     try

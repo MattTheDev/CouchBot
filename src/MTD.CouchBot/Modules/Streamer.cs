@@ -1,15 +1,10 @@
-﻿using System;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.Options;
-using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Services;
-using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,18 +18,15 @@ namespace MTD.CouchBot.Modules
         private readonly ITwitchManager _twitchManager;
         private readonly IMobcrushManager _mobCrushManager;
         private readonly IPiczelManager _piczelManager;
-        private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
         private readonly DiscordShardedClient _discord;
 
-        public Streamer(IYouTubeManager youTubeManager, IMixerManager mixerManager, ITwitchManager twitchManager,
-            IOptions<BotSettings> botSettings, FileService fileService, IMobcrushManager mobCrushManager,
+        public Streamer(IYouTubeManager youTubeManager, IMixerManager mixerManager, ITwitchManager twitchManager, FileService fileService, IMobcrushManager mobCrushManager,
             DiscordShardedClient discord, IPiczelManager piczelManager)
         {
             _youtubeManager = youTubeManager;
             _twitchManager = twitchManager;
             _mixerManager = mixerManager;
-            _botSettings = botSettings.Value;
             _fileService = fileService;
             _mobCrushManager = mobCrushManager;
             _discord = discord;
@@ -82,7 +74,6 @@ namespace MTD.CouchBot.Modules
         [Command("list")]
         public async Task List(string platform)
         {
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
             var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
 
             var builder = new EmbedBuilder();
@@ -90,7 +81,6 @@ namespace MTD.CouchBot.Modules
             var footerBuilder = new EmbedFooterBuilder();
 
             var creators = new List<string>();
-            var checkedList = new List<string>();
             var owner = "Not Set";
 
             var error = "";
@@ -429,14 +419,18 @@ namespace MTD.CouchBot.Modules
             builder.Footer = footerBuilder;
 
             await Context.Channel.SendMessageAsync("", false, builder.Build());
-            await pendingMessage.DeleteAsync();
+
+            if (pendingMessage != null)
+            {
+                await pendingMessage.DeleteAsync();
+            }
 
             // Cleanup duplicates
-            server.ServerBeamChannelIds = server.ServerBeamChannelIds.Distinct().ToList();
-            server.ServerHitboxChannels = server.ServerHitboxChannels.Distinct().ToList();
-            server.ServerMobcrushIds = server.ServerMobcrushIds.Distinct().ToList();
-            server.ServerTwitchChannelIds = server.ServerTwitchChannelIds.Distinct().ToList();
-            server.ServerYouTubeChannelIds = server.ServerYouTubeChannelIds.Distinct().ToList();
+            server.ServerBeamChannelIds = server.ServerBeamChannelIds?.Distinct().ToList();
+            server.ServerHitboxChannels = server.ServerHitboxChannels?.Distinct().ToList();
+            server.ServerMobcrushIds = server.ServerMobcrushIds?.Distinct().ToList();
+            server.ServerTwitchChannelIds = server.ServerTwitchChannelIds?.Distinct().ToList();
+            server.ServerYouTubeChannelIds = server.ServerYouTubeChannelIds?.Distinct().ToList();
 
             _fileService.SaveDiscordServer(server);
         }
@@ -512,7 +506,7 @@ namespace MTD.CouchBot.Modules
                     {
                         var channel = await _twitchManager.GetStreamById(t.Name);
 
-                        if (channel != null && channel.stream != null)
+                        if (channel?.stream != null)
                         {
                             twitchLive += channel.stream.channel.name + ", ";
                         }

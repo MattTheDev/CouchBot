@@ -1,18 +1,17 @@
-﻿using Discord;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Models.Bot;
-using MTD.CouchBot.Modules;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 
-namespace MTD.DiscordBot.Modules
+namespace MTD.CouchBot.Modules
 {
     [Group("youtube")]
     public class YouTube : BaseModule
@@ -222,12 +221,6 @@ namespace MTD.DiscordBot.Modules
             var url = await _youTubeManager.GetPreviewUrl(videoId);
             builder.ImageUrl = url;
             await Context.Channel.SendMessageAsync("", false, builder.Build());
-        }
-
-        [Command("raid")]
-        public async Task Raid()
-        {
-            
         }
     }
 }

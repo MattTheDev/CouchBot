@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
 {
@@ -247,7 +247,7 @@ namespace MTD.CouchBot.Modules
                     f.IsInline = false;
                 });
 
-                await Context.Channel.SendMessageAsync("", false, embedBuilder.Build(), null);
+                await Context.Channel.SendMessageAsync("", false, embedBuilder.Build());
             }
             else
             {

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
@@ -16,6 +9,13 @@ using MTD.CouchBot.Managers;
 using MTD.CouchBot.Models.Bot;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
 {
@@ -90,11 +90,11 @@ namespace MTD.CouchBot.Modules
 
             if (!server.ServerBeamChannelIds.Contains(channel.id.ToString()))
             {
-                server.ServerBeamChannelIds.Add(channel.id.Value.ToString());
+                server.ServerBeamChannelIds.Add(channel.id?.ToString());
 
                 if (_botSettings.PlatformSettings.EnableMixer)
                 {
-                    await _mixerService.SubscribeToLiveAnnouncements(channel.id.Value.ToString());
+                    await _mixerService.SubscribeToLiveAnnouncements(channel.id?.ToString());
 
                     if(channel.online)
                     {
@@ -141,9 +141,9 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            if (server.ServerBeamChannelIds.Contains(beamChannel.id.Value.ToString()))
+            if (server.ServerBeamChannelIds.Contains(beamChannel.id?.ToString()))
             {
-                server.ServerBeamChannelIds.Remove(beamChannel.id.Value.ToString());
+                server.ServerBeamChannelIds.Remove(beamChannel.id?.ToString());
                 await _fileService.SaveDiscordServer(server, Context.Guild);
                 await Context.Channel.SendMessageAsync("Removed " + beamChannel.user.username + " from the server Mixer streamer list.");
             }
@@ -178,7 +178,7 @@ namespace MTD.CouchBot.Modules
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
             }
 
-            if (server.ServerBeamChannelIds != null && server.ServerBeamChannelIds.Contains(beamChannel.id.Value.ToString()))
+            if (server.ServerBeamChannelIds != null && server.ServerBeamChannelIds.Contains(beamChannel.id?.ToString()))
             {
                 await Context.Channel.SendMessageAsync("The channel " + beamChannel.user.username + " is in the list of server Mixer Channels. " +
                     "Please remove it with '!cb mixer remove " + beamChannel.user.username + "' and then retry setting your owner channel.");
@@ -186,8 +186,8 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            server.OwnerBeamChannelId = beamChannel.id.Value.ToString();
-            await _mixerService.SubscribeToLiveAnnouncements(beamChannel.id.Value.ToString());
+            server.OwnerBeamChannelId = beamChannel.id?.ToString();
+            await _mixerService.SubscribeToLiveAnnouncements(beamChannel.id?.ToString());
             await _fileService.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Owner Mixer Channel has been set to " + beamChannel.user.username + ".");
         }
@@ -234,7 +234,7 @@ namespace MTD.CouchBot.Modules
                 var url = "http://mixer.com/" + channel.token;
                 var avatarUrl = channel.user.avatarUrl != null ? channel.user.avatarUrl : "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
                 var thumbnailUrl = "https://thumbs.mixer.com/channel/" + channel.id + ".small.jpg";
-                var channelId = channel.id.Value.ToString();
+                var channelId = channel.id?.ToString();
 
                 var mixerChannel = await _mixerManager.GetChannelById(channelId);
 
@@ -297,6 +297,7 @@ namespace MTD.CouchBot.Modules
                     var start = 75 * i;
                     var length = 75;
 
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if ((i + 1) == amountOfTeams)
                     {
                         length = teamUsers.Count - (i * 75);

@@ -1,12 +1,11 @@
-﻿using System;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -15,15 +14,13 @@ namespace MTD.CouchBot.Modules
     [Group("config")]
     public class Config : BaseModule
     {
-        private readonly DiscordService _discordService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
         private readonly DiscordShardedClient _discord;
 
-        public Config(DiscordService discordService, IOptions<BotSettings> botSettings, FileService fileService, DiscordShardedClient discord) 
+        public Config(IOptions<BotSettings> botSettings, FileService fileService, DiscordShardedClient discord) 
             : base(botSettings)
         {
-            _discordService = discordService;
             _botSettings = botSettings.Value;
             _fileService = fileService;
             _discord = discord;
@@ -293,14 +290,7 @@ namespace MTD.CouchBot.Modules
             if (File.Exists(file))
                 server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
-            if (role.Name.ToLower().Contains("everyone"))
-            {
-                server.MentionRole = 0;
-            }
-            else
-            {
-                server.MentionRole = role.Id;
-            }
+            server.MentionRole = role.Name.ToLower().Contains("everyone") ? 0 : role.Id;
 
             await _fileService.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("Mention Role has been set to: " + role.Name);

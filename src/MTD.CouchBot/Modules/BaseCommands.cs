@@ -17,23 +17,16 @@ namespace MTD.CouchBot.Modules
     {
         private readonly IYouTubeManager _youtubeManager;
         private readonly DiscordShardedClient _discord;
-        private readonly DiscordService _discordService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
-        private readonly PlatformService _platformService;
-        private readonly CommandService _commandService;
 
-        public BaseCommands(IYouTubeManager youtubeManager, 
-            DiscordService discordService, DiscordShardedClient discord, CommandService commandService,
-            IOptions<BotSettings> botSettings, FileService fileService, PlatformService platformService) : base(botSettings)
+        public BaseCommands(IYouTubeManager youtubeManager, DiscordShardedClient discord, 
+            IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings)
         {
             _youtubeManager = youtubeManager;
-            _discordService = discordService;
             _discord = discord;
             _botSettings = botSettings.Value;
             _fileService = fileService;
-            _platformService = platformService;
-            _commandService = commandService;
         }
 
         [Command("info"), Summary("Get CouchBot Information.")]
@@ -169,7 +162,7 @@ namespace MTD.CouchBot.Modules
               "- Move: " + channelPermissions.MoveMembers + "\r\n" +
               "- Mute: " + channelPermissions.MuteMembers + "\r\n" +
               "- **Read History**: " + channelPermissions.ReadMessageHistory + "\r\n" +
-              "- **Read**: " + channelPermissions.ReadMessages + "\r\n" +
+              "- **Read**: " + channelPermissions.ViewChannel + "\r\n" +
               "- **Send**: " + channelPermissions.SendMessages + "\r\n" +
               "- Send TTS: " + channelPermissions.SendTTSMessages + "\r\n" +
               "- Speak: " + channelPermissions.Speak + "\r\n" +

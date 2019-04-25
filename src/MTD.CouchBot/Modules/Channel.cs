@@ -232,8 +232,6 @@ namespace MTD.CouchBot.Modules
                         server.OwnerTwitterChannel = 0;
                         label = "All";
                         break;
-                    default:
-                        break;
                 }
 
                 if (!string.IsNullOrEmpty(label))

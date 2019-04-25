@@ -1,26 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Enums;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
 {
     [Group("Role")]
     public class Role : BaseModule
     {
-        private readonly DiscordShardedClient _discord;
         private readonly FileService _fileService;
 
-        public Role(IOptions<BotSettings> botSettings, DiscordShardedClient discord, FileService fileService) : base(botSettings)
+        public Role(IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings)
         {
-            _discord = discord;
             _fileService = fileService;
         }
 
@@ -79,7 +76,7 @@ namespace MTD.CouchBot.Modules
 
             _fileService.SaveDiscordServer(server);
             await Context.Channel.SendMessageAsync(
-                $"Your auto role phrase has been removed.");
+                "Your auto role phrase has been removed.");
         }
 
         [Command("List")]
@@ -103,7 +100,7 @@ namespace MTD.CouchBot.Modules
 
                 if (role == null)
                 {
-                    roles.Append($"Removed. Role invalid.");
+                    roles.Append("Removed. Role invalid.");
                     toRemove.Add(rp);
                 }
                 else
@@ -122,8 +119,7 @@ namespace MTD.CouchBot.Modules
 
             _fileService.SaveDiscordServer(server);
 
-            var embedBuilder = new EmbedBuilder();
-            embedBuilder.Description = "Your current auto role phrases... ";
+            var embedBuilder = new EmbedBuilder {Description = "Your current auto role phrases... "};
 
             if (!string.IsNullOrEmpty(phrases.ToString()))
             {

@@ -55,7 +55,7 @@ namespace MTD.CouchBot.Modules
         }
 
         [Command("add")]
-        public async Task Add(string command, int cooldown, string output, bool repeat, int interval, Discord.IGuildChannel channel)
+        public async Task Add(string command, int cooldown, string output, bool repeat, int interval, IGuildChannel channel)
         {
             if (!IsAdmin)
             {

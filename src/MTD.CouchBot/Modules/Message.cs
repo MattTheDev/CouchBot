@@ -8,9 +8,7 @@ using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
@@ -21,14 +19,12 @@ namespace MTD.CouchBot.Modules
         private readonly MessagingService _messagingService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
-        private readonly DiscordShardedClient _discord;
 
-        public Message(MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService, DiscordShardedClient discord) : base(botSettings)
+        public Message(MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings)
         {
             _messagingService = messagingService;
             _botSettings = botSettings.Value;
             _fileService = fileService;
-            _discord = discord;
         }
 
         [Command("live")]
@@ -141,8 +137,6 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var guild = ((IGuildUser)Context.Message.Author).Guild;
-
             var user = ((IGuildUser)Context.Message.Author);
 
             if (!user.GuildPermissions.ManageGuild)
@@ -160,11 +154,11 @@ namespace MTD.CouchBot.Modules
                     {
                         var options = new RequestOptions();
                         options.RetryMode = RetryMode.AlwaysRetry;
-                        var msg = await Context.Channel.SendMessageAsync(message.Message, false, message.Embed, options);
+                        await Context.Channel.SendMessageAsync(message.Message, false, message.Embed, options);
                     }
                     else
                     {
-                        var msg = await Context.Channel.SendMessageAsync(message.Message);
+                        await Context.Channel.SendMessageAsync(message.Message);
                     }
                 }
                 catch (Exception ex)

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
 using Newtonsoft.Json;
 using System.IO;
-using System.Linq;
 
 namespace MTD.CouchBot.Modules
 {
@@ -42,6 +41,11 @@ namespace MTD.CouchBot.Modules
 
                 if (File.Exists(file))
                     server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
+
+                if (server == null)
+                {
+                    return false;
+                }
 
                 if ((server.ApprovedAdmins != null && server.ApprovedAdmins.Contains(Context.User.Id)) || IsAdmin)
                 {

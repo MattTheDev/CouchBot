@@ -136,7 +136,7 @@ namespace MTD.CouchBot.Modules
                     var name = "";
                     if (guild.GreetingMessage.Contains("%RANDOMUSER%"))
                     {
-                        var users = (await Context.Guild.GetUsersAsync(CacheMode.AllowDownload));
+                        var users = (await Context.Guild.GetUsersAsync());
 
                         var random = new Random().Next(0, users.Count - 1);
                         var user = users.ElementAt(random);
