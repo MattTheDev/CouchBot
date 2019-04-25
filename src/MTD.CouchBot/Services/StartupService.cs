@@ -15,15 +15,18 @@ namespace MTD.CouchBot.Services
         private readonly DiscordShardedClient _discord;
         private readonly CommandService _commands;
         private readonly BotSettings _botSettings;
+        private readonly IServiceProvider _serviceProvider;
 
         public StartupService(
             DiscordShardedClient discord,
             CommandService commands,
-            IOptions<BotSettings> botSettings)
+            IOptions<BotSettings> botSettings, 
+            IServiceProvider serviceProvider)
         {
             _botSettings = botSettings.Value;
             _discord = discord;
             _commands = commands;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task StartAsync()
@@ -38,7 +41,7 @@ namespace MTD.CouchBot.Services
             await _discord.LoginAsync(TokenType.Bot, discordToken);     
             await _discord.StartAsync();                                
 
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly());
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
 
             Logging.LogInfo("Completed - Logging In");
         }
