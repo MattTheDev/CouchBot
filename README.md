@@ -3,7 +3,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f37e6c619ab14e49acb5b2259db2fe6a)](https://www.codacy.com/app/MattTheDev/CouchBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MattTheDev/CouchBot&amp;utm_campaign=Badge_Grade)
  
 Let your Discord community know when you go live on Mixer (formerly Beam), Mobcrush, Smashcast (formerly Hitbox), Twitch, or YouTube Gaming! Want to let your friends know when you publish a new YouTube or Vid.me Video? Want to make a list of your favorite streamers, and get notified when they go live? CouchBot does that too!
-
+ 
 **Platforms Supported**
 1. Mixer (Formerly Beam) (http://mixer.com)
 2. Mobcrush (http://mobcrush.com)
