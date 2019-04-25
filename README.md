@@ -11,7 +11,7 @@ Let your Discord community know when you go live on Mixer (formerly Beam), Mobcr
 4. Smashcast (Formerly Hitbox) (http://smashcast.tv)
 5. Twitch (http://twitch.tv)
 6. YouTube and YouTube Gaming (http://youtube.com / http://gaming.youtube.com)
-
+   
 **The Website**
 A self host version of this bot will come out eventually. For more info, check out http://couchbot.mattthedev.codes.
 
