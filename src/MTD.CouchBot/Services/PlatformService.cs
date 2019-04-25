@@ -151,7 +151,7 @@ namespace MTD.CouchBot.Services
                                             author.Url = streamUrl;
                                             embedBuilder.Author = author;
 
-                                            footer.IconUrl = "https://couchbot.io/img/piczel.png";
+                                            footer.IconUrl = "https://mattthedev.codes/img/piczel.png";
                                             footer.Text = "[Piczel] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                                             embedBuilder.Footer = footer;
 
@@ -362,7 +362,7 @@ namespace MTD.CouchBot.Services
                                         author.Url = streamUrl;
                                         embedBuilder.Author = author;
 
-                                        footer.IconUrl = "https://couchbot.io/img/piczel.png";
+                                        footer.IconUrl = "https://mattthedev.codes/img/piczel.png";
                                         footer.Text = "[Piczel] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                                         embedBuilder.Footer = footer;
 
@@ -2384,7 +2384,7 @@ namespace MTD.CouchBot.Services
                             author.Url = url;
                             footer.Text = "[" + Constants.YouTube + "] - " +
                                           DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                            footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
+                            footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
                             embed.Author = author;
                             embed.Color = red;
                             embed.Description = server.PublishedMessage
@@ -2579,7 +2579,7 @@ namespace MTD.CouchBot.Services
                     author.Name = _discord.CurrentUser.Username;
                     author.Url = url;
                     footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                    footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
+                    footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
                     embed.Author = author;
                     embed.Color = red;
                     embed.Description = server.PublishedMessage.Replace("%CHANNEL%", Format.Sanitize(video.snippet.channelTitle)).Replace("%GAME%", "A game").Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);

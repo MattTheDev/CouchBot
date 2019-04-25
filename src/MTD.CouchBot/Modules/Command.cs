@@ -117,13 +117,13 @@ namespace MTD.CouchBot.Modules
 
             authorBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             authorBuilder.Name = _discord.CurrentUser.Username;
-            authorBuilder.Url = "http://couchbot.io";
+            authorBuilder.Url = "http://mattthedev.codes";
 
             footerBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             footerBuilder.Text = $"[CouchBot] - {DateTime.UtcNow.AddHours(server.TimeZoneOffset)}";
 
             builder.Description = "This server has the following custom commands:";
-            builder.Url = "http://couchbot.io";
+            builder.Url = "http://mattthedev.codes";
 
             builder.Author = authorBuilder;
             builder.Footer = footerBuilder;

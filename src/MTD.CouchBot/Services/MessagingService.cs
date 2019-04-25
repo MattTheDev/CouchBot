@@ -58,14 +58,14 @@ namespace MTD.CouchBot.Services
             author.Name = ((IGuildUser)user).Nickname ?? _discord.CurrentUser.Username;
             author.Url = url;
             footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-            footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
+            footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
             embed.Author = author;
             embed.Color = red;
             embed.Description = _stringService.AnnouncementText(server.PublishedMessage, "Test Channel", "Test Title", url, "");
 
             embed.Title = "Test Channel published a new video!";
-            embed.ThumbnailUrl = "http://couchbot.io/img/bot/vader.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-            embed.ImageUrl = server.AllowThumbnails ? "http://couchbot.io/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
+            embed.ThumbnailUrl = "http://mattthedev.codes/img/bot/vader.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+            embed.ImageUrl = server.AllowThumbnails ? "http://mattthedev.codes/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
             
             var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
@@ -123,7 +123,7 @@ namespace MTD.CouchBot.Services
                 return null;
 
             var gameName = "A game"; ;
-            var url = "http://couchbot.io";
+            var url = "http://mattthedev.codes";
 
             var embed = new EmbedBuilder();
             var author = new EmbedAuthorBuilder();
@@ -139,36 +139,36 @@ namespace MTD.CouchBot.Services
             {
                 color = new Color(100, 65, 164);
                 footer.Text = "[" + Constants.Twitch + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                footer.IconUrl = "http://couchbot.io/img/twitch.jpg";
+                footer.IconUrl = "http://mattthedev.codes/img/twitch.jpg";
             }
             else if (platform.Equals(Constants.YouTube) || platform.Equals(Constants.YouTubeGaming))
             {
                 color = new Color(179, 18, 23);
                 footer.Text = "[" + Constants.YouTubeGaming + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
+                footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
             }
             else if (platform.Equals(Constants.Smashcast))
             {
                 color = new Color(153, 204, 0);
                 footer.Text = "[" + Constants.Smashcast + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                footer.IconUrl = "http://couchbot.io/img/smashcast2.png";
+                footer.IconUrl = "http://mattthedev.codes/img/smashcast2.png";
             }
             else if (platform.Equals(Constants.Mixer))
             {
                 color = new Color(76, 144, 243);
                 footer.Text = "[" + Constants.Mixer + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                footer.IconUrl = "http://couchbot.io/img/mixer2.png";
+                footer.IconUrl = "http://mattthedev.codes/img/mixer2.png";
             }
 
-            author.IconUrl = (user.GetAvatarUrl() != null ? user.GetAvatarUrl() : "http://couchbot.io/img/bot/discord.png") + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+            author.IconUrl = (user.GetAvatarUrl() != null ? user.GetAvatarUrl() : "http://mattthedev.codes/img/bot/discord.png") + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
             author.Name = ((IGuildUser)user).Nickname ?? _discord.CurrentUser.Username;
             author.Url = url;
             embed.Author = author;
             embed.Color = color;
             embed.Description = _stringService.AnnouncementText(server.LiveMessage, "Test Channel", "Test Title", url, "");
             embed.Title = "Test Channel has gone live!";
-            embed.ThumbnailUrl = "http://couchbot.io/img/bot/vader.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-            embed.ImageUrl = server.AllowThumbnails ? "http://couchbot.io/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
+            embed.ThumbnailUrl = "http://mattthedev.codes/img/bot/vader.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+            embed.ImageUrl = server.AllowThumbnails ? "http://mattthedev.codes/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
 
             embed.Fields.Add(new EmbedFieldBuilder()
@@ -293,14 +293,14 @@ namespace MTD.CouchBot.Services
                 embed.ThumbnailUrl = avatarUrl != null ?
                         avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
                         "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
-                footer.IconUrl = "http://couchbot.io/img/mixer2.png";
+                footer.IconUrl = "http://mattthedev.codes/img/mixer2.png";
                 allowEveryone = owner ? server.AllowMentionOwnerMixerLive : server.AllowMentionMixerLive;
             }
             else if (platform.Equals(Constants.YouTubeGaming))
             {
                 embed.Color = Constants.Red;
                 embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                footer.IconUrl = "http://couchbot.io/img/ytg.jpg";
+                footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
                 allowEveryone = owner ? server.AllowMentionOwnerYouTubeLive : server.AllowMentionYouTubeLive;
             }
             else if (platform.Equals(Constants.Twitch))
@@ -309,21 +309,21 @@ namespace MTD.CouchBot.Services
                 embed.ThumbnailUrl = avatarUrl != null ?
                         avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
                         "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
-                footer.IconUrl = "http://couchbot.io/img/twitch.jpg";
+                footer.IconUrl = "http://mattthedev.codes/img/twitch.jpg";
                 allowEveryone = owner ? server.AllowMentionOwnerTwitchLive : server.AllowMentionTwitchLive;
             }
             else if (platform.Equals(Constants.Smashcast))
             {
                 embed.Color = Constants.Green;
                 embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                footer.IconUrl = "http://couchbot.io/img/smashcast2.png";
+                footer.IconUrl = "http://mattthedev.codes/img/smashcast2.png";
                 allowEveryone = owner ? server.AllowMentionOwnerSmashcastLive : server.AllowMentionSmashcastLive;
             }
             else if (platform.Equals(Constants.Mobcrush))
             {
                 embed.Color = Constants.Yellow;
                 embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                footer.IconUrl = "http://couchbot.io/img/mobcrush.jpg";
+                footer.IconUrl = "http://mattthedev.codes/img/mobcrush.jpg";
                 allowEveryone = owner ? server.AllowMentionOwnerMobcrushLive : server.AllowMentionMobcrushLive;
             }
 

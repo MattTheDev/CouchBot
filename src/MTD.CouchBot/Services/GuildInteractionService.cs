@@ -33,26 +33,8 @@ namespace MTD.CouchBot.Services
             _discord.LeftGuild += Client_LeftGuild;
             _discord.UserJoined += Client_UserJoined;
             _discord.UserLeft += Client_UserLeft;
-            _discord.MessageReceived += _discord_MessageReceived;
         }
-
-        public async Task _discord_MessageReceived(SocketMessage arg)
-        {
-            //try
-            //{
-            //    var channel = (IPrivateChannel)arg.Channel;
-
-            //    await arg.Author.SendMessageAsync("Good Lord! I'm a Bot, I can't hold a conversation!! ;( ;( ;( \r\n\r\n Please join <http://discord.couchbot.io> if you need help!");
-            //    var user = _discord.GetUser(93015586698727424);
-            //    var dm = await user.GetOrCreateDMChannelAsync();
-            //    await dm.SendMessageAsync("DM Received from " + arg.Author.Username + "(" + arg.Author.Id + "): " + arg.Content);
-            //}
-            //catch(InvalidCastException)
-            //{
-            //    // Do nothing. It's cool.
-            //}
-        }
-
+        
         public void FixGuilds()
         {
             var files = _fileService.GetConfiguredServerPaths();
@@ -96,26 +78,6 @@ namespace MTD.CouchBot.Services
 
         public async Task Client_JoinedGuild(IGuild arg)
         {
-            //var whitelist = _fileService.GetWhitelistedServers();
-
-            //if (!whitelist.Contains(arg.Id.ToString()))
-            //{
-            //    var user = _discord.GetUser(arg.OwnerId);
-            //    var dm = await user.GetOrCreateDMChannelAsync();
-
-            //    await dm.SendMessageAsync("Please note - CouchBot is a Patron / Premium Bot as of early November 2017.\r\n\r\n" +
-            //                              "Thank you for your interest in CouchBot - the Content Creator and Streamer's Discord Bot!\r\n\r\n" +
-            //                              "Access to CouchBot is gained via $1 / month - this can be done very easily our website.\r\n\r\n" +
-            //                              "<https://couchbot.io/clients/cart.php>\r\n" + 
-            //                              "Use Promo Code: TRIAL2018 for 1 month free!\r\n\r\n" +
-            //                              "When signing up, provide your name and your User and Server Id (<https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID->) and Ill get you added to the whitelist.\r\n\r\n" +
-            //                              "Questions / Concerns? Don't hesitate to reach out <http://discord.couchbot.io> or message <@93015586698727424>.");
-
-            //    await arg.LeaveAsync();
-
-            //    return;
-            //}
-
             await CreateGuild(arg);
         }
 

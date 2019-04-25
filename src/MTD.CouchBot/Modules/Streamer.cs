@@ -52,13 +52,13 @@ namespace MTD.CouchBot.Modules
 
             authorBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             authorBuilder.Name = _discord.CurrentUser.Username;
-            authorBuilder.Url = "http://couchbot.io";
+            authorBuilder.Url = "http://mattthedev.codes";
 
             footerBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             footerBuilder.Text = $"[CouchBot] - {DateTime.UtcNow.AddHours(server.TimeZoneOffset)}";
 
             builder.Description = "To list the streamers you've configured for your server, please type one of the following commands:";
-            builder.Url = "http://couchbot.io";
+            builder.Url = "http://mattthedev.codes";
 
             builder.Author = authorBuilder;
             builder.Footer = footerBuilder;
@@ -148,7 +148,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
                     
-                    builder.ThumbnailUrl = "http://couchbot.io/img/mixer2.png";
+                    builder.ThumbnailUrl = "http://mattthedev.codes/img/mixer2.png";
 
                     break;
                 case "mobcrush":
@@ -198,7 +198,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://couchbot.io/img/mobcrush.jpg";
+                    builder.ThumbnailUrl = "http://mattthedev.codes/img/mobcrush.jpg";
 
                     break;
                 case "picarto":
@@ -263,7 +263,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://couchbot.io/img/piczeltv.png";
+                    builder.ThumbnailUrl = "http://mattthedev.codes/img/piczeltv.png";
 
                     break;
                 case "smashcast":
@@ -279,7 +279,7 @@ namespace MTD.CouchBot.Modules
                     }
 
                     owner = (string.IsNullOrEmpty(server.OwnerHitboxChannel) ? "Not Set" : server.OwnerHitboxChannel);
-                    builder.ThumbnailUrl = "http://couchbot.io/img/smashcast2.png";
+                    builder.ThumbnailUrl = "http://mattthedev.codes/img/smashcast2.png";
 
                     break;
                 case "twitch":
@@ -330,7 +330,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://couchbot.io/img/twitch2.png";
+                    builder.ThumbnailUrl = "http://mattthedev.codes/img/twitch2.png";
 
                     break;
                 case "youtube":
@@ -357,7 +357,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://couchbot.io/img/yt.png";
+                    builder.ThumbnailUrl = "http://mattthedev.codes/img/yt.png";
 
                     break;
                 default:
@@ -388,12 +388,12 @@ namespace MTD.CouchBot.Modules
 
             authorBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             authorBuilder.Name = _discord.CurrentUser.Username;
-            authorBuilder.Url = "http://couchbot.io";
+            authorBuilder.Url = "http://mattthedev.codes";
 
             footerBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             footerBuilder.Text = $"[CouchBot] - {DateTime.UtcNow.AddHours(server.TimeZoneOffset)}";
 
-            builder.Url = "http://couchbot.io";
+            builder.Url = "http://mattthedev.codes";
 
             if (!string.IsNullOrEmpty(error))
             {

@@ -153,7 +153,7 @@ namespace MTD.CouchBot.Services
             return servers;
         }
 
-        public List<DiscordServer> GetConfiguredServersWithTwitter()
+        public List<DiscordServer> GetConfiguredServersWithPublishedChannel()
         {
             var servers = new List<DiscordServer>();
 
@@ -169,7 +169,7 @@ namespace MTD.CouchBot.Services
                         continue;
                     }
 
-                    if ((server.Id == 0 || server.TwitterChannel == 0 || server.TwitterIds.Count == 0))
+                    if ((server.Id == 0 || server.PublishedChannel == 0) && (server.Id == 0 || server.OwnerPublishedChannel == 0))
                     {
                         continue;
                     }
@@ -185,37 +185,6 @@ namespace MTD.CouchBot.Services
             return servers;
         }
 
-        public List<DiscordServer> GetConfiguredServersWithOwnerTwitter()
-        {
-            var servers = new List<DiscordServer>();
-
-            // Get Servers
-            foreach (var s in Directory.GetFiles(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory))
-            {
-                try
-                {
-                    var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
-
-                    if (!server.AllowLive)
-                    {
-                        continue;
-                    }
-
-                    if ((server.Id == 0 || server.OwnerTwitterChannel == 0 || server.OwnerTwitterId == 0))
-                    {
-                        continue;
-                    }
-
-                    servers.Add(server);
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-
-            return servers;
-        }
 
         public List<DiscordServer> GetServersWithLiveChannelAndAllowDiscover()
         {

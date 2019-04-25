@@ -8,7 +8,6 @@ using MTD.CouchBot.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using EmbedBuilder = Discord.EmbedBuilder;
 
@@ -51,7 +50,7 @@ namespace MTD.CouchBot.Modules
 
             authorBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             authorBuilder.Name = _discord.CurrentUser.Username;
-            authorBuilder.Url = "http://couchbot.io";
+            authorBuilder.Url = "http://couchbot.mattthedev.codes";
 
             footerBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             footerBuilder.Text = $"[CouchBot] - {DateTime.UtcNow.AddHours(server.TimeZoneOffset)}";
@@ -106,9 +105,7 @@ namespace MTD.CouchBot.Modules
                 Name = "Even More Info!",
                 Value = "- Current Memory Usage: " + ((System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024) / 1024) + "MB \r\n" +
                         "- Developed and Maintained by Matt - http://twitter.com/MattTheDev \r\n" +
-                        "- Roadmap - http://roadmap.couchbot.io \r\n" +
-                        "- Suggestions? - http://ideas.couchbot.io \r\n" +
-                        "- Join us on Discord!- http://discord.couchbot.io \r\n",
+                        "- Join us on Discord!- http://discord.mattthedev.codes \r\n",
                 IsInline = false
             });
 
@@ -353,21 +350,6 @@ namespace MTD.CouchBot.Modules
             await Context.Channel.SendMessageAsync($"Your server's prefix has been set to: {prefix}");
         }
 
-        [Command("count")]
-        [Alias("#")]
-        public async Task MemberCount()
-        {
-            var guild = (SocketGuild)await Context.Client.GetGuildAsync(Context.Guild.Id);
-
-            await Context.Channel.SendMessageAsync($"There are currently {guild.Users.Count} users here. " +
-                    // TODO - I changed this.
-                    $"{guild.Users.Where(x => x.Activity != null && x.Activity.Type == ActivityType.Streaming).Count(x => x.Activity.Name.Contains("twitch.tv"))} are Streaming on Twitch. " +
-                    $"{guild.Users.Count(x => x.Status == UserStatus.AFK)} aren't here right now. " +
-                    $"{guild.Users.Count(x => x.Status == UserStatus.DoNotDisturb)} don't want to be disturbed. " +
-                    $"{guild.Users.Count(x => x.Status == UserStatus.Idle)} are idling... doing who knows what. " +
-                    $"{guild.Users.Count(x => x.IsBot)} are bots.");
-        }
-
         [Command("disclaimer")]
         public async Task Disclaimer()
         {
@@ -378,6 +360,20 @@ namespace MTD.CouchBot.Modules
                 "Thank you,\r\n" +
                 "Dawgeth/Matt\r\n" +
                 "Couch Commander Supreme");
+        }
+
+        [Command("audit")]
+        public async Task Audit()
+        {
+            var allServersConfigured = _fileService.GetConfiguredServers();
+            var allServersConfiguredWithLive = _fileService.GetConfiguredServersWithLiveChannel();
+            var allServersConfiguredWithPublished = _fileService.GetConfiguredServersWithPublishedChannel();
+            var totalConnected = _discord.Guilds.Count;
+
+            await Context.Channel.SendMessageAsync($"Currently connected to {totalConnected} guilds.\r\n" +
+                                                   $"- {allServersConfigured.Count} are configured.\r\n" +
+                                                   $"- {allServersConfiguredWithLive.Count} have a live channel set.\r\n" +
+                                                   $"- {allServersConfiguredWithPublished.Count} have a published channel set.\r\n");
         }
     }
 }

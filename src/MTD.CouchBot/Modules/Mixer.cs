@@ -323,7 +323,7 @@ namespace MTD.CouchBot.Modules
             authorBuilder.IconUrl = $"{_discord.CurrentUser.GetAvatarUrl()}?_={Guid.NewGuid().ToString().Replace("-", "")}";
             authorBuilder.Name = _discord.CurrentUser.Username;
 
-            footerBuilder.IconUrl = "http://couchbot.io/img/mixer2.png";
+            footerBuilder.IconUrl = "http://mattthedev.codes/img/mixer2.png";
             footerBuilder.Text = $"Mixer Team Information for {team.name} ({token})";
             builder.Author = authorBuilder;
             builder.Footer = footerBuilder;

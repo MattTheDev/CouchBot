@@ -3,14 +3,14 @@
     "DiscordToken": "",
     "TwitchClientId": "",
     "YouTubeApiKey": "",
-    "MixerClientId":  ""
+    "MixerClientId": ""
   },
   "BotConfig": {
     "CouchBotId": 0,
     "Prefix": "!cb",
     "TotalShards": 1,
     "OwnerId": 0,
-    "EnableSendingMessages":  true 
+    "EnableSendingMessages": true
   },
   "DirectorySettings": {
     "ConfigRootDirectory": "C:\\programdata\\CouchBot\\",
