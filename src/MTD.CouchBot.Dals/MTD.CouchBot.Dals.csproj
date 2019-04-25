@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
+    <PackageReference Include="MySql.Data" Version="8.0.8-dmr" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MTD.CouchBot.Domain\MTD.CouchBot.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

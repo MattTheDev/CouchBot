@@ -1,0 +1,48 @@
+{
+  "KeySettings": {
+    "DiscordToken": "",
+    "TwitchClientId": "",
+    "YouTubeApiKey": "",
+    "MixerClientId":  ""
+  },
+  "BotConfig": {
+    "CouchBotId": 0,
+    "Prefix": "!cb",
+    "TotalShards": 1,
+    "OwnerId": 0,
+    "EnableSendingMessages":  true 
+  },
+  "DirectorySettings": {
+    "ConfigRootDirectory": "C:\\programdata\\CouchBot\\",
+    "GuildDirectory": "Guilds\\",
+    "LiveDirectory": "Live\\",
+    "MixerDirectory": "Mixer\\",
+    "PicartoDirectory": "Picarto\\",
+    "SmashcastDirectory": "Smashcast\\",
+    "TwitchDirectory": "Twitch\\",
+    "YouTubeDirectory": "YouTube\\",
+    "MobcrushDirectory": "Mobcrush\\",
+    "PiczelDirectory": "Piczel\\"
+  },
+  "PlatformSettings": {
+    "EnableMixer": false,
+    "EnableMobcrush": false,
+    "EnableSmashcast": false,
+    "EnableTwitch": false,
+    "EnableYouTube": true,
+    "EnablePicarto": false,
+    "EnableTwitter": false,
+    "EnablePiczel": false
+  },
+  "IntervalSettings": {
+    "Picarto": 120000,
+    "Piczel": 120000,
+    "Smashcast": 120000,
+    "Twitch": 30000,
+    "YouTubePublished": 900000,
+    "YouTubeLive": 30000,
+    "Mobcrush": 60000,
+    "TwitchServer": 6000000,
+    "Twitter": 30000
+  }
+}

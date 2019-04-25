@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="2.0.0-beta" />
+    <PackageReference Include="Discord.Net.Commands" Version="2.0.0-beta" />
+    <PackageReference Include="Discord.Net.Core" Version="2.0.0-beta" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.29.1.760" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.1" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
+    <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MTD.CouchBot.Domain\MTD.CouchBot.Domain.csproj" />
+    <ProjectReference Include="..\MTD.CouchBot.Managers\MTD.CouchBot.Managers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="BotSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
