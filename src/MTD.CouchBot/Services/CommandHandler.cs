@@ -1,13 +1,9 @@
-﻿using Discord;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
 using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using MTD.CouchBot.Domain.Enums;
 
 namespace MTD.CouchBot.Services
 {

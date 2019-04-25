@@ -1,14 +1,14 @@
 ﻿using Discord;
+using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.WebSocket;
-using MTD.CouchBot.Domain.Utilities;
 
 namespace MTD.CouchBot.Services
 {

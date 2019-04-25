@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Utilities;
-using MTD.CouchBot.Managers;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;

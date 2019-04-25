@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Utilities;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
