@@ -38,6 +38,7 @@ namespace MTD.CouchBot.Services
             _discordService = discordService;
             _botSettings = botSettings.Value;
             _fileService = fileService;
+            _loggingService = loggingService;
         }
 
         public WebSocketState Status()
