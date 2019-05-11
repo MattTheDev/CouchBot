@@ -1,29 +1,60 @@
-﻿using System;
+﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using Microsoft.Extensions.Options;
+using MTD.CouchBot.Domain;
+using MTD.CouchBot.Domain.Models.Bot;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Domain.Utilities
+namespace MTD.CouchBot.Services
 {
-    public static class Logging
+    public class LoggingService
     {
         private static object _messageLog = new object();
 
-        public static void LogError(string message)
+        private readonly DiscordShardedClient _discord;
+        private readonly CommandService _commands;
+        private readonly BotSettings _botSettings;
+
+        private string _logDirectory { get; }
+        private string _logFile => Path.Combine(_logDirectory, $"{DateTime.UtcNow.ToString("yyyy-MM-dd")}.txt");
+
+        public LoggingService(DiscordShardedClient discord, CommandService commands, IOptions<BotSettings> botSettings)
         {
-            lock (_messageLog)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("[Error]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
-            }
+            _logDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
+
+            _discord = discord;
+            _commands = commands;
+            _botSettings = botSettings.Value;
+
+            _discord.Log += OnLogAsync;
+            _commands.Log += OnLogAsync;
         }
 
-        public static void LogInfo(string message)
+        public async Task LogError(string message)
+        {
+            var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordConsoleChannelId);
+
+            await ((IMessageChannel)guildChannel).SendMessageAsync($"[Error] [{DateTime.UtcNow}] - {message}");
+        }
+
+        private Task OnLogAsync(LogMessage msg)
+        {
+            if (!Directory.Exists(_logDirectory))     // Create the log directory if it doesn't exist
+                Directory.CreateDirectory(_logDirectory);
+            if (!File.Exists(_logFile))               // Create today's log file if it doesn't exist
+                File.Create(_logFile).Dispose();
+
+            string logText = $"{DateTime.UtcNow.ToString("hh:mm:ss")} [{msg.Severity}] {msg.Source}: {msg.Exception?.ToString() ?? msg.Message}";
+            File.AppendAllText(_logFile, logText + "\n");     // Write the log text to a file
+
+            return Console.Out.WriteLineAsync(logText);       // Write the log text to the console
+        }
+
+        /**** LEGACY - NEEDS TO BE REMOVED ****/
+        public void LogInfo(string message)
         {
             lock (_messageLog)
             {
@@ -38,7 +69,7 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static void LogMixer(string message)
+        public void LogMixer(string message)
         {
             lock (_messageLog)
             {
@@ -53,7 +84,7 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static void LogTwitch(string message)
+        public void LogTwitch(string message)
         {
             lock (_messageLog)
             {
@@ -68,7 +99,7 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static void LogYouTube(string message)
+        public void LogYouTube(string message)
         {
             lock (_messageLog)
             {
@@ -83,7 +114,7 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static void LogYouTubeGaming(string message)
+        public void LogYouTubeGaming(string message)
         {
             lock (_messageLog)
             {
@@ -98,7 +129,7 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static void LogSmashcast(string message)
+        public void LogSmashcast(string message)
         {
             lock (_messageLog)
             {
@@ -113,7 +144,7 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static void LogPicarto(string message)
+        public void LogPicarto(string message)
         {
             lock (_messageLog)
             {
@@ -127,8 +158,8 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.ResetColor();
             }
         }
-        
-        public static void LogPiczel(string message)
+
+        public void LogPiczel(string message)
         {
             lock (_messageLog)
             {
@@ -143,7 +174,7 @@ namespace MTD.CouchBot.Domain.Utilities
             }
         }
 
-        public static void LogMobcrush(string message)
+        public void LogMobcrush(string message)
         {
             lock (_messageLog)
             {
@@ -156,26 +187,6 @@ namespace MTD.CouchBot.Domain.Utilities
                 Console.WriteLine(" " + message);
                 Console.ResetColor();
             }
-        }
-
-        public static void LogTwitter(string message)
-        {
-            lock (_messageLog)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write("[" + Constants.Twitter + "]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
-            }
-        }
-
-        public static async Task LogMixerFile(string message)
-        {
-            await File.AppendAllTextAsync($"C:\\ProgramData\\CouchBot\\MixerLog_{DateTime.Now.Month}{DateTime.Now.Day}{DateTime.Now.Year}.txt", message + "\r\n");
         }
     }
 }

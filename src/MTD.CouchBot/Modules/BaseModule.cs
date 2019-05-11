@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Services;
 using Newtonsoft.Json;
 using System.IO;
 
@@ -10,13 +11,14 @@ namespace MTD.CouchBot.Modules
     public class BaseModule : ModuleBase
     {
         private readonly BotSettings _botSettings;
+        private readonly FileService _fileService;
         
-        public BaseModule(IOptions<BotSettings> botSettings)
+        public BaseModule(IOptions<BotSettings> botSettings, FileService fileService)
         {
             _botSettings = botSettings.Value;
+            _fileService = fileService;
         }
-
-
+        
         public bool IsAdmin
         {
             get
@@ -31,6 +33,7 @@ namespace MTD.CouchBot.Modules
                 return true;
             }
         }
+
         public bool IsApprovedAdmin
         {
             get
@@ -71,6 +74,11 @@ namespace MTD.CouchBot.Modules
 
                 return user.GuildPermissions.ManageRoles;
             }
+        }
+
+        public DiscordServer GetServer()
+        {
+            return _fileService.GetConfiguredServerById(Context.Guild.Id);
         }
     }
 }

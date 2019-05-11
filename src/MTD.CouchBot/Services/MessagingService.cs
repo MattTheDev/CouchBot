@@ -19,18 +19,20 @@ namespace MTD.CouchBot.Services
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
         private readonly StringService _stringService;
+        private readonly LoggingService _loggingService;
 
         public MessagingService(DiscordShardedClient discord, DiscordService discordService, IOptions<BotSettings> botSettings, FileService fileService,
-            StringService stringService)
+            StringService stringService, LoggingService loggingService)
         {
             _discord = discord;
             _discordService = discordService;
             _botSettings = botSettings.Value;
             _fileService = fileService;
             _stringService = stringService;
+            _loggingService = loggingService;
         }
 
-        public async Task<BroadcastMessage> BuildTestPublishedMessage(SocketUser user, ulong guildId, ulong channelId)
+        public BroadcastMessage BuildTestPublishedMessage(SocketUser user, ulong guildId, ulong channelId)
         {
             var servers = _fileService.GetConfiguredServers();
             var server = servers.FirstOrDefault(x => x.Id == guildId);
@@ -66,7 +68,7 @@ namespace MTD.CouchBot.Services
             embed.ImageUrl = server.AllowThumbnails ? "http://mattthedev.codes/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
             
-            var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+            var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
             var roleName = "";
 
             if (role == null && server.MentionRole != 1)
@@ -112,7 +114,7 @@ namespace MTD.CouchBot.Services
             return broadcastMessage;
         }
 
-        public async Task<BroadcastMessage> BuildTestMessage(SocketUser user, ulong guildId, ulong channelId, string platform)
+        public BroadcastMessage BuildTestMessage(SocketUser user, ulong guildId, ulong channelId, string platform)
         {
             var servers = _fileService.GetConfiguredServers();
             var server = servers.FirstOrDefault(x => x.Id == guildId);
@@ -120,7 +122,6 @@ namespace MTD.CouchBot.Services
             if (server == null)
                 return null;
 
-            var gameName = "A game"; ;
             var url = "http://mattthedev.codes";
 
             var embed = new EmbedBuilder();
@@ -205,7 +206,7 @@ namespace MTD.CouchBot.Services
                 Value = communities.Count > 0 ? String.Join(", ", communities) : "None"
             });
 
-            var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+            var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
             var roleName = "";
 
             if (role == null && server.MentionRole != 1)
@@ -251,7 +252,7 @@ namespace MTD.CouchBot.Services
             return broadcastMessage;
         }
 
-        public async Task<BroadcastMessage> BuildMessage(string channel,
+        public BroadcastMessage BuildMessage(string channel,
             string gameName, string title, string url, string avatarUrl, string thumbnailUrl, string platform,
             string channelId, DiscordServer server, ulong discordChannelId, string teamName, bool owner,
             int? viewers = null, int? totalViews = null, int? followers = null)
@@ -370,7 +371,7 @@ namespace MTD.CouchBot.Services
                 }
             }
 
-            var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+            var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
             var roleName = "";
 
             if (role == null && server.MentionRole != 1)
@@ -459,7 +460,7 @@ namespace MTD.CouchBot.Services
                     }
                     catch (Exception ex)
                     {
-                        Logging.LogError("Send Message Error: " + ex.Message + " in server " + message.GuildId);
+                        await _loggingService.LogError("Send Message Error: " + ex.Message + " in server " + message.GuildId);
                     }
                 }
             }

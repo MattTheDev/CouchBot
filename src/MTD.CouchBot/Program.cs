@@ -24,36 +24,26 @@ namespace MTD.CouchBot
 
         public async Task Start()
         {
-            Logging.LogInfo("Starting the Bot.");
-            Logging.LogInfo("Building the Configuration.");
             var builder = new ConfigurationBuilder()    
                 .SetBasePath(AppContext.BaseDirectory)  
                 .AddJsonFile("BotSettings.json"); 
             _config = builder.Build();
-            Logging.LogInfo("Completed - Building the Configuration.");
 
-            Logging.LogInfo("Configuring the Services");
             var provider = ConfigureServices();
-            Logging.LogInfo("Completed - Configuring the Services");
                         
             await provider.GetRequiredService<StartupService>().StartAsync();
             provider.GetRequiredService<CommandHandler>();
+            provider.GetRequiredService<LoggingService>();
             _discord = provider.GetRequiredService<DiscordShardedClient>();
 
             while (_discord.CurrentUser == null)
             {
-                Logging.LogInfo("Waiting for User to Log In...");
-                Thread.Sleep(1000);
+                 Thread.Sleep(1000);
             }
 
-            Logging.LogInfo("Setting Up Event Handlers.");
             provider.GetRequiredService<GuildInteractionService>().Init();
-            Logging.LogInfo("Completed - Setting Up Event Handlers.");
-
-            Logging.LogInfo("Initializing Timers.");
             await provider.GetRequiredService<TimerQueueService>().Init();
-            Logging.LogInfo("Completed - Initializing Timers.");
-
+ 
             await Task.Delay(-1);
         }
 
@@ -73,6 +63,7 @@ namespace MTD.CouchBot
                 .AddSingleton<TimerQueueService>()
                 .AddSingleton<StringService>()
                 .AddSingleton<CustomCommandService>()
+                .AddSingleton<LoggingService>()
                 .AddSingleton<IMixerDal, MixerDal>()
                 .AddSingleton<IMobcrushDal, MobcrushDal>()
                 .AddSingleton<IPicartoDal, PicartoDal>()

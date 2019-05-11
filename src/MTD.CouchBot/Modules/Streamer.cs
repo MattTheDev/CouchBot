@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.Options;
+using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Services;
 using System;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Modules
 {
     [Group("streamer"), Alias("creator")]
-    public class Streamer : ModuleBase
+    public class Streamer : BaseModule
     {
         private readonly IYouTubeManager _youtubeManager;
         private readonly IMixerManager _mixerManager;
@@ -22,7 +24,7 @@ namespace MTD.CouchBot.Modules
         private readonly DiscordShardedClient _discord;
 
         public Streamer(IYouTubeManager youTubeManager, IMixerManager mixerManager, ITwitchManager twitchManager, FileService fileService, IMobcrushManager mobCrushManager,
-            DiscordShardedClient discord, IPiczelManager piczelManager)
+            DiscordShardedClient discord, IPiczelManager piczelManager, IOptions<BotSettings> botSettings) : base(botSettings, fileService)
         {
             _youtubeManager = youTubeManager;
             _twitchManager = twitchManager;
@@ -36,11 +38,11 @@ namespace MTD.CouchBot.Modules
         [Command("list")]
         public async Task List()
         {
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
-
             var builder = new EmbedBuilder();
             var authorBuilder = new EmbedAuthorBuilder();
             var footerBuilder = new EmbedFooterBuilder();
+
+            var server = GetServer();
 
             authorBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             authorBuilder.Name = _discord.CurrentUser.Username;
@@ -74,8 +76,6 @@ namespace MTD.CouchBot.Modules
         [Command("list")]
         public async Task List(string platform)
         {
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
-
             var builder = new EmbedBuilder();
             var authorBuilder = new EmbedAuthorBuilder();
             var footerBuilder = new EmbedFooterBuilder();
@@ -88,6 +88,8 @@ namespace MTD.CouchBot.Modules
 
             var badList = new List<string>();
             var goodList = new List<string>();
+
+            var server = GetServer();
 
             switch (platform.ToLower())
             {               

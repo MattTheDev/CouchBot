@@ -17,7 +17,7 @@ namespace MTD.CouchBot.Modules
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Piczel(IOptions<BotSettings> botSettings, IPiczelManager piczelManager, FileService fileService) : base(botSettings)
+        public Piczel(IOptions<BotSettings> botSettings, IPiczelManager piczelManager, FileService fileService) : base(botSettings, fileService)
         {
             _botSettings = botSettings.Value;
             _piczelManager = piczelManager;

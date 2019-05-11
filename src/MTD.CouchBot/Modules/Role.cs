@@ -16,7 +16,7 @@ namespace MTD.CouchBot.Modules
     {
         private readonly FileService _fileService;
 
-        public Role(IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings)
+        public Role(IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings, fileService)
         {
             _fileService = fileService;
         }
@@ -36,7 +36,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
 
             if (server.RoleCommands == null)
             {
@@ -63,7 +63,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
 
             if (server.RoleCommands == null)
             {
@@ -86,13 +86,13 @@ namespace MTD.CouchBot.Modules
             {
                 return;
             }
-
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            
             var phrases = new StringBuilder();
             var functions = new StringBuilder();
             var roles = new StringBuilder();
-
             var toRemove = new List<RoleCommand>();
+
+            var server = GetServer();
 
             foreach (var rp in server.RoleCommands)
             {

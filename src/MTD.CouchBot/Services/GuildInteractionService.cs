@@ -17,6 +17,7 @@ namespace MTD.CouchBot.Services
         private readonly DiscordShardedClient _discord;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
+        private readonly LoggingService _loggingService;
 
         public GuildInteractionService(DiscordShardedClient discord, IOptions<BotSettings> botSettings, FileService fileService)
         {
@@ -34,47 +35,6 @@ namespace MTD.CouchBot.Services
             _discord.UserJoined += Client_UserJoined;
             _discord.UserLeft += Client_UserLeft;
         }
-        
-        public void FixGuilds()
-        {
-            var files = _fileService.GetConfiguredServerPaths();
-            var badConfigurations = new List<DiscordServer>();
-
-            var count = 1;
-            foreach (var file in files)
-            {
-                Console.WriteLine("Processing " + count + " of " + files.Count);
-
-                var path = Path.GetFileNameWithoutExtension(file);
-                try
-                {
-                    var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
-
-                    server.AllowMentionMixerLive = server.AllowEveryone;
-                    server.AllowMentionMobcrushLive = server.AllowEveryone;
-                    server.AllowMentionPicartoLive = server.AllowEveryone;
-                    server.AllowMentionSmashcastLive = server.AllowEveryone;
-                    server.AllowMentionTwitchLive = server.AllowEveryone;
-                    server.AllowMentionYouTubeLive = server.AllowEveryone;
-                    server.AllowMentionOwnerLive = server.AllowEveryone;
-                    server.AllowMentionOwnerMixerLive = server.AllowEveryone;
-                    server.AllowMentionOwnerMobcrushLive = server.AllowEveryone;
-                    server.AllowMentionOwnerPicartoLive = server.AllowEveryone;
-                    server.AllowMentionOwnerSmashcastLive = server.AllowEveryone;
-                    server.AllowMentionOwnerTwitchLive = server.AllowEveryone;
-                    server.AllowMentionOwnerYouTubeLive = server.AllowEveryone;
-                    server.AllowMentionYouTubePublished = server.AllowEveryone;
-                    server.AllowMentionOwnerYouTubePublished = server.AllowEveryone;
-
-                    _fileService.SaveDiscordServer(server);
-                }
-                catch (Exception ex)
-                {
-                    Logging.LogError("Error in CheckGuildConfigurations: " + ex.Message);
-                }
-                count++;
-            }
-        }
 
         public async Task Client_JoinedGuild(IGuild arg)
         {
@@ -84,13 +44,12 @@ namespace MTD.CouchBot.Services
         public async Task Client_LeftGuild(IGuild arg)
         {
             File.Delete(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Id + ".json");
-
             //await SendLeftEmbed(arg.Name, arg.Id, (await arg.GetOwnerAsync()).Username, (await arg.GetUsersAsync()).Count, arg.CreatedAt.DateTime, arg.IconUrl, _discord.Guilds.Count);
         }
 
         private async Task Client_UserLeft(IGuildUser arg)
         {
-            await UpdateGuildUsers(arg.Guild);
+            UpdateGuildUsers(arg.Guild);
 
             var guild = new DiscordServer();
             var guildFile = _botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Guild.Id + ".json";
@@ -131,7 +90,7 @@ namespace MTD.CouchBot.Services
 
         private async Task Client_UserJoined(IGuildUser arg)
         {
-            await UpdateGuildUsers(arg.Guild);
+            UpdateGuildUsers(arg.Guild);
 
             var guild = new DiscordServer();
             var guildFile = _botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Guild.Id + ".json";
@@ -192,7 +151,7 @@ namespace MTD.CouchBot.Services
             File.WriteAllText(guildFile, guildJson);
         }
 
-        public async Task UpdateGuildUsers(IGuild arg)
+        public void UpdateGuildUsers(IGuild arg)
         {
             var guild = new DiscordServer();
             var guildFile = _botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Id + ".json";
@@ -207,7 +166,7 @@ namespace MTD.CouchBot.Services
             File.WriteAllText(guildFile, guildJson);
         }
 
-        public void CheckGuildConfigurations()
+        public async Task CheckGuildConfigurations()
         {
             var files = _fileService.GetConfiguredServerPaths();
             var badConfigurations = new List<DiscordServer>();
@@ -221,7 +180,7 @@ namespace MTD.CouchBot.Services
 
                     if (server.Id != ulong.Parse(path))
                     {
-                        Logging.LogInfo("Bad Configuration Found: " + path);
+                        _loggingService.LogInfo("Bad Configuration Found: " + path);
 
                         var guild = _discord.GetGuild(ulong.Parse(path));
 
@@ -239,12 +198,12 @@ namespace MTD.CouchBot.Services
 
                         _fileService.SaveDiscordServer(server);
 
-                        Logging.LogInfo("Server Configuration Fixed: " + path);
+                        _loggingService.LogInfo("Server Configuration Fixed: " + path);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogError("Error in CheckGuildConfigurations: " + ex.Message);
+                    await _loggingService.LogError("Error in CheckGuildConfigurations: " + ex.Message);
                 }
             }
         }

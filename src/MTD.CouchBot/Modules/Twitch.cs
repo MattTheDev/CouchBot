@@ -24,7 +24,8 @@ namespace MTD.CouchBot.Modules
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Twitch(ITwitchManager twitchManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings)
+        public Twitch(ITwitchManager twitchManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService) 
+            : base(botSettings, fileService)
         { 
             _twitchManager = twitchManager;
             _messagingService = messagingService;
@@ -225,7 +226,7 @@ namespace MTD.CouchBot.Modules
             var avatarUrl = stream.channel.logo ?? "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
             var thumbnailUrl = stream.preview.large;
             
-            var message = await _messagingService.BuildMessage(name, stream.game, stream.channel.status, url, avatarUrl,
+            var message = _messagingService.BuildMessage(name, stream.game, stream.channel.status, url, avatarUrl,
                                                     thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel, null, false,
                 stream.viewers, stream.channel.views, stream.channel.followers);
             await _messagingService.SendMessages(Constants.Twitch, new List<BroadcastMessage> { message });
@@ -581,7 +582,8 @@ namespace MTD.CouchBot.Modules
         {
             if (!IsAdmin) return;
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
+
             server.LiveTwitchRole = role.Id;
             _fileService.SaveDiscordServer(server);
             await Context.Channel.SendMessageAsync($"Your Live Twitch Role has been set to: {role.Name}");

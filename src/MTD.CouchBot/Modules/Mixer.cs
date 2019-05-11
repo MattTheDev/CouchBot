@@ -30,7 +30,7 @@ namespace MTD.CouchBot.Modules
         private readonly FileService _fileService;
 
         public Mixer(IMixerManager mixerManager, MessagingService messagingService, DiscordShardedClient discord, MixerConstellationService mixerService,
-            IOptions<BotSettings> botSettings, FileService fileService) : base (botSettings)
+            IOptions<BotSettings> botSettings, FileService fileService) : base (botSettings, fileService)
         {
             _mixerManager = mixerManager;
             _messagingService = messagingService;
@@ -238,7 +238,7 @@ namespace MTD.CouchBot.Modules
 
                 var mixerChannel = await _mixerManager.GetChannelById(channelId);
 
-                var message = await _messagingService.BuildMessage(channel.token, gameName, channel.name, url,
+                var message = _messagingService.BuildMessage(channel.token, gameName, channel.name, url,
                     avatarUrl, thumbnailUrl, Constants.Mixer, channelId, server, server.GoLiveChannel, isTeam ? team : null, false, channel.viewersCurrent, channel.viewersTotal, mixerChannel.numFollowers);
                 var sentMessage = await _messagingService.SendMessages(Constants.Mixer, new List<BroadcastMessage>() { message });
 
@@ -349,7 +349,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
 
             if (server.MixerTeams == null)
             {
@@ -390,7 +390,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
 
             if (server.MixerTeams == null)
             {
@@ -427,7 +427,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
 
             if (server.MixerTeams == null)
             {

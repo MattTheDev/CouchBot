@@ -9,45 +9,46 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Modules
 {
     [Group("admin")]
-    [Alias("a")]
+    [Alias("approvedadmin")]
     public class Admin : BaseModule
     {
         private readonly FileService _fileService;
 
-        public Admin(IOptions<BotSettings> botSettings, FileService fileService) : base (botSettings)
+        public Admin(IOptions<BotSettings> botSettings, FileService fileService) : base (botSettings, fileService)
         {
             _fileService = fileService;
         }
 
         [Command("add")]
+        [Alias("+")]
         public async Task Add(IGuildUser user)
         {
-            if(!IsAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
 
             if (server.ApprovedAdmins == null)
             {
                 server.ApprovedAdmins = new List<ulong>();
             }
 
-            if(server.ApprovedAdmins.Contains(user.Id))
+            if (server.ApprovedAdmins.Contains(user.Id))
             {
-                await Context.Channel.SendMessageAsync(user.Username + " is already on the approved admins list for this server.");
-
+                await Context.Channel.SendMessageAsync($"{user.Username} is already on the approved admins list for this server.");
                 return;
             }
 
             server.ApprovedAdmins.Add(user.Id);
             await _fileService.SaveDiscordServer(server, Context.Guild);
 
-            await Context.Channel.SendMessageAsync(user.Username + " has been added to the approved admin list for this server.");
+            await Context.Channel.SendMessageAsync($"{user.Username} has been added to the approved admin list for this server.");
         }
 
         [Command("remove")]
+        [Alias("-")]
         public async Task Remove(IGuildUser user)
         {
             if (!IsAdmin)
@@ -55,19 +56,18 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
 
             if (server.ApprovedAdmins == null || !server.ApprovedAdmins.Contains(user.Id))
             {
-                await Context.Channel.SendMessageAsync(user.Username + " is not on the approved admins list for this server.");
-
+                await Context.Channel.SendMessageAsync($"{user.Username} is not on the approved admins list for this server.");
                 return;
             }
 
             server.ApprovedAdmins.Remove(user.Id);
             await _fileService.SaveDiscordServer(server, Context.Guild);
 
-            await Context.Channel.SendMessageAsync(user.Username + " has been removed from the approved admin list for this server.");
+            await Context.Channel.SendMessageAsync($"{user.Username} has been removed from the approved admin list for this server.");
         }
 
         [Command("list")]
@@ -78,27 +78,23 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
 
-            if (server.ApprovedAdmins == null)
+            var admins = new List<string>();
+            if (server.ApprovedAdmins == null || server.ApprovedAdmins.Count == 0)
             {
-                server.ApprovedAdmins = new List<ulong>();
+                admins.Add("There are currently no approved admins.");
+            }
+            else
+            {
+                foreach (var aa in server.ApprovedAdmins)
+                {
+                    var user = await Context.Guild.GetUserAsync(aa);
+                    admins.Add(user.Nickname ?? user.Username);
+                }
             }
 
-            var admins = "";
-
-            foreach (var aa in server.ApprovedAdmins)
-            {
-                var user = await Context.Guild.GetUserAsync(aa);
-                admins += user.Username + ", ";
-            }
-
-            admins = admins.Trim().TrimEnd(',');
-
-            var info = "```Markdown\r\n" +
-              "# Server Approved Admins\r\n" +
-              admins + "\r\n" +
-              "```\r\n";
+            var info = $"```Markdown\r\n# Server Approved Admins\r\n{string.Join(", ", admins)}\r\n```\r\n";
 
             await Context.Channel.SendMessageAsync(info);
         }

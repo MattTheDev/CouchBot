@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 namespace MTD.CouchBot.Modules
 {
     [Group("channel"), Summary("Subset of Commands to configure server channels.")]
-    public class Channel : ModuleBase
+    public class Channel : BaseModule
     {
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Channel(IOptions<BotSettings> botSettings, FileService fileService)
+        public Channel(IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings, fileService)
         {
             _botSettings = botSettings.Value;
             _fileService = fileService;
@@ -125,50 +125,7 @@ namespace MTD.CouchBot.Modules
             await _fileService.SaveDiscordServer(server, Context.Guild);
             await Context.Channel.SendMessageAsync("The Owner Published Channel has been set.");
         }
-        
-        [Command("twitter")]
-        public async Task TwitterChannel(IGuildChannel guildChannel)
-        {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
-
-            if(server == null)
-            {
-                return;
-            }
-
-            server.TwitterChannel = guildChannel.Id;
-            await _fileService.SaveDiscordServer(server, Context.Guild);
-            await Context.Channel.SendMessageAsync("The Twitter Channel has been set.");
-        }
-
-        [Command("ownertwitter")]
-        public async Task OwnerTwitterChannel(IGuildChannel guildChannel)
-        {
-            var user = ((IGuildUser)Context.Message.Author);
-
-            if (!user.GuildPermissions.ManageGuild)
-            {
-                return;
-            }
-
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
-
-            if (server == null)
-            {
-                return;
-            }
-
-            server.OwnerTwitterChannel = guildChannel.Id;
-            await _fileService.SaveDiscordServer(server, Context.Guild);
-            await Context.Channel.SendMessageAsync("The Owner Twitter Channel has been set.");
-        }
+                
 
         [Command("clear"), Summary("Clears channels settings for a guild.")]
         public async Task Clear(string option)

@@ -22,7 +22,7 @@ namespace MTD.CouchBot.Modules
         private readonly FileService _fileService;
 
         public YouTube(IYouTubeManager youTubeManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService)
-            : base(botSettings)
+            : base(botSettings, fileService)
         {
             _youTubeManager = youTubeManager;
             _messagingService = messagingService;
@@ -202,7 +202,7 @@ namespace MTD.CouchBot.Modules
             var avatarUrl = channelData.items.Count > 0 ? channelData.items[0].snippet.thumbnails.high.url : "";
             var thumbnailUrl = video.snippet.thumbnails.high.url;
 
-            var message = await _messagingService.BuildMessage(channelTitle, "A game", video.snippet.title, url, avatarUrl, thumbnailUrl,
+            var message = _messagingService.BuildMessage(channelTitle, "A game", video.snippet.title, url, avatarUrl, thumbnailUrl,
                 Constants.YouTubeGaming, video.snippet.channelId, server, server.GoLiveChannel, null, false,
                 null, int.Parse(channelStats.items[0].statistics.viewCount), int.Parse(channelStats.items[0].statistics.subscriberCount));
             await _messagingService.SendMessages(Constants.YouTube, new List<BroadcastMessage>() { message });

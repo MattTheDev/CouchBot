@@ -112,8 +112,9 @@ namespace MTD.CouchBot.Dals.Implementations
             }
             catch(Exception ex)
             {
-                Logging.LogError("Error in GetTwitchIdsByLoginList. URL: " + url + " - Message: " + ex.Message + " - Stacktrace: + " + ex.StackTrace);
-                return null;
+                // TODO MS
+                //await _loggingService.LogError("Error in GetTwitchIdsByLoginList. URL: " + url + " - Message: " + ex.Message + " - Stacktrace: + " + ex.StackTrace);
+                //return null;
             }
 
             return userList;
@@ -141,7 +142,8 @@ namespace MTD.CouchBot.Dals.Implementations
             }
             catch (Exception ex)
             {
-                Logging.LogError("Error in GetTwitchIdsByLoginList. URL: " + url + " - Message: " + ex.Message + " - Stacktrace: + " + ex.StackTrace);
+                // TODO MS
+                //Logging.LogError("Error in GetTwitchIdsByLoginList. URL: " + url + " - Message: " + ex.Message + " - Stacktrace: + " + ex.StackTrace);
                 return null;
             }
         }
@@ -221,7 +223,8 @@ namespace MTD.CouchBot.Dals.Implementations
             }
             catch (Exception e)
             {
-                Logging.LogError($"Error in TwitchDal - GetDelimitedListOfTwitchMemberIds Token {teamToken}: {e.Message} {e.StackTrace}");
+                // TODO MS
+                //Logging.LogError($"Error in TwitchDal - GetDelimitedListOfTwitchMemberIds Token {teamToken}: {e.Message} {e.StackTrace}");
             }
 
             return response;

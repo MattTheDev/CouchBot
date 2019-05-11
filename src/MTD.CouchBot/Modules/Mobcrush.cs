@@ -21,7 +21,7 @@ namespace MTD.CouchBot.Modules
         private readonly FileService _fileService;
 
         public Mobcrush(IMobcrushManager mobcrushManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService)
-            : base (botSettings)
+            : base (botSettings, fileService)
         {
             _mobcrushManager = mobcrushManager;
             _messagingService = messagingService;
@@ -235,7 +235,7 @@ namespace MTD.CouchBot.Modules
                 var avatarUrl = user.ProfileLogo == null ? "http://cdn.mobcrush.com/static/images/default-profile-pic.png" : user.ProfileLogo;
                 var thumbnailUrl = "http://cdn.mobcrush.com/u/video/" + broadcast.Id + "/snapshot.jpg";
 
-                var message = await _messagingService.BuildMessage(channelName, gameName, "",
+                var message = _messagingService.BuildMessage(channelName, gameName, "",
                     url, avatarUrl, thumbnailUrl, Constants.Mobcrush, channelName, server, server.GoLiveChannel, null, false, user.ViewCount, null, user.FollowerCount);
                 await _messagingService.SendMessages(Constants.Mobcrush, new List<BroadcastMessage> { message });
             }

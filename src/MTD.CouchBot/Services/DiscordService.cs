@@ -41,7 +41,7 @@ namespace MTD.CouchBot.Services
             return channel;
         }
 
-        public async Task<IRole> GetRoleByGuildAndId(ulong guildId, ulong roleId)
+        public IRole GetRoleByGuildAndId(ulong guildId, ulong roleId)
         {
             IGuild guild = null;
             IRole role = null;

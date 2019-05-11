@@ -21,7 +21,7 @@ namespace MTD.CouchBot.Modules
         private readonly FileService _fileService;
 
         public Smashcast(ISmashcastManager smashcastManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService)
-            : base(botSettings)
+            : base(botSettings, fileService)
         {
             _smashcastManager = smashcastManager;
             _messagingService = messagingService;
@@ -194,7 +194,7 @@ namespace MTD.CouchBot.Modules
                 var avatarUrl = "http://edge.sf.hitbox.tv" + stream.livestream[0].channel.user_logo;
                 var thumbnailUrl = "http://edge.sf.hitbox.tv" + stream.livestream[0].media_thumbnail_large;
 
-                var message = await _messagingService.BuildMessage(channelName, gameName, stream.livestream[0].media_status,
+                var message = _messagingService.BuildMessage(channelName, gameName, stream.livestream[0].media_status,
                     url, avatarUrl, thumbnailUrl, Constants.Smashcast, channelName, server, server.GoLiveChannel, null, false);
                 await _messagingService.SendMessages(Constants.Smashcast, new List<BroadcastMessage>() { message });
             }

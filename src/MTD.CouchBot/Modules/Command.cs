@@ -21,7 +21,7 @@ namespace MTD.CouchBot.Modules
         private readonly FileService _fileService;
         private readonly DiscordShardedClient _discord;
 
-        public Command(IOptions<BotSettings> botSettings, FileService fileService, DiscordShardedClient discord) : base(botSettings)
+        public Command(IOptions<BotSettings> botSettings, FileService fileService, DiscordShardedClient discord) : base(botSettings, fileService)
         {
             _botSettings = botSettings.Value;
             _fileService = fileService;
@@ -109,7 +109,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
 
             var builder = new EmbedBuilder();
             var authorBuilder = new EmbedAuthorBuilder();

@@ -74,7 +74,8 @@ namespace MTD.CouchBot.Dals.Implementations
             }
             catch(Exception ex)
             {
-                Logging.LogError("Error in GetVideoById: " + ex.Message); 
+                // TODO MS
+                //Logging.LogError("Error in GetVideoById: " + ex.Message); 
             }
 
             return null;

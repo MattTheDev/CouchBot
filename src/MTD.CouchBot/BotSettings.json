@@ -10,7 +10,8 @@
     "Prefix": "!cb",
     "TotalShards": 1,
     "OwnerId": 0,
-    "EnableSendingMessages": true
+    "EnableSendingMessages": true,
+    "DiscordConsoleChannelId": 0
   },
   "DirectorySettings": {
     "ConfigRootDirectory": "C:\\programdata\\CouchBot\\",
@@ -29,7 +30,7 @@
     "EnableMobcrush": false,
     "EnableSmashcast": false,
     "EnableTwitch": false,
-    "EnableYouTube": true,
+    "EnableYouTube": false,
     "EnablePicarto": false,
     "EnableTwitter": false,
     "EnablePiczel": false

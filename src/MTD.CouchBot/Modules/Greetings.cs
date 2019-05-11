@@ -18,7 +18,7 @@ namespace MTD.CouchBot.Modules
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Greetings(IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings)
+        public Greetings(IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings, fileService)
         {
             _botSettings = botSettings.Value;
             _fileService = fileService;

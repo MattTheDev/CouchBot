@@ -19,14 +19,22 @@ namespace MTD.CouchBot.Modules
         private readonly DiscordShardedClient _discord;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
+        private readonly LoggingService _loggingService;
 
         public BaseCommands(IYouTubeManager youtubeManager, DiscordShardedClient discord, 
-            IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings)
+            IOptions<BotSettings> botSettings, FileService fileService, LoggingService loggingService) : base(botSettings, fileService)
         {
             _youtubeManager = youtubeManager;
             _discord = discord;
             _botSettings = botSettings.Value;
             _fileService = fileService;
+            _loggingService = loggingService;
+        }
+
+        [Command("ThrowError")]
+        public async Task ThrowError()
+        {
+            await _loggingService.LogError("Error test.");
         }
 
         [Command("info"), Summary("Get CouchBot Information.")]
@@ -35,11 +43,12 @@ namespace MTD.CouchBot.Modules
             var serverFiles = Directory.GetFiles(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory);
             var counts = _fileService.GetUniqueServerChannelCounts();
             var serverCount = _discord.Guilds.Count;
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
 
             var builder = new EmbedBuilder();
             var authorBuilder = new EmbedAuthorBuilder();
             var footerBuilder = new EmbedFooterBuilder();
+
+            var server = GetServer();
 
             authorBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             authorBuilder.Name = _discord.CurrentUser.Username;
@@ -325,7 +334,8 @@ namespace MTD.CouchBot.Modules
         {
             if (!IsAdmin) return;
 
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+            var server = GetServer();
+
             var prefix = server.Prefix ?? _botSettings.BotConfig.Prefix;
 
             await Context.Channel.SendMessageAsync($"Your server's prefix is: {prefix}");
@@ -335,8 +345,9 @@ namespace MTD.CouchBot.Modules
         public async Task Prefix(string prefix)
         {
             if (!IsAdmin) return;
-            
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+
+            var server = GetServer();
+                        
             server.Prefix = prefix;
             _fileService.SaveDiscordServer(server);
 
@@ -347,7 +358,7 @@ namespace MTD.CouchBot.Modules
         public async Task Disclaimer()
         {
             await Context.Channel.SendMessageAsync(
-                "Per the Discord Developers Terms of Service (found here: <https://discordapp.com/developers/docs/legal>) I am required to let you know what by using @🛋 CouchBot 🤖 you are agreeing to allow the bot to store your User ID (17 digit unique identifier), the Guild (server) ID (17 digit unique identifier), and any Channel IDs (17 digit unique identifiers) that you specify in his configuration. These 3 values are the only values that he stores associated with your Discord Account and Server. Please note .. these 3 values are easily found by ANYONE by turning on developer mode, right clicking your name, and clicking Copy Id. ANYONE can find this information in seconds - we use this data to find your configuration in the system, and announce your streams.\r\n\r\n" +
+                "Per the Discord Developers Terms of Service (found here: <https://discordapp.com/developers/docs/legal>) I am required to let you know what by using @🛋 CouchBot 🤖 you are agreeing to allow the bot to store your User ID (17 digit unique identifier), the Guild (server) ID (17 digit unique identifier), and any Channel IDs (17 digit unique identifiers) that you specify in his configuration. These 3 values are the only values that he stores associated with your Discord Account and server. Please note .. these 3 values are easily found by ANYONE by turning on developer mode, right clicking your name, and clicking Copy Id. ANYONE can find this information in seconds - we use this data to find your configuration in the system, and announce your streams.\r\n\r\n" +
                 "This data, as of August 20, 2017, will be encrypted in case this already public (sarcasm here. this is silly) information is ever obtained by an external source(impossible.but whatever.).\r\n\r\n" +
                 "I am tagging @everyone to make sure you know, you are aware, and you're acknowledging that this data is stored and it is ok. I will be wiring in a !cb disclaimer command to show this information, and add it to the bot's about and website as well.\r\n\r\n" +
                 "Thank you,\r\n" +

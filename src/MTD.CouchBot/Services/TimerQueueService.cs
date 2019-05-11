@@ -12,7 +12,6 @@ namespace MTD.CouchBot.Services
     {
         private readonly BotSettings _botSettings;
 
-        private Timer _beamClientTimer;
         private Timer _mixerPingTimer;
         private Timer _hitboxTimer;
         private Timer _hitboxOwnerTimer;
@@ -24,7 +23,6 @@ namespace MTD.CouchBot.Services
         private Timer _youtubePublishedOwnerTimer;
         private Timer _twitchTeamTimer;
         private Timer _twitchGameTimer;
-        private Timer _twitchCommunityTimer;
         private Timer _picartoTimer;
         private Timer _picartoOwnerTimer;
         private Timer _piczelTimer;
@@ -32,7 +30,6 @@ namespace MTD.CouchBot.Services
         private Timer _guildCheckTimer;
         private Timer _twitchServerTimer;
         private Timer _cleanupTimer;
-        private Timer _uptimeTimer;
         private Timer _customCommandTimer;
 
         private readonly DiscordShardedClient _discord;
@@ -41,12 +38,13 @@ namespace MTD.CouchBot.Services
         private readonly GuildInteractionService _guildServices;
         private readonly FileService _fileService;
         private readonly CustomCommandService _commandService;
+        private readonly LoggingService _loggingService;
 
         private bool _initialServicesRan = false;
 
         public TimerQueueService(IOptions<BotSettings> botSettings, MixerConstellationService mixerService,
             PlatformService platformServices, GuildInteractionService guildServices, FileService fileService,
-            DiscordShardedClient discord, CustomCommandService commandService)
+            DiscordShardedClient discord, CustomCommandService commandService, LoggingService loggingService)
         {
             _botSettings = botSettings.Value;
             _mixerService = mixerService;
@@ -55,6 +53,7 @@ namespace MTD.CouchBot.Services
             _fileService = fileService;
             _discord = discord;
             _commandService = commandService;
+            _loggingService = loggingService;
         }
 
         public async Task Init()
@@ -116,7 +115,7 @@ namespace MTD.CouchBot.Services
         {
             _mixerPingTimer = new Timer(async (e) =>
             {
-                Logging.LogMixer("Pinging Mixer.");
+                _loggingService.LogMixer("Pinging Mixer.");
                 await _mixerService.Ping();
             }, null, 0, 30000);
 
@@ -128,20 +127,20 @@ namespace MTD.CouchBot.Services
             {
                 ////var sw = new Stopwatch();
                 ////sw.Start();
-                Logging.LogSmashcast("Checking Smashcast Channels.");
+                _loggingService.LogSmashcast("Checking Smashcast Channels.");
                 await _platformServices.CheckHitboxLive();
                 ////sw.Stop();
-                Logging.LogSmashcast("Smashcast Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogSmashcast("Smashcast Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Smashcast);
 
             _hitboxOwnerTimer = new Timer(async (e) =>
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogSmashcast("Checking Owner Smashcast Channels.");
+                _loggingService.LogSmashcast("Checking Owner Smashcast Channels.");
                 await _platformServices.CheckOwnerHitboxLive();
                 //sw.Stop();
-                Logging.LogSmashcast("Owner Smashcast Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogSmashcast("Owner Smashcast Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Smashcast);
         }
 
@@ -151,10 +150,10 @@ namespace MTD.CouchBot.Services
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogTwitch("Checking Twitch Channels.");
+                _loggingService.LogTwitch("Checking Twitch Channels.");
                 await _platformServices.CheckTwitchLive();
                 //sw.Stop();
-                Logging.LogTwitch("Twitch Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogTwitch("Twitch Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
 
                 _initialServicesRan = true;
             }, null, 0, _botSettings.IntervalSettings.Twitch);
@@ -163,20 +162,20 @@ namespace MTD.CouchBot.Services
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogTwitch("Checking Twitch Teams.");
+                _loggingService.LogTwitch("Checking Twitch Teams.");
                 await _platformServices.CheckTwitchTeams();
                 //sw.Stop();
-                Logging.LogTwitch("Checking Twitch Teams Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogTwitch("Checking Twitch Teams Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Twitch);
 
             _twitchGameTimer = new Timer(async (e) =>
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogTwitch("Checking Twitch Games.");
+                _loggingService.LogTwitch("Checking Twitch Games.");
                 await _platformServices.CheckTwitchGames();
                 //sw.Stop();
-                Logging.LogTwitch("Checking Twitch Games Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogTwitch("Checking Twitch Games Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Twitch);
         }
 
@@ -186,30 +185,30 @@ namespace MTD.CouchBot.Services
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogYouTubeGaming("Checking YouTube Gaming Channels.");
+                _loggingService.LogYouTubeGaming("Checking YouTube Gaming Channels.");
                 await _platformServices.CheckYouTubeLive();
                 //sw.Stop();
-                Logging.LogYouTubeGaming("YouTube Gaming Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogYouTubeGaming("YouTube Gaming Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.YouTubeLive);
 
             _youtubePublishedTimer = new Timer(async (e) =>
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogYouTube("Checking YouTube Published");
+                _loggingService.LogYouTube("Checking YouTube Published");
                 await _platformServices.CheckPublishedYouTube();
                 //sw.Stop();
-                Logging.LogYouTube("YouTube Published Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogYouTube("YouTube Published Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.YouTubePublished);
 
             _youtubePublishedOwnerTimer = new Timer(async (e) =>
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogYouTube("Checking Owner YouTube Published");
+                _loggingService.LogYouTube("Checking Owner YouTube Published");
                 await _platformServices.CheckOwnerPublishedYouTube();
                 //sw.Stop();
-                Logging.LogYouTube("Owner YouTube Published Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogYouTube("Owner YouTube Published Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.YouTubePublished);
         }
         
@@ -219,20 +218,20 @@ namespace MTD.CouchBot.Services
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogPicarto("Checking Picarto Channels.");
+                _loggingService.LogPicarto("Checking Picarto Channels.");
                 await _platformServices.CheckPicartoLive();
                 //sw.Stop();
-                Logging.LogPicarto("Picarto Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogPicarto("Picarto Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Picarto);
 
             _picartoOwnerTimer = new Timer(async (e) =>
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogPicarto("Checking Picarto Smashcast Channels.");
+                _loggingService.LogPicarto("Checking Picarto Smashcast Channels.");
                 await _platformServices.CheckOwnerPicartoLive();
                 //sw.Stop();
-                Logging.LogPicarto("Owner Picarto Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogPicarto("Owner Picarto Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Picarto);
         }
 
@@ -242,20 +241,20 @@ namespace MTD.CouchBot.Services
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogPiczel("Checking piczel Channels.");
+                _loggingService.LogPiczel("Checking piczel Channels.");
                 await _platformServices.CheckPiczelLive();
                 //sw.Stop();
-                Logging.LogPiczel("piczel Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogPiczel("piczel Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Piczel);
 
             _piczelOwnerTimer = new Timer(async (e) =>
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogPiczel("Checking piczel Smashcast Channels.");
+                _loggingService.LogPiczel("Checking piczel Smashcast Channels.");
                 await _platformServices.CheckOwnerPiczelLive();
                 //sw.Stop();
-                Logging.LogPiczel("Owner piczel Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogPiczel("Owner piczel Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Piczel);
         }
 
@@ -265,33 +264,33 @@ namespace MTD.CouchBot.Services
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogMobcrush("Checking Mobcrush Channels.");
+                _loggingService.LogMobcrush("Checking Mobcrush Channels.");
                 await _platformServices.CheckMobcrushLive();
                 //sw.Stop();
-                Logging.LogMobcrush("Mobcrush Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogMobcrush("Mobcrush Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Mobcrush);
 
             _mobcrushOwnerTimer = new Timer(async (e) =>
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogMobcrush("Checking Owner Mobcrush Channels.");
+                _loggingService.LogMobcrush("Checking Owner Mobcrush Channels.");
                 await _platformServices.CheckOwnerMobcrushLive();
                 //sw.Stop();
-                Logging.LogMobcrush("Owner Mobcrush Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogMobcrush("Owner Mobcrush Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Mobcrush);
         }
 
         public void QueueHealthChecks()
         {
-            _guildCheckTimer = new Timer((e) =>
+            _guildCheckTimer = new Timer(async (e) =>
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogInfo("Checking Guild Configurations.");
-                _guildServices.CheckGuildConfigurations();
+                _loggingService.LogInfo("Checking Guild Configurations.");
+                await _guildServices.CheckGuildConfigurations();
                 //sw.Stop();
-                Logging.LogInfo("Guild Configuration Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogInfo("Guild Configuration Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, 600000);
         }
 
@@ -301,10 +300,10 @@ namespace MTD.CouchBot.Services
             {
                 //var sw = new Stopwatch();
                 //sw.Start();
-                Logging.LogTwitch("Checking Twitch Server Channels.");
+                _loggingService.LogTwitch("Checking Twitch Server Channels.");
                 await _platformServices.CheckTwitchServer();
                 //sw.Stop();
-                Logging.LogTwitch("Twitch Server Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _loggingService.LogTwitch("Twitch Server Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.TwitchServer);
         }
 
@@ -314,7 +313,7 @@ namespace MTD.CouchBot.Services
             {
                 if (_initialServicesRan)
                 {
-                    Logging.LogInfo("Cleaning Up Live Files.");
+                    _loggingService.LogInfo("Cleaning Up Live Files.");
 
                     if (_botSettings.PlatformSettings.EnableYouTube)
                     {
@@ -341,7 +340,7 @@ namespace MTD.CouchBot.Services
                         await _platformServices.CleanUpLiveStreams(Constants.Mobcrush);
                     }
 
-                    Logging.LogInfo("Cleaning Up Live Files Complete.");
+                    _loggingService.LogInfo("Cleaning Up Live Files Complete.");
                 }
             }, null, 0, 300000);
         }

@@ -20,7 +20,8 @@ namespace MTD.CouchBot.Modules
         private readonly FileService _fileService;
         private readonly StringService _stringService;
 
-        public Picarto(IPicartoManager picartoManager, IOptions<BotSettings> botSettings, FileService fileService, StringService stringService) : base(botSettings)
+        public Picarto(IPicartoManager picartoManager, IOptions<BotSettings> botSettings, FileService fileService, StringService stringService) 
+            : base(botSettings, fileService)
         {
             _picartoManager = picartoManager;
             _botSettings = botSettings.Value;

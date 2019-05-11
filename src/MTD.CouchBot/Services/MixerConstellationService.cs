@@ -25,11 +25,13 @@ namespace MTD.CouchBot.Services
         private readonly DiscordService _discordService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
+        private readonly LoggingService _loggingService;
 
         private bool _reconnecting = false;
 
         public MixerConstellationService(IMixerManager mixerManager, MessagingService messagingService,
-            DiscordService discordService, IOptions<BotSettings> botSettings, FileService fileService)
+            DiscordService discordService, IOptions<BotSettings> botSettings, FileService fileService,
+            LoggingService loggingService)
         {
             _mixerManager = mixerManager;
             _messagingService = messagingService;
@@ -66,8 +68,8 @@ namespace MTD.CouchBot.Services
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogError("Error in RunWebSockets " + ex.Message);
-                    Logging.LogError("Error Details: Client State - " + client.State);
+                    await _loggingService.LogError($"Error in RunWebSockets: {ex.Message}");
+                    await _loggingService.LogError($"Error Details: Client State - {client.State}");
                 }
             }
 
@@ -92,7 +94,7 @@ namespace MTD.CouchBot.Services
                         var channelId = channelData[1];
                         var channel = await _mixerManager.GetChannelById(channelId);
 
-                        Logging.LogMixer(channel.token + " has gone online.");
+                        _loggingService.LogMixer(channel.token + " has gone online.");
                         await AnnounceLiveChannel(channelId, channel);
                     }
                     else if (data.Replace(" ", "").ToLower().Contains("{\"online\":false}"))
@@ -102,13 +104,13 @@ namespace MTD.CouchBot.Services
                         var channelId = channelData[1];
                         var channel = await _mixerManager.GetChannelById(channelId);
 
-                        Logging.LogMixer(channel.token + " has gone offline.");
+                        _loggingService.LogMixer(channel.token + " has gone offline.");
                         await StreamOffline(channelId);
                     }
 
                     //if (!data.Contains("\"type\":\"reply\",\"result\":null,\"error\":null"))
                     //{
-                    //    await Logging.LogMixerFile("Mixer Payload: " + data);
+                    //    await _loggingService.LogMixerFile("Mixer Payload: " + data);
                     //}
                 }
 
@@ -137,8 +139,8 @@ namespace MTD.CouchBot.Services
             }
             catch (Exception ex)
             {
-                Logging.LogMixer("Exception in SubscribeToLiveAnnouncements: " + ex.Message);
-                //await Logging.LogMixerFile("Exception in SubscribeToLiveAnnouncements: " + ex.Message);
+                _loggingService.LogMixer("Exception in SubscribeToLiveAnnouncements: " + ex.Message);
+                //await _loggingService.LogMixerFile("Exception in SubscribeToLiveAnnouncements: " + ex.Message);
             }
         }
 
@@ -182,8 +184,8 @@ namespace MTD.CouchBot.Services
             }
             catch (Exception ex)
             {
-                Logging.LogMixer("Exception in Ping: " + ex.Message);
-                //await Logging.LogMixerFile("Exception in Ping: " + ex.Message);
+                _loggingService.LogMixer("Exception in Ping: " + ex.Message);
+                //await _loggingService.LogMixerFile("Exception in Ping: " + ex.Message);
             }
         }
 
@@ -255,7 +257,7 @@ namespace MTD.CouchBot.Services
                         var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
                         var channelId = stream.id.Value.ToString();
                         var test = stream.audience;
-                        messages.Add(await _messagingService.BuildMessage(stream.token, gameName, stream.name, url,
+                        messages.Add(_messagingService.BuildMessage(stream.token, gameName, stream.name, url,
                             avatarUrl, thumbnailUrl,
                             Constants.Mixer, channelId, server, server.GoLiveChannel, null, false, 
                             stream.viewersCurrent, stream.viewersTotal, stream.numFollowers));
@@ -276,7 +278,7 @@ namespace MTD.CouchBot.Services
                         var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
                         var channelId = stream.id.Value.ToString();
 
-                        messages.Add(await _messagingService.BuildMessage(stream.token, gameName, stream.name, url,
+                        messages.Add(_messagingService.BuildMessage(stream.token, gameName, stream.name, url,
                             avatarUrl, thumbnailUrl,
                             Constants.Mixer, channelId, server, server.OwnerLiveChannel, null, true, 
                             stream.viewersCurrent, stream.viewersTotal, stream.numFollowers));
@@ -299,7 +301,7 @@ namespace MTD.CouchBot.Services
                         var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
                         var channelId = stream.id.Value.ToString();
 
-                        messages.Add(await _messagingService.BuildMessage(stream.token, gameName, stream.name, url,
+                        messages.Add(_messagingService.BuildMessage(stream.token, gameName, stream.name, url,
                             avatarUrl, thumbnailUrl,
                             Constants.Mixer, channelId, server, server.GoLiveChannel, teamServer.Team.name, false, stream.viewersCurrent, stream.viewersTotal, stream.numFollowers));
                     }
@@ -368,7 +370,7 @@ namespace MTD.CouchBot.Services
             var alreadyProcessed = new List<string>();
             var alreadyProcessedTeams = new List<int>();
 
-            Logging.LogMixer("Getting Server Files.");
+            _loggingService.LogMixer("Getting Server Files.");
 
             var servers = _fileService.GetConfiguredServers().Where(x => x.ServerBeamChannelIds != null && 
                                                                          x.ServerBeamChannelIds.Count > 0).ToList();
@@ -377,11 +379,11 @@ namespace MTD.CouchBot.Services
 
             if (client.State != WebSocketState.Open)
             {
-                Logging.LogMixer("Connecting to Mixer Constellation.");
+                _loggingService.LogMixer("Connecting to Mixer Constellation.");
 
                 await RunWebSockets();
 
-                Logging.LogMixer("Connected to Mixer Constellation.");
+                _loggingService.LogMixer("Connected to Mixer Constellation.");
             }
 
             if (servers.Count > 0)

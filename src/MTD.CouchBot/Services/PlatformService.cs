@@ -10,7 +10,6 @@ using MTD.CouchBot.Domain.Models.Shared;
 using MTD.CouchBot.Domain.Models.Smashcast;
 using MTD.CouchBot.Domain.Models.Twitch;
 using MTD.CouchBot.Domain.Models.YouTube;
-using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Models.Bot;
 using Newtonsoft.Json;
@@ -36,11 +35,12 @@ namespace MTD.CouchBot.Services
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
         private readonly IMobcrushManager _mobcrushManager;
+        private readonly LoggingService _loggingService;
 
         public PlatformService(IYouTubeManager youtubeManager, ITwitchManager twitchManager, ISmashcastManager smashcastManager, IPiczelManager piczelManager,
             IPicartoManager picartoManager, DiscordShardedClient discord,
             MessagingService messagingService, DiscordService discordService, FileService fileService, IOptions<BotSettings> botSettings,
-            IMobcrushManager mobcrushManager)
+            IMobcrushManager mobcrushManager, LoggingService loggingService)
         {
             _youtubeManager = youtubeManager;
             _twitchManager = twitchManager;
@@ -53,6 +53,7 @@ namespace MTD.CouchBot.Services
             _fileService = fileService;
             _botSettings = botSettings.Value;
             _mobcrushManager = mobcrushManager;
+            _loggingService = loggingService;
         }
 
         #region : Piczel : 
@@ -89,7 +90,7 @@ namespace MTD.CouchBot.Services
                         {
                             // Log our error and move to the next user.
 
-                            Logging.LogError("Piczel Error: " + wex.Message + " for user: " + piczelChannelId + " in Discord Server Id: " + server.Id);
+                            await _loggingService.LogError("Piczel Error: " + wex.Message + " for user: " + piczelChannelId + " in Discord Server Id: " + server.Id);
                             continue;
                         }
 
@@ -200,7 +201,7 @@ namespace MTD.CouchBot.Services
                                                 f.IsInline = false;
                                             });
 
-                                            var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+                                            var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
                                             var roleName = "";
 
                                             if (role == null && server.MentionRole != 1)
@@ -258,7 +259,7 @@ namespace MTD.CouchBot.Services
 
                                                 File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.PiczelDirectory + piczelChannelId + ".json", JsonConvert.SerializeObject(channel));
 
-                                                Logging.LogPiczel(stream.User.Username + " has gone online.");
+                                                _loggingService.LogPiczel(stream.User.Username + " has gone online.");
                                             }
                                         }
                                     }
@@ -300,7 +301,7 @@ namespace MTD.CouchBot.Services
                     {
                         // Log our error and move to the next user.
 
-                        Logging.LogError("Piczel Error: " + wex.Message + " for user: " + server.OwnerPiczelChannelId.Value + " in Discord Server Id: " + server.Id);
+                        await _loggingService.LogError("Piczel Error: " + wex.Message + " for user: " + server.OwnerPiczelChannelId.Value + " in Discord Server Id: " + server.Id);
                         continue;
                     }
 
@@ -410,7 +411,7 @@ namespace MTD.CouchBot.Services
                                             f.IsInline = false;
                                         });
 
-                                        var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+                                        var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
                                         var roleName = "";
 
                                         if (role == null && server.MentionRole != 1)
@@ -470,7 +471,7 @@ namespace MTD.CouchBot.Services
 
                                             File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.PiczelDirectory + server.OwnerPiczelChannelId.Value.ToString() + ".json", JsonConvert.SerializeObject(channel));
 
-                                            Logging.LogPiczel(stream.User.Username + " has gone online.");
+                                            _loggingService.LogPiczel(stream.User.Username + " has gone online.");
                                         }
                                     }
                                 }
@@ -517,7 +518,7 @@ namespace MTD.CouchBot.Services
                         {
                             // Log our error and move to the next user.
 
-                            Logging.LogError("Picarto Error: " + wex.Message + " for user: " + picartoChannel + " in Discord Server Id: " + server.Id);
+                            await _loggingService.LogError("Picarto Error: " + wex.Message + " for user: " + picartoChannel + " in Discord Server Id: " + server.Id);
                             continue;
                         }
 
@@ -631,7 +632,7 @@ namespace MTD.CouchBot.Services
                                                 f.IsInline = false;
                                             });
 
-                                            var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+                                            var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
                                             var roleName = "";
 
                                             if (role == null && server.MentionRole != 1)
@@ -691,7 +692,7 @@ namespace MTD.CouchBot.Services
 
                                                 File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.PicartoDirectory + picartoChannel + ".json", JsonConvert.SerializeObject(channel));
 
-                                                Logging.LogPicarto(picartoChannel + " has gone online.");
+                                                _loggingService.LogPicarto(picartoChannel + " has gone online.");
                                             }
                                         }
                                     }
@@ -733,7 +734,7 @@ namespace MTD.CouchBot.Services
                     {
                         // Log our error and move to the next user.
 
-                        Logging.LogError("Picarto Error: " + wex.Message + " for user: " + server.OwnerPicartoChannel + " in Discord Server Id: " + server.Id);
+                        await _loggingService.LogError("Picarto Error: " + wex.Message + " for user: " + server.OwnerPicartoChannel + " in Discord Server Id: " + server.Id);
                         continue;
                     }
 
@@ -834,7 +835,7 @@ namespace MTD.CouchBot.Services
                                             f.IsInline = true;
                                         });
 
-                                        var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+                                        var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
                                         var roleName = "";
 
                                         if (role == null && server.MentionRole != 1)
@@ -890,7 +891,7 @@ namespace MTD.CouchBot.Services
 
                                             File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.PicartoDirectory + server.OwnerPicartoChannel + ".json", JsonConvert.SerializeObject(channel));
 
-                                            Logging.LogPicarto(server.OwnerPicartoChannel + " has gone online.");
+                                            _loggingService.LogPicarto(server.OwnerPicartoChannel + " has gone online.");
                                         }
                                     }
                                 }
@@ -937,7 +938,7 @@ namespace MTD.CouchBot.Services
                         {
                             // Log our error and move to the next user.
 
-                            Logging.LogError("Mobcrush Error: " + wex.Message + " for user: " + mobcrushId + " in Discord Server Id: " + server.Id);
+                            await _loggingService.LogError("Mobcrush Error: " + wex.Message + " for user: " + mobcrushId + " in Discord Server Id: " + server.Id);
                             continue;
                         }
 
@@ -986,7 +987,7 @@ namespace MTD.CouchBot.Services
                                             var avatarUrl = user.ProfileLogo == null ? "http://cdn.mobcrush.com/static/images/default-profile-pic.png" : user.ProfileLogo;
                                             var thumbnailUrl = "http://cdn.mobcrush.com/u/video/" + stream.Id + "/snapshot.jpg";
 
-                                            var message = await _messagingService.BuildMessage(
+                                            var message = _messagingService.BuildMessage(
                                                 user.Username, gameName, stream.Title, url, avatarUrl, thumbnailUrl, Constants.Mobcrush,
                                                 mobcrushId, server, server.GoLiveChannel, null, false, null, user.ViewCount, user.FollowerCount);
 
@@ -1003,7 +1004,7 @@ namespace MTD.CouchBot.Services
 
                                                 File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.MobcrushDirectory + mobcrushId + ".json", JsonConvert.SerializeObject(channel));
 
-                                                Logging.LogMobcrush(user.Username + " has gone online.");
+                                                _loggingService.LogMobcrush(user.Username + " has gone online.");
                                             }
                                         }
                                     }
@@ -1045,7 +1046,7 @@ namespace MTD.CouchBot.Services
                     {
                         // Log our error and move to the next user.
 
-                        Logging.LogError("Mobcrush Error: " + wex.Message + " for user: " + server.OwnerMobcrushId + " in Discord Server Id: " + server.Id);
+                        await _loggingService.LogError("Mobcrush Error: " + wex.Message + " for user: " + server.OwnerMobcrushId + " in Discord Server Id: " + server.Id);
                         continue;
                     }
 
@@ -1094,7 +1095,7 @@ namespace MTD.CouchBot.Services
                                         var avatarUrl = user.ProfileLogo == null ? "http://cdn.mobcrush.com/static/images/default-profile-pic.png" : user.ProfileLogo;
                                         var thumbnailUrl = "http://cdn.mobcrush.com/u/video/" + stream.Id + "/snapshot.jpg";
 
-                                        var message = await _messagingService.BuildMessage(
+                                        var message = _messagingService.BuildMessage(
                                                 user.Username, gameName, stream.Title, url, avatarUrl, thumbnailUrl, Constants.Mobcrush,
                                                 server.OwnerMobcrushId, server, server.OwnerLiveChannel, null, true, user.ViewCount, null, user.FollowerCount);
 
@@ -1111,7 +1112,7 @@ namespace MTD.CouchBot.Services
 
                                             File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.MobcrushDirectory + server.OwnerMobcrushId + ".json", JsonConvert.SerializeObject(channel));
 
-                                            Logging.LogMobcrush(user.Username + " has gone online.");
+                                            _loggingService.LogMobcrush(user.Username + " has gone online.");
                                         }
                                     }
                                 }
@@ -1158,7 +1159,7 @@ namespace MTD.CouchBot.Services
                         {
                             // Log our error and move to the next user.
 
-                            Logging.LogError("Smashcast Error: " + wex.Message + " for user: " + hitboxChannel + " in Discord Server Id: " + server.Id);
+                            await _loggingService.LogError("Smashcast Error: " + wex.Message + " for user: " + hitboxChannel + " in Discord Server Id: " + server.Id);
                             continue;
                         }
 
@@ -1203,7 +1204,7 @@ namespace MTD.CouchBot.Services
                                             var gameName = stream.livestream[0].category_name == null ? "A game" : stream.livestream[0].category_name;
                                             var url = "http://smashcast.tv/" + hitboxChannel;
 
-                                            var message = await _messagingService.BuildMessage(
+                                            var message = _messagingService.BuildMessage(
                                                 hitboxChannel, gameName, stream.livestream[0].media_status, url, "http://edge.sf.hitbox.tv" +
                                                 stream.livestream[0].channel.user_logo, "http://edge.sf.hitbox.tv" +
                                                 stream.livestream[0].media_thumbnail_large, Constants.Smashcast, hitboxChannel, server, server.GoLiveChannel, null, false);
@@ -1221,7 +1222,7 @@ namespace MTD.CouchBot.Services
 
                                                 File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.SmashcastDirectory + hitboxChannel + ".json", JsonConvert.SerializeObject(channel));
 
-                                                Logging.LogSmashcast(hitboxChannel + " has gone online.");
+                                                _loggingService.LogSmashcast(hitboxChannel + " has gone online.");
                                             }
                                         }
                                     }
@@ -1263,7 +1264,7 @@ namespace MTD.CouchBot.Services
                     {
                         // Log our error and move to the next user.
 
-                        Logging.LogError("Smashcast Error: " + wex.Message + " for user: " + server.OwnerHitboxChannel + " in Discord Server Id: " + server.Id);
+                        await _loggingService.LogError("Smashcast Error: " + wex.Message + " for user: " + server.OwnerHitboxChannel + " in Discord Server Id: " + server.Id);
                         continue;
                     }
 
@@ -1308,7 +1309,7 @@ namespace MTD.CouchBot.Services
                                         var gameName = stream.livestream[0].category_name == null ? "A game" : stream.livestream[0].category_name;
                                         var url = "http://smashcast.tv/" + server.OwnerHitboxChannel;
 
-                                        var message = await _messagingService.BuildMessage(
+                                        var message = _messagingService.BuildMessage(
                                             server.OwnerHitboxChannel, gameName, stream.livestream[0].media_status, url, "http://edge.sf.hitbox.tv" +
                                             stream.livestream[0].channel.user_logo, "http://edge.sf.hitbox.tv" +
                                             stream.livestream[0].media_thumbnail_large, Constants.Smashcast, server.OwnerHitboxChannel, server, server.OwnerLiveChannel, null, true);
@@ -1326,7 +1327,7 @@ namespace MTD.CouchBot.Services
 
                                             File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.SmashcastDirectory + server.OwnerHitboxChannel + ".json", JsonConvert.SerializeObject(channel));
 
-                                            Logging.LogSmashcast(server.OwnerHitboxChannel + " has gone online.");
+                                            _loggingService.LogSmashcast(server.OwnerHitboxChannel + " has gone online.");
                                         }
                                     }
                                 }
@@ -1433,7 +1434,7 @@ namespace MTD.CouchBot.Services
                 {
                     // Log our error and move to the next user.
 
-                    Logging.LogError("Twitch Server Error: " + wex.Message);
+                    await _loggingService.LogError("Twitch Server Error: " + wex.Message);
                     continue;
                 }
 
@@ -1502,7 +1503,7 @@ namespace MTD.CouchBot.Services
                                     var avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                     var thumbnailUrl = stream.preview.large;
 
-                                    var message = await _messagingService.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
+                                    var message = _messagingService.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
                                         thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, s.IsOwner ? server.OwnerLiveChannel : server.GoLiveChannel, null, s.IsOwner,
                                         stream.viewers, stream.channel.views, stream.channel.followers);
 
@@ -1525,7 +1526,7 @@ namespace MTD.CouchBot.Services
                                         File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.TwitchDirectory + stream.channel._id.ToString() + ".json",
                                             JsonConvert.SerializeObject(channel));
 
-                                        Logging.LogTwitch(channelName + " has gone online.");
+                                        _loggingService.LogTwitch(channelName + " has gone online.");
                                     }
                                 }
                             }
@@ -1581,7 +1582,7 @@ namespace MTD.CouchBot.Services
                         {
                             // Log our error and move to the next user.
 
-                            Logging.LogError("Twitch Team Server Error: " + wex.Message + " in Discord Server Id: " + server.Id);
+                            await _loggingService.LogError("Twitch Team Server Error: " + wex.Message + " in Discord Server Id: " + server.Id);
                             continue;
                         }
 
@@ -1640,7 +1641,7 @@ namespace MTD.CouchBot.Services
                                         var avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                                         var thumbnailUrl = stream.preview.large;
 
-                                        var message = await _messagingService.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
+                                        var message = _messagingService.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
                                             thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel, teamResponse.DisplayName, false,
                                             stream.viewers, stream.channel.views, stream.channel.followers);
 
@@ -1663,7 +1664,7 @@ namespace MTD.CouchBot.Services
                                             File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.TwitchDirectory + stream.channel._id.ToString() + ".json",
                                                 JsonConvert.SerializeObject(channel));
 
-                                            Logging.LogTwitch(teamResponse.Name + " team member " + channelName + " has gone online.");
+                                            _loggingService.LogTwitch(teamResponse.Name + " team member " + channelName + " has gone online.");
                                             count++;
                                         }
                                     }
@@ -1716,7 +1717,7 @@ namespace MTD.CouchBot.Services
                 {
                     // Log our error and move to the next user.
 
-                    Logging.LogError("Twitch Game Error: " + wex.Message);
+                    await _loggingService.LogError("Twitch Game Error: " + wex.Message);
                     continue;
                 }
 
@@ -1789,7 +1790,7 @@ namespace MTD.CouchBot.Services
                             var avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                             var thumbnailUrl = stream.preview.large;
 
-                            var message = await _messagingService.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
+                            var message = _messagingService.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
                                 thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel, null, false,
                                 stream.viewers, stream.channel.views, stream.channel.followers);
 
@@ -1812,7 +1813,7 @@ namespace MTD.CouchBot.Services
                                 File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.TwitchDirectory + stream.channel._id.ToString() + ".json",
                                     JsonConvert.SerializeObject(channel));
 
-                                Logging.LogTwitch(channelName + " has gone live playing " + game.Name);
+                                _loggingService.LogTwitch(channelName + " has gone live playing " + game.Name);
                             }
                         }
                     }
@@ -1884,13 +1885,13 @@ namespace MTD.CouchBot.Services
                                         }
                                         catch (Exception e)
                                         {
-                                            Logging.LogError($"Error Adding Role in Server {server.Id}: {e.Message} - {e.StackTrace}");
+                                            await _loggingService.LogError($"Error Adding Role in Server {server.Id}: {e.Message} - {e.StackTrace}");
                                         }
                                     }
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             // Invalid game
                             continue;
@@ -1936,7 +1937,7 @@ namespace MTD.CouchBot.Services
                     catch (Exception wex)
                     {
                         // Log our error and move to the next user.
-                        Logging.LogError("Twitch Server Error: " + wex.Message);
+                        await _loggingService.LogError("Twitch Server Error: " + wex.Message);
                         continue;
                     }
 
@@ -1971,7 +1972,7 @@ namespace MTD.CouchBot.Services
                     var avatarUrl = stream.channel.logo != null ? stream.channel.logo : "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
                     var thumbnailUrl = stream.preview.large;
 
-                    var message = await _messagingService.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
+                    var message = _messagingService.BuildMessage(channelName, stream.game, stream.channel.status, url, avatarUrl,
                         thumbnailUrl, Constants.Twitch, stream.channel._id.ToString(), server, server.GoLiveChannel, null, false,
                         stream.viewers, stream.channel.views, stream.channel.followers);
 
@@ -1994,7 +1995,7 @@ namespace MTD.CouchBot.Services
                         File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.TwitchDirectory + stream.channel._id.ToString() + ".json",
                             JsonConvert.SerializeObject(currentlyLive));
 
-                        Logging.LogTwitch(channelName + " has gone online.");
+                        _loggingService.LogTwitch(channelName + " has gone online.");
                     }
                 }
             }
@@ -2134,7 +2135,7 @@ namespace MTD.CouchBot.Services
                 catch (Exception wex)
                 {
                     // Log our error and move to the next user.
-                    Logging.LogError("YouTube Error: " + wex.Message);
+                    await _loggingService.LogError("YouTube Error: " + wex.Message);
                     continue;
                 }
 
@@ -2158,7 +2159,7 @@ namespace MTD.CouchBot.Services
                         catch (Exception ex)
                         {
                             // Log our error and move to the next user.
-                            Logging.LogError("YouTube Error: " + ex.Message);
+                            await _loggingService.LogError("YouTube Error: " + ex.Message);
                             continue;
                         }
 
@@ -2222,7 +2223,7 @@ namespace MTD.CouchBot.Services
                             {
                                 // Log our error and move to the next user.
 
-                                Logging.LogError("YouTube Error: " + wex.Message + " for user: " + item.Snippet.ChannelId);
+                                await _loggingService.LogError("YouTube Error: " + wex.Message + " for user: " + item.Snippet.ChannelId);
                                 continue;
                             }
 
@@ -2238,7 +2239,7 @@ namespace MTD.CouchBot.Services
                             var avatarUrl = channelData.items.Count > 0 ? channelData.items[0].snippet.thumbnails.high.url : "";
                             var thumbnailUrl = stream.snippet.thumbnails.high.url;
 
-                            var message = await _messagingService.BuildMessage(channelTitle, "A game", stream.snippet.title,
+                            var message = _messagingService.BuildMessage(channelTitle, "A game", stream.snippet.title,
                                 url, avatarUrl, thumbnailUrl, Constants.YouTubeGaming, item.Snippet.ChannelId, server,
                                 s.IsOwner ? server.OwnerLiveChannel : server.GoLiveChannel, null, s.IsOwner,
                                 null, null, null);
@@ -2253,7 +2254,7 @@ namespace MTD.CouchBot.Services
                                 }
 
                                 channel.ChannelMessages.AddRange(await _messagingService.SendMessages(Constants.YouTubeGaming, new List<BroadcastMessage> { message }));
-                                Logging.LogYouTubeGaming(channelTitle + " has gone online.");
+                                _loggingService.LogYouTubeGaming(channelTitle + " has gone online.");
                                 File.WriteAllText(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.LiveDirectory + _botSettings.DirectorySettings.YouTubeDirectory + item.Snippet.ChannelId + ".json", JsonConvert.SerializeObject(channel));
                             }
                         }
@@ -2330,7 +2331,7 @@ namespace MTD.CouchBot.Services
                         }
                         catch (Exception ex)
                         {
-                            Logging.LogError("YouTube Published Error: " + ex.Message + " for user: " + user +
+                            await _loggingService.LogError("YouTube Published Error: " + ex.Message + " for user: " + user +
                                              " in Discord Server: " + server.Id);
                             continue;
                         }
@@ -2363,7 +2364,7 @@ namespace MTD.CouchBot.Services
                             {
                                 // Log our error and move to the next user.
 
-                                Logging.LogError("YouTube Error: " + wex.Message + " for user: " +
+                                await _loggingService.LogError("YouTube Error: " + wex.Message + " for user: " +
                                                  video.snippet.channelId);
                                 continue;
                             }
@@ -2421,7 +2422,7 @@ namespace MTD.CouchBot.Services
                                 });
                             }
 
-                            var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+                            var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
                             var roleName = "";
 
                             if (role == null && server.MentionRole != 1)
@@ -2456,7 +2457,7 @@ namespace MTD.CouchBot.Services
                                                .Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
                             }
 
-                            Logging.LogYouTube(video.snippet.channelTitle + " has published a new video.");
+                            _loggingService.LogYouTube(video.snippet.channelTitle + " has published a new video.");
 
                             await _messagingService.SendMessages(Constants.YouTube, new List<BroadcastMessage>
                                 {
@@ -2475,7 +2476,7 @@ namespace MTD.CouchBot.Services
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Do nothing
             }
@@ -2532,7 +2533,7 @@ namespace MTD.CouchBot.Services
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogError("YouTube Published Error: " + ex.Message + " for user: " + server.OwnerYouTubeChannelId + " in Discord Server: " + server.Id);
+                    await _loggingService.LogError("YouTube Published Error: " + ex.Message + " for user: " + server.OwnerYouTubeChannelId + " in Discord Server: " + server.Id);
                     continue;
                 }
 
@@ -2561,7 +2562,7 @@ namespace MTD.CouchBot.Services
                     {
                         // Log our error and move to the next user.
 
-                        Logging.LogError("YouTube Error: " + wex.Message + " for user: " + video.snippet.channelId);
+                        await _loggingService.LogError("YouTube Error: " + wex.Message + " for user: " + video.snippet.channelId);
                         continue;
                     }
 
@@ -2608,7 +2609,7 @@ namespace MTD.CouchBot.Services
                         });
                     }
 
-                    var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+                    var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
                     var roleName = "";
 
                     if (role == null && server.MentionRole != 1)
@@ -2641,7 +2642,7 @@ namespace MTD.CouchBot.Services
                         message += "**[" + Constants.YouTube + "]** " + server.PublishedMessage.Replace("%CHANNEL%", Format.Sanitize(video.snippet.channelTitle)).Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);
                     }
 
-                    Logging.LogYouTube(video.snippet.channelTitle + " has published a new video.");
+                    _loggingService.LogYouTube(video.snippet.channelTitle + " has published a new video.");
 
                     await _messagingService.SendMessages(Constants.YouTube, new List<BroadcastMessage> {
                                 new BroadcastMessage
@@ -2739,7 +2740,7 @@ namespace MTD.CouchBot.Services
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up Twitch Error: " + wex.Message + " for user: " + stream.Name);
+                        await _loggingService.LogError("Clean Up Twitch Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
@@ -2775,7 +2776,7 @@ namespace MTD.CouchBot.Services
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up YouTube Error: " + wex.Message + " for user: " + stream.Name);
+                        await _loggingService.LogError("Clean Up YouTube Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
@@ -2809,7 +2810,7 @@ namespace MTD.CouchBot.Services
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up Smashcast Error: " + wex.Message + " for user: " + stream.Name);
+                        await _loggingService.LogError("Clean Up Smashcast Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
@@ -2843,7 +2844,7 @@ namespace MTD.CouchBot.Services
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up Picarto Error: " + wex.Message + " for user: " + stream.Name);
+                        await _loggingService.LogError("Clean Up Picarto Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
@@ -2876,7 +2877,7 @@ namespace MTD.CouchBot.Services
                     }
                     catch (Exception wex)
                     {
-                        Logging.LogError("Clean Up Piczel Error: " + wex.Message + " for user: " + stream.Name);
+                        await _loggingService.LogError("Clean Up Piczel Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }
@@ -2910,7 +2911,7 @@ namespace MTD.CouchBot.Services
                     catch (Exception wex)
                     {
 
-                        Logging.LogError("Clean Up Mobcrush Error: " + wex.Message + " for user: " + stream.Name);
+                        await _loggingService.LogError("Clean Up Mobcrush Error: " + wex.Message + " for user: " + stream.Name);
                     }
                 }
             }

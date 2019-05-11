@@ -19,7 +19,7 @@ namespace MTD.CouchBot.Modules
         private readonly DiscordShardedClient _discord;
 
         public Config(IOptions<BotSettings> botSettings, FileService fileService, DiscordShardedClient discord) 
-            : base(botSettings)
+            : base(botSettings, fileService)
         {
             _botSettings = botSettings.Value;
             _fileService = fileService;
@@ -84,11 +84,12 @@ namespace MTD.CouchBot.Modules
             {
                 return;
             }
-
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
+                        
             var builder = new EmbedBuilder();
             var authorBuilder = new EmbedAuthorBuilder();
             var footerBuilder = new EmbedFooterBuilder();
+
+            var server = GetServer();
 
             authorBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             authorBuilder.Name = _discord.CurrentUser.Username;
@@ -123,11 +124,12 @@ namespace MTD.CouchBot.Modules
             {
                 return;
             }
-            var server = _fileService.GetConfiguredServerById(Context.Guild.Id);
-
+            
             var builder = new EmbedBuilder();
             var authorBuilder = new EmbedAuthorBuilder();
             var footerBuilder = new EmbedFooterBuilder();
+
+            var server = GetServer();
 
             authorBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
             authorBuilder.Name = _discord.CurrentUser.Username;
@@ -156,7 +158,7 @@ namespace MTD.CouchBot.Modules
                     message += _fileService.GetMessagesByServerId(Context.Guild.Id);
                     break;
                 case "misc":
-                    message += await _fileService.GetMiscConfigByServerId(Context.Guild.Id);
+                    message += _fileService.GetMiscConfigByServerId(Context.Guild.Id);
                     break;
                 default:
                     error = "Please pass in a valid section. Valid sections are: allows, channels, messages, and misc.";
@@ -174,8 +176,6 @@ namespace MTD.CouchBot.Modules
 
                 return;
             }
-
-            //message += "```";
 
             builder.AddField(new EmbedFieldBuilder()
             {

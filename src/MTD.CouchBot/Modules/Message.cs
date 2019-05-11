@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
 using System;
@@ -19,12 +18,15 @@ namespace MTD.CouchBot.Modules
         private readonly MessagingService _messagingService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
+        private readonly LoggingService _loggingService;
 
-        public Message(MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings)
+        public Message(MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService,
+            LoggingService loggingService) : base(botSettings, fileService)
         {
             _messagingService = messagingService;
             _botSettings = botSettings.Value;
             _fileService = fileService;
+            _loggingService = loggingService;
         }
 
         [Command("live")]
@@ -144,7 +146,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var message = await _messagingService.BuildTestMessage((SocketUser) Context.User, Context.Guild.Id, Context.Channel.Id, platform.ToLower());
+            var message = _messagingService.BuildTestMessage((SocketUser) Context.User, Context.Guild.Id, Context.Channel.Id, platform.ToLower());
 
             if (message != null)
             {
@@ -163,7 +165,7 @@ namespace MTD.CouchBot.Modules
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogError("Error in Message.Test Command: " + ex.Message);
+                    await _loggingService.LogError("Error in Message.Test Command: " + ex.Message);
                 }
             }
         }
@@ -178,7 +180,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            var message = await _messagingService.BuildTestPublishedMessage((SocketUser)Context.User, Context.Guild.Id, Context.Channel.Id);
+            var message = _messagingService.BuildTestPublishedMessage((SocketUser)Context.User, Context.Guild.Id, Context.Channel.Id);
 
             if (message != null)
             {
@@ -195,7 +197,7 @@ namespace MTD.CouchBot.Modules
                 }
                 catch (Exception ex)
                 {
-                    Logging.LogError("Error in Message.Test Command: " + ex.Message);
+                    await _loggingService.LogError("Error in Message.Test Command: " + ex.Message);
                 }
             }
         }

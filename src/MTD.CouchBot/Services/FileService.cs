@@ -706,11 +706,11 @@ namespace MTD.CouchBot.Services
                     "- Stream Offline Message: " + (string.IsNullOrEmpty(server.StreamOfflineMessage) ? "Default" : server.StreamOfflineMessage) + "\r\n";
         }
 
-        public async Task<string> GetMiscConfigByServerId(ulong serverId)
+        public string GetMiscConfigByServerId(ulong serverId)
         {
             var server = GetConfiguredServerById(serverId);
             var guild = _discord.GetGuild(serverId);
-            var role = await _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
+            var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
             var roleName = "";
 
             if (role == null && server.MentionRole != 1)
