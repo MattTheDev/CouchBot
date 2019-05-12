@@ -19,11 +19,13 @@ namespace MTD.CouchBot.Services
         private readonly FileService _fileService;
         private readonly LoggingService _loggingService;
 
-        public GuildInteractionService(DiscordShardedClient discord, IOptions<BotSettings> botSettings, FileService fileService)
+        public GuildInteractionService(DiscordShardedClient discord, IOptions<BotSettings> botSettings, FileService fileService,
+            LoggingService loggingService)
         {
             _discord = discord;
             _botSettings = botSettings.Value;
             _fileService = fileService;
+            _loggingService = loggingService;
         }
 
         public void Init()
@@ -35,7 +37,7 @@ namespace MTD.CouchBot.Services
             _discord.UserJoined += Client_UserJoined;
             _discord.UserLeft += Client_UserLeft;
         }
-
+        
         public async Task Client_JoinedGuild(IGuild arg)
         {
             await CreateGuild(arg);
