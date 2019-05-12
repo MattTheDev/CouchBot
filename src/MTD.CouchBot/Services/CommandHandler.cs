@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
@@ -42,17 +43,41 @@ namespace MTD.CouchBot.Services
 
             var context = new ShardedCommandContext(_discord, msg);
             var argPos = 0;
-            var server = _fileService.GetConfiguredServerById(context.Guild.Id);
-            var prefix = server.Prefix ?? _botSettings.BotConfig.Prefix;
 
-            if (msg.HasStringPrefix($"{prefix} ", ref argPos))
+            if(s.Channel is ISocketPrivateChannel)
             {
-                await _commands.ExecuteAsync(context, argPos, _provider);
+                if (s.Author.Id == _botSettings.BotConfig.OwnerId)
+                {
+                    var parsedCommand = s.Content.Split(" ");
+
+                    if(parsedCommand[0].Equals("tell", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var targetUser = (IUser)_discord.GetUser(ulong.Parse(parsedCommand[1]));
+                        var dmChannel = await targetUser.GetOrCreateDMChannelAsync();
+                        await dmChannel.SendMessageAsync($"Matt says, \"{s.Content.Replace($"{parsedCommand[0]} ", "").Replace($"{parsedCommand[1]} ", "")}\"");
+                    }
+                }
+                else
+                {
+                    var ownerUser = (IUser)_discord.GetUser(_botSettings.BotConfig.OwnerId);
+                    var dmChannel = await ownerUser.GetOrCreateDMChannelAsync();
+                    await dmChannel.SendMessageAsync($"[{s.CreatedAt}] {s.Author.Username} ({s.Author.Id}): {s.Content}");
+                }
             }
             else
             {
-                await _customCommandService.ProcessRoleCommands(server, msg, context);
-                await _customCommandService.ProcessCustomCommands(server, msg, context);
+                var server = _fileService.GetConfiguredServerById(context.Guild.Id);
+                var prefix = server.Prefix ?? _botSettings.BotConfig.Prefix;
+
+                if (msg.HasStringPrefix($"{prefix} ", ref argPos))
+                {
+                    await _commands.ExecuteAsync(context, argPos, _provider);
+                }
+                else
+                {
+                    await _customCommandService.ProcessRoleCommands(server, msg, context);
+                    await _customCommandService.ProcessCustomCommands(server, msg, context);
+                }
             }
         }
     }

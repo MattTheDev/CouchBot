@@ -31,12 +31,6 @@ namespace MTD.CouchBot.Modules
             _loggingService = loggingService;
         }
 
-        [Command("ThrowError")]
-        public async Task ThrowError()
-        {
-            await _loggingService.LogError("Error test.");
-        }
-
         [Command("info"), Summary("Get CouchBot Information.")]
         public async Task Info()
         {
@@ -379,5 +373,38 @@ namespace MTD.CouchBot.Modules
                                                    $"- {allServersConfiguredWithLive.Count} have a live channel set.\r\n" +
                                                    $"- {allServersConfiguredWithPublished.Count} have a published channel set.\r\n");
         }
+
+        [Command("MessageServerOwner")]
+        public async Task MessageServerOwner(ulong guildId, string message)
+        {
+            if(!IsBotOwner)
+            {
+                return;
+            }
+
+            var serverOwnerId = _discord.GetGuild(guildId)?.OwnerId;
+
+            if (serverOwnerId.HasValue)
+            {
+                var serverOwner = _discord.GetUser(serverOwnerId.Value);
+               
+                try
+                {
+                    var dmChannel = await serverOwner.GetOrCreateDMChannelAsync();
+                    await dmChannel.SendMessageAsync($"{message}\r\n\r\nMessage sent by Matt. " +
+                        $"Please join the support server (<http://discord.mattthedev.codes>) if you need any further help.");
+
+                }
+                catch(Exception)
+                {
+                    await Context.Channel.SendMessageAsync($"Unable to open DM with {serverOwner.Username} ({serverOwnerId}).");
+                }
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync($"Unable to open DM with {serverOwnerId}.");
+            }
+        }
+
     }
 }
