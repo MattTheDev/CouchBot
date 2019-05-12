@@ -18,7 +18,22 @@ namespace MTD.CouchBot.Modules
             _botSettings = botSettings.Value;
             _fileService = fileService;
         }
-        
+
+        public bool IsBotOwner
+        {
+            get
+            {
+                var authorId = ((IGuildUser)Context.Message.Author).Id;
+
+                if (authorId != _botSettings.BotConfig.OwnerId)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         public bool IsAdmin
         {
             get
