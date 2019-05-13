@@ -34,102 +34,21 @@ namespace MTD.CouchBot.Services
 
             _discord.JoinedGuild += Client_JoinedGuild;
             _discord.LeftGuild += Client_LeftGuild;
-            _discord.UserJoined += Client_UserJoined;
-            _discord.UserLeft += Client_UserLeft;
         }
         
         public async Task Client_JoinedGuild(IGuild arg)
         {
             await CreateGuild(arg);
+            var owner = await arg.GetOwnerAsync();
+            await _loggingService.LogAudit($"Joined guild {arg.Name} ({arg.Id}) owned by {owner.Username} ({owner.Id}).");
         }
 
         public async Task Client_LeftGuild(IGuild arg)
         {
             File.Delete(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Id + ".json");
-            //await SendLeftEmbed(arg.Name, arg.Id, (await arg.GetOwnerAsync()).Username, (await arg.GetUsersAsync()).Count, arg.CreatedAt.DateTime, arg.IconUrl, _discord.Guilds.Count);
-        }
-
-        private async Task Client_UserLeft(IGuildUser arg)
-        {
-            UpdateGuildUsers(arg.Guild);
-
-            var guild = new DiscordServer();
-            var guildFile = _botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Guild.Id + ".json";
-
-            if (File.Exists(guildFile))
-            {
-                var json = File.ReadAllText(guildFile);
-                guild = JsonConvert.DeserializeObject<DiscordServer>(json);
-            }
-
-            if (guild != null)
-            {
-                if (guild.GreetingsChannel != 0 && guild.Goodbyes)
-                {
-                    var channel = (IMessageChannel)await arg.Guild.GetChannelAsync(guild.GreetingsChannel);
-
-                    if (string.IsNullOrEmpty(guild.GoodbyeMessage))
-                    {
-                        guild.GoodbyeMessage = "Good bye, " + arg.Username + ", thanks for hanging out!";
-                    }
-
-                    var name = "";
-                    if (guild.GreetingMessage.Contains("%RANDOMUSER%"))
-                    {
-                        var users = (await arg.Guild.GetUsersAsync(CacheMode.AllowDownload));
-
-                        var random = new Random().Next(0, users.Count - 1);
-
-                        name = users.ElementAt(random).Username;
-                    }
-
-                    guild.GoodbyeMessage = guild.GoodbyeMessage.Replace("%USER%", arg.Username).Replace("%NEWLINE%", "\r\n").Replace("%RANDOMUSER%", name);
-
-                    await channel.SendMessageAsync(guild.GoodbyeMessage);
-                }
-            }
-        }
-
-        private async Task Client_UserJoined(IGuildUser arg)
-        {
-            UpdateGuildUsers(arg.Guild);
-
-            var guild = new DiscordServer();
-            var guildFile = _botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Guild.Id + ".json";
-
-            if (File.Exists(guildFile))
-            {
-                var json = File.ReadAllText(guildFile);
-                guild = JsonConvert.DeserializeObject<DiscordServer>(json);
-            }
-
-            if (guild != null)
-            {
-                if (guild.GreetingsChannel != 0 && guild.Greetings)
-                {
-                    var channel = (IMessageChannel)await arg.Guild.GetChannelAsync(guild.GreetingsChannel);
-
-                    if (string.IsNullOrEmpty(guild.GreetingMessage))
-                    {
-                        guild.GreetingMessage = "Welcome to the server, " + arg.Mention;
-                    }
-
-                    var name = "";
-                    if (guild.GreetingMessage.Contains("%RANDOMUSER%"))
-                    {
-                        var users = (await arg.Guild.GetUsersAsync(CacheMode.AllowDownload));
-
-                        var random = new Random().Next(0, users.Count - 1);
-
-                        name = users.ElementAt(random).Username;
-                    }
-
-                    guild.GreetingMessage = guild.GreetingMessage.Replace("%USER%", arg.Mention).Replace("%NEWLINE%", "\r\n").Replace("%RANDOMUSER%", name);
-
-                    await channel.SendMessageAsync(guild.GreetingMessage);
-                }
-            }
-        }
+            var owner = await arg.GetOwnerAsync();
+            await _loggingService.LogAudit($"Left guild {arg.Name} ({arg.Id}) owned by {owner.Username} ({owner.Id}).");
+        }      
 
         public async Task CreateGuild(IGuild arg)
         {
@@ -148,21 +67,6 @@ namespace MTD.CouchBot.Services
             guild.OwnerName = owner.Username;
             guild.Name = arg.Name;
             guild.AllowEveryone = true;
-
-            var guildJson = JsonConvert.SerializeObject(guild);
-            File.WriteAllText(guildFile, guildJson);
-        }
-
-        public void UpdateGuildUsers(IGuild arg)
-        {
-            var guild = new DiscordServer();
-            var guildFile = _botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Id + ".json";
-
-            if (File.Exists(guildFile))
-            {
-                var json = File.ReadAllText(guildFile);
-                guild = JsonConvert.DeserializeObject<DiscordServer>(json);
-            }
 
             var guildJson = JsonConvert.SerializeObject(guild);
             File.WriteAllText(guildFile, guildJson);
@@ -209,55 +113,7 @@ namespace MTD.CouchBot.Services
                 }
             }
         }
-
-        public async Task SendJoinedEmbed(string serverName, ulong serverId, string ownerName, int userCount, DateTime createdDate, string iconUrl, int serverCount)
-        {
-            var builder = new EmbedBuilder();
-            builder.Title = "Log: Joined a New Server";
-            builder.Description = "Successfully joined a new server. Total Servers: " + serverCount;
-            builder.ThumbnailUrl = iconUrl;
-            
-            builder.AddField("Name", serverName, true);
-            builder.AddField("ID", serverId, true);
-            builder.AddField("Owner", ownerName, true);
-            builder.AddField("Members", userCount, true);
-            builder.AddField("Created", createdDate, true);
-
-            var fBuilder = new EmbedFooterBuilder();
-            fBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
-            fBuilder.Text = "Server Joined | " + DateTime.UtcNow;
-
-            builder.Footer = fBuilder;
-
-            var guild = _discord.GetGuild(263688866978988032);
-            var channel = (IMessageChannel) guild.GetChannel(359004669110124544);
-            await channel.SendMessageAsync("", false, builder.Build());
-        }
-
-        public async Task SendLeftEmbed(string serverName, ulong serverId, string ownerName, int userCount, DateTime createdDate, string iconUrl, int serverCount)
-        {
-            var builder = new EmbedBuilder();
-            builder.Title = "Log: Left a Server";
-            builder.Description = "Successfully left a server. Total Servers: " + serverCount;
-            builder.ThumbnailUrl = iconUrl;
-
-            builder.AddField("Name", serverName, true);
-            builder.AddField("ID", serverId, true);
-            builder.AddField("Owner", ownerName, true);
-            builder.AddField("Members", userCount, true);
-            builder.AddField("Created", createdDate, true);
-
-            var fBuilder = new EmbedFooterBuilder();
-            fBuilder.IconUrl = _discord.CurrentUser.GetAvatarUrl();
-            fBuilder.Text = "Server Left | " + DateTime.UtcNow;
-
-            builder.Footer = fBuilder;
-
-            var guild = _discord.GetGuild(263688866978988032);
-            var channel = (IMessageChannel)guild.GetChannel(359004669110124544);
-            await channel.SendMessageAsync("", false, builder.Build());
-        }
-
+        
         public async Task AddRole(IGuildUser user, IRole guildRole, IMessageChannel channel)
         {
             try
@@ -286,32 +142,6 @@ namespace MTD.CouchBot.Services
                 await channel.SendMessageAsync(
                     "I was unable to remove you from the role successfully. Check my permissions, and try again.");
             }
-        }
-
-        public List<string> FindConnectedServersByName(string name)
-        {
-            var guilds = _discord.Guilds.Where(x => x.Name.Contains(name));
-            var guildList = new List<string>();
-
-            foreach (var guild in guilds)
-            {
-                guildList.Add($"{guild.Name} ({guild.Id})");
-            }
-
-            return guildList;
-        }
-
-        public List<string> FindConnectedServersByOwnerId(ulong ownerId)
-        {
-            var guilds = _discord.Guilds.Where(x => x.OwnerId == ownerId);
-            var guildList = new List<string>();
-
-            foreach (var guild in guilds)
-            {
-                guildList.Add($"{guild.Name} ({guild.Id})");
-            }
-
-            return guildList;
         }
     }
 }

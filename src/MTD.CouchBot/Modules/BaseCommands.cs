@@ -8,6 +8,7 @@ using MTD.CouchBot.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using EmbedBuilder = Discord.EmbedBuilder;
 
@@ -372,6 +373,33 @@ namespace MTD.CouchBot.Modules
                                                    $"- {allServersConfigured.Count} are configured.\r\n" +
                                                    $"- {allServersConfiguredWithLive.Count} have a live channel set.\r\n" +
                                                    $"- {allServersConfiguredWithPublished.Count} have a published channel set.\r\n");
+        }
+
+        [Command("NotSetupForAnnouncements")]
+        public async Task NotSetupForAnnouncements(bool purge, string count)
+        {
+            if(!IsBotOwner)
+            {
+                return;
+            }
+
+            var allServersNotSetup = _fileService.GetServersNotSetupForAnnouncements();
+
+            File.WriteAllText(@"C:\programdata\couchbot\audit_noannouncements.txt", string.Join("\r\n", allServersNotSetup.Select(x => x.Id)));
+
+            await Context.Channel.SendMessageAsync($"Channels not configured for announcements: {allServersNotSetup.Count}");
+
+            if(purge)
+            {
+                await Context.Channel.SendMessageAsync("Purging...");
+
+                foreach(var server in allServersNotSetup)
+                {
+                    var guild = _discord.GetGuild(server.Id);
+                    await guild.LeaveAsync();
+                    break;
+                }
+            }
         }
 
         [Command("MessageServerOwner")]

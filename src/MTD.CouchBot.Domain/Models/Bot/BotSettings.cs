@@ -30,7 +30,8 @@ namespace MTD.CouchBot.Domain.Models.Bot
             public int TotalShards { get; set; }
             public ulong OwnerId { get; set; }
             public bool EnableSendingMessages { get; set; }
-            public ulong DiscordConsoleChannelId { get; set; }
+            public ulong DiscordErrorChannelId { get; set; }
+            public ulong DiscordAuditChannelId { get; set; }
         }
 
         public class Directories

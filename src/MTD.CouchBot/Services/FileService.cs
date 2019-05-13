@@ -89,6 +89,35 @@ namespace MTD.CouchBot.Services
             return servers;
         }
 
+        public List<DiscordServer> GetServersNotSetupForAnnouncements()
+        {
+            var servers = new List<DiscordServer>();
+
+            foreach (var s in Directory.GetFiles(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory))
+            {
+                try
+                {
+                    var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(s));
+
+                    if(server.GoLiveChannel != 0 ||
+                        server.OwnerLiveChannel != 0 ||
+                        server.OwnerPublishedChannel != 0 ||
+                        server.PublishedChannel != 0)
+                    {
+                        continue;
+                    }
+
+                    servers.Add(server);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            return servers;
+        }
+
         public List<DiscordServer> GetConfiguredServersWithLiveChannel()
         {
             var servers = new List<DiscordServer>();
