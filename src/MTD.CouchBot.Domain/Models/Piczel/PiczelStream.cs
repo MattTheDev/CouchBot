@@ -34,6 +34,6 @@ namespace MTD.CouchBot.Domain.Models.Piczel
         public string Username { get; set; }
         public List<object> Recordings { get; set; }
         public PiczelUser User { get; set; }
-        public List<object> Tags { get; set; }
+        public List<PiczelTag> Tags { get; set; }
 }
 }

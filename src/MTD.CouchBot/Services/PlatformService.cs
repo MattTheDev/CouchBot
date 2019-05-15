@@ -188,16 +188,12 @@ namespace MTD.CouchBot.Services
                                                 f.IsInline = true;
                                             });
 
-                                            var tags = new StringBuilder();
-                                            foreach (var t in stream.Tags)
-                                            {
-                                                tags.Append(t + ", ");
-                                            }
+                                            var tags = (stream.Tags != null && stream.Tags.Count > 0) ? string.Join(", ", stream.Tags.Select(x => x.Title)) : "None";
 
                                             embedBuilder.AddField(f =>
                                             {
                                                 f.Name = "Stream Tags";
-                                                f.Value = string.IsNullOrEmpty(tags.ToString().Trim().TrimEnd(',')) ? "None" : tags.ToString().Trim().TrimEnd(',');
+                                                f.Value = tags;
                                                 f.IsInline = false;
                                             });
 
