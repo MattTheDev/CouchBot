@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MTD.CouchBot.Domain;
 
 namespace MTD.CouchBot.Modules
 {
@@ -140,7 +141,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
                     
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/mixer2.png";
+                    builder.ThumbnailUrl = Constants.MixerLogoUrl;
 
                     break;
                 case "mobcrush":
@@ -190,7 +191,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/mobcrush.jpg";
+                    builder.ThumbnailUrl = Constants.MobcrushLogoUrl;
 
                     break;
                 case "picarto":
@@ -255,7 +256,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/piczeltv.png";
+                    builder.ThumbnailUrl = Constants.PiczelLogoUrl;
 
                     break;
                 case "smashcast":
@@ -271,7 +272,7 @@ namespace MTD.CouchBot.Modules
                     }
 
                     owner = (string.IsNullOrEmpty(server.OwnerHitboxChannel) ? "Not Set" : server.OwnerHitboxChannel);
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/smashcast2.png";
+                    builder.ThumbnailUrl = Constants.SmashcastLogoUrl;
 
                     break;
                 case "twitch":
@@ -322,7 +323,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/twitch2.png";
+                    builder.ThumbnailUrl = Constants.TwitchLogoUrl;
 
                     break;
                 case "youtube":
@@ -349,7 +350,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/yt.png";
+                    builder.ThumbnailUrl = Constants.YouTubeLogoUrl;
 
                     break;
                 default:
