@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
-    public class PicartoManager : IPicartoManager
+    public class PicartoManager
     {
         private readonly IPicartoDal _picartoDal;
 

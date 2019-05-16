@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
-    public class PiczelManager : IPiczelManager
+    public class PiczelManager
     {
         private readonly IPiczelDal _piczelDal;
 

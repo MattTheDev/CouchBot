@@ -10,7 +10,7 @@ using MTD.CouchBot.Domain.Models.Shared;
 using MTD.CouchBot.Domain.Models.Smashcast;
 using MTD.CouchBot.Domain.Models.Twitch;
 using MTD.CouchBot.Domain.Models.YouTube;
-using MTD.CouchBot.Managers;
+using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models.Bot;
 using Newtonsoft.Json;
 using System;
@@ -24,23 +24,23 @@ namespace MTD.CouchBot.Services
 {
     public class PlatformService
     {
-        private readonly IYouTubeManager _youtubeManager;
-        private readonly ITwitchManager _twitchManager;
-        private readonly ISmashcastManager _smashcastManager;
-        private readonly IPiczelManager _piczelManager;
-        private readonly IPicartoManager _picartoManager;
+        private readonly YouTubeManager _youtubeManager;
+        private readonly TwitchManager _twitchManager;
+        private readonly SmashcastManager _smashcastManager;
+        private readonly PiczelManager _piczelManager;
+        private readonly PicartoManager _picartoManager;
         private readonly DiscordShardedClient _discord;
         private readonly MessagingService _messagingService;
         private readonly DiscordService _discordService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
-        private readonly IMobcrushManager _mobcrushManager;
+        private readonly MobcrushManager _mobcrushManager;
         private readonly LoggingService _loggingService;
 
-        public PlatformService(IYouTubeManager youtubeManager, ITwitchManager twitchManager, ISmashcastManager smashcastManager, IPiczelManager piczelManager,
-            IPicartoManager picartoManager, DiscordShardedClient discord,
+        public PlatformService(YouTubeManager youtubeManager, TwitchManager twitchManager, SmashcastManager smashcastManager, PiczelManager piczelManager,
+            PicartoManager picartoManager, DiscordShardedClient discord,
             MessagingService messagingService, DiscordService discordService, FileService fileService, IOptions<BotSettings> botSettings,
-            IMobcrushManager mobcrushManager, LoggingService loggingService)
+            MobcrushManager mobcrushManager, LoggingService loggingService)
         {
             _youtubeManager = youtubeManager;
             _twitchManager = twitchManager;

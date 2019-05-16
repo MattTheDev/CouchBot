@@ -1,30 +1,30 @@
-﻿using System;
+﻿using Discord;
+using Discord.Commands;
+using Microsoft.Extensions.Options;
+using MTD.CouchBot.Domain;
+using MTD.CouchBot.Domain.Models.Bot;
+using MTD.CouchBot.Managers.Implementations;
+using MTD.CouchBot.Models.Bot;
+using MTD.CouchBot.Services;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
-using Discord.Commands;
-using Microsoft.Extensions.Options;
-using MTD.CouchBot.Domain;
-using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers;
-using MTD.CouchBot.Models.Bot;
-using MTD.CouchBot.Services;
-using Newtonsoft.Json;
 
 namespace MTD.CouchBot.Modules
 {
     [Group("twitch")]
     public class Twitch : BaseModule
     {
-        private readonly ITwitchManager _twitchManager;
+        private readonly TwitchManager _twitchManager;
         private readonly MessagingService _messagingService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Twitch(ITwitchManager twitchManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService) 
+        public Twitch(TwitchManager twitchManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService) 
             : base(botSettings, fileService)
         { 
             _twitchManager = twitchManager;

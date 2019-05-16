@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Models.YouTube;
-using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.IO;

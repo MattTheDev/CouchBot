@@ -1,26 +1,26 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers;
+using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models.Bot;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules
 {
     [Group("smashcast")]
     public class Smashcast : BaseModule
     {
-        private readonly ISmashcastManager _smashcastManager;
+        private readonly SmashcastManager _smashcastManager;
         private readonly MessagingService _messagingService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Smashcast(ISmashcastManager smashcastManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService)
+        public Smashcast(SmashcastManager smashcastManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService)
             : base(botSettings, fileService)
         {
             _smashcastManager = smashcastManager;
@@ -189,7 +189,7 @@ namespace MTD.CouchBot.Modules
 
             if (stream.livestream[0].media_is_live == "1")
             {
-                var gameName = stream.livestream[0].category_name == null ? "A game" : stream.livestream[0].category_name;
+                var gameName = stream.livestream[0].category_name ?? "A game";
                 var url = "http://smashcast.tv/" + channelName;
                 var avatarUrl = "http://edge.sf.hitbox.tv" + stream.livestream[0].channel.user_logo;
                 var thumbnailUrl = "http://edge.sf.hitbox.tv" + stream.livestream[0].media_thumbnail_large;

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
-    public class MobcrushManager : IMobcrushManager
+    public class MobcrushManager
     {
         private readonly IMobcrushDal _mobcrushDal;
 

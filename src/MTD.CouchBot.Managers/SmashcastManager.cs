@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
-    public class SmashcastManager : ISmashcastManager
+    public class SmashcastManager
     {
         private readonly ISmashcastDal _smashcastDal;
 

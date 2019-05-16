@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
-    public class StrawPollManager : IStrawPollManager
+    public class StrawPollManager
     {
         private readonly IStrawpollDal _strawPollDal;
 

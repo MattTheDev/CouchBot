@@ -1,7 +1,7 @@
 ﻿using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers;
+using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -13,11 +13,11 @@ namespace MTD.CouchBot.Modules
     [Group("piczel")]
     public class Piczel : BaseModule
     {
-        private readonly IPiczelManager _piczelManager;
+        private readonly PiczelManager _piczelManager;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Piczel(IOptions<BotSettings> botSettings, IPiczelManager piczelManager, FileService fileService) : base(botSettings, fileService)
+        public Piczel(IOptions<BotSettings> botSettings, PiczelManager piczelManager, FileService fileService) : base(botSettings, fileService)
         {
             _botSettings = botSettings.Value;
             _piczelManager = piczelManager;

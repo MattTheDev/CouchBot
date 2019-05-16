@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Models.Mixer;
-using MTD.CouchBot.Managers;
+using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Models.Bot;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
@@ -22,14 +22,14 @@ namespace MTD.CouchBot.Modules
     [Group("mixer")]
     public class Mixer : BaseModule
     {
-        private readonly IMixerManager _mixerManager;
+        private readonly MixerManager _mixerManager;
         private readonly DiscordShardedClient _discord;
         private readonly MixerConstellationService _mixerService;
         private readonly MessagingService _messagingService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Mixer(IMixerManager mixerManager, MessagingService messagingService, DiscordShardedClient discord, MixerConstellationService mixerService,
+        public Mixer(MixerManager mixerManager, MessagingService messagingService, DiscordShardedClient discord, MixerConstellationService mixerService,
             IOptions<BotSettings> botSettings, FileService fileService) : base (botSettings, fileService)
         {
             _mixerManager = mixerManager;

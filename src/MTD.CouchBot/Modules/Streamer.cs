@@ -2,30 +2,30 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
+using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers;
+using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MTD.CouchBot.Domain;
 
 namespace MTD.CouchBot.Modules
 {
     [Group("streamer"), Alias("creator")]
     public class Streamer : BaseModule
     {
-        private readonly IYouTubeManager _youtubeManager;
-        private readonly IMixerManager _mixerManager;
-        private readonly ITwitchManager _twitchManager;
-        private readonly IMobcrushManager _mobCrushManager;
-        private readonly IPiczelManager _piczelManager;
+        private readonly YouTubeManager _youtubeManager;
+        private readonly MixerManager _mixerManager;
+        private readonly TwitchManager _twitchManager;
+        private readonly MobcrushManager _mobCrushManager;
+        private readonly PiczelManager _piczelManager;
         private readonly FileService _fileService;
         private readonly DiscordShardedClient _discord;
 
-        public Streamer(IYouTubeManager youTubeManager, IMixerManager mixerManager, ITwitchManager twitchManager, FileService fileService, IMobcrushManager mobCrushManager,
-            DiscordShardedClient discord, IPiczelManager piczelManager, IOptions<BotSettings> botSettings) : base(botSettings, fileService)
+        public Streamer(YouTubeManager youTubeManager, MixerManager mixerManager, TwitchManager twitchManager, FileService fileService, MobcrushManager mobCrushManager,
+            DiscordShardedClient discord, PiczelManager piczelManager, IOptions<BotSettings> botSettings) : base(botSettings, fileService)
         {
             _youtubeManager = youTubeManager;
             _twitchManager = twitchManager;

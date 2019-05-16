@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
-    public class TwitchManager : ITwitchManager
+    public class TwitchManager
     {
         private readonly ITwitchDal _twitchDal;
 

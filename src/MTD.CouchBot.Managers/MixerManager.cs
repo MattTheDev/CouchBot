@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using MTD.CouchBot.Dals;
+﻿using MTD.CouchBot.Dals;
 using MTD.CouchBot.Domain.Models.Mixer;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
-    public class MixerManager : IMixerManager
+    public class MixerManager
     {
         private readonly IMixerDal _mixerDal;
 

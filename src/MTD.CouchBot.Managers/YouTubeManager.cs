@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Managers.Implementations
 {
-    public class YouTubeManager : IYouTubeManager
+    public class YouTubeManager
     {
         private readonly IYouTubeDal _youtubeDal;
 
