@@ -71,7 +71,7 @@ namespace MTD.CouchBot.Dals.Implementations
                     str = streamReader.ReadToEnd();
                 return JsonConvert.DeserializeObject<YouTubeSearchListChannel>(str);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 // TODO MS
                 //Logging.LogError("Error in GetVideoById: " + ex.Message); 
