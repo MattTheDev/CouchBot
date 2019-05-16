@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MTD.CouchBot.Dals;
 using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
 using MTD.CouchBot.Services;
 using System;
