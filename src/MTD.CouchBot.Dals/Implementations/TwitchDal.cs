@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Models.Twitch;
-using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -78,48 +77,6 @@ namespace MTD.CouchBot.Dals.Implementations
             }
         }
 
-        public async Task<List<string>> GetTwitchIdsByLoginList(string twitchNameList)
-        {
-            var userList = new List<string>();
-
-            var url = "https://api.twitch.tv/kraken/users?login=" + twitchNameList + "&api_version=5";
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Headers["Client-Id"] = _botSettings.KeySettings.TwitchClientId;
-            request.Accept = "application/vnd.twitchtv.v5+json";
-            try
-            {
-                var response = await request.GetResponseAsync();
-                var responseText = "";
-
-                using (var sr = new StreamReader(response.GetResponseStream()))
-                {
-                    responseText = sr.ReadToEnd();
-                }
-
-                var users = JsonConvert.DeserializeObject<TwitchUser>(responseText);
-
-                if (users != null && users.users != null && users.users.Count > 0)
-                {
-                    foreach (var user in users.users)
-                    {
-                        userList.Add(user._id);
-                    }
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch(Exception)
-            {
-                // TODO MS
-                //await _loggingService.LogError("Error in GetTwitchIdsByLoginList. URL: " + url + " - Message: " + ex.Message + " - Stacktrace: + " + ex.StackTrace);
-                //return null;
-            }
-
-            return userList;
-        }
-
         public async Task<List<TwitchUser.User>> GetTwitchUsersByLoginList(string twitchNameList)
         {
             var url = "https://api.twitch.tv/kraken/users?login=" + twitchNameList + "&api_version=5";
@@ -144,28 +101,6 @@ namespace MTD.CouchBot.Dals.Implementations
             {
                 // TODO MS
                 //Logging.LogError("Error in GetTwitchIdsByLoginList. URL: " + url + " - Message: " + ex.Message + " - Stacktrace: + " + ex.StackTrace);
-                return null;
-            }
-        }
-
-        public async Task<TwitchFollowers> GetFollowersByName(string name)
-        {
-            try
-            {
-                var request = (HttpWebRequest)WebRequest.Create("https://api.twitch.tv/kraken/channels/" + name + "/follows");
-                request.Headers["Client-Id"] = _botSettings.KeySettings.TwitchClientId;
-                var response = await request.GetResponseAsync();
-                var responseText = "";
-
-                using (var sr = new StreamReader(response.GetResponseStream()))
-                {
-                    responseText = sr.ReadToEnd();
-                }
-
-                return JsonConvert.DeserializeObject<TwitchFollowers>(responseText);
-            }
-            catch(Exception)
-            {
                 return null;
             }
         }
@@ -305,22 +240,6 @@ namespace MTD.CouchBot.Dals.Implementations
             {
                 return null;
             }
-        }
-
-        public async Task<TwitchGameQueryResponse> GetGamesByIdList(string idList)
-        {
-            var request = (HttpWebRequest)WebRequest.Create($"https://api.twitch.tv/helix/games?{idList}");
-            request.Headers["Client-Id"] = _botSettings.KeySettings.TwitchClientId;
-            request.Accept = "application/vnd.twitchtv.v5+json";
-            var response = await request.GetResponseAsync();
-            var responseText = "";
-
-            using (var sr = new StreamReader(response.GetResponseStream()))
-            {
-                responseText = sr.ReadToEnd();
-            }
-
-            return JsonConvert.DeserializeObject<TwitchGameQueryResponse>(responseText);
         }
 
     }

@@ -7,9 +7,7 @@ namespace MTD.CouchBot.Dals
     public interface ITwitchDal
     {
         Task<TwitchStreamV5> GetStreamById(string twitchId);
-        Task<TwitchFollowers> GetFollowersByName(string name);
         Task<string> GetTwitchIdByLogin(string name);
-        Task<List<string>> GetTwitchIdsByLoginList(string twitchNameList);
         Task<TwitchStreamsV5> GetStreamsByIdList(string twitchIdList);
         Task<TwitchTeam> GetTwitchTeamByName(string name);
         Task<List<string>> GetDelimitedListOfTwitchMemberIds(string teamToken);
