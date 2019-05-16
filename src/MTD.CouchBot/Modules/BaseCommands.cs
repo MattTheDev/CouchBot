@@ -3,13 +3,13 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 using EmbedBuilder = Discord.EmbedBuilder;
 
 namespace MTD.CouchBot.Modules

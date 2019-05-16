@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Utilities;
-using MTD.CouchBot.Models.Bot;
 using System;
 using System.Collections.Generic;
 using System.Linq;

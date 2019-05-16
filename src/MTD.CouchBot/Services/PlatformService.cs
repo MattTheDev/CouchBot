@@ -10,8 +10,6 @@ using MTD.CouchBot.Domain.Models.Shared;
 using MTD.CouchBot.Domain.Models.Smashcast;
 using MTD.CouchBot.Domain.Models.Twitch;
 using MTD.CouchBot.Domain.Models.YouTube;
-using MTD.CouchBot.Managers.Implementations;
-using MTD.CouchBot.Models.Bot;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 
 namespace MTD.CouchBot.Services
 {

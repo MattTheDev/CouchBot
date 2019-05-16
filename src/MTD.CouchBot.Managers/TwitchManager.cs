@@ -1,9 +1,9 @@
-﻿using MTD.CouchBot.Dals;
-using MTD.CouchBot.Domain.Models.Twitch;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using MTD.CouchBot.Dals;
+using MTD.CouchBot.Domain.Models.Twitch;
 
-namespace MTD.CouchBot.Managers.Implementations
+namespace MTD.CouchBot.Managers
 {
     public class TwitchManager
     {

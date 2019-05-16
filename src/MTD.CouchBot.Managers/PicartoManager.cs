@@ -1,8 +1,8 @@
-﻿using MTD.CouchBot.Dals;
+﻿using System.Threading.Tasks;
+using MTD.CouchBot.Dals;
 using MTD.CouchBot.Domain.Models.Picarto;
-using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Managers.Implementations
+namespace MTD.CouchBot.Managers
 {
     public class PicartoManager
     {

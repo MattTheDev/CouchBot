@@ -3,7 +3,6 @@ using MTD.CouchBot.Domain.Models;
 using MTD.CouchBot.Managers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MTD.CouchBot.Managers.Implementations;
 
 namespace MTD.CouchBot.Modules
 {

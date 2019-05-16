@@ -1,9 +1,9 @@
-﻿using MTD.CouchBot.Dals;
-using MTD.CouchBot.Domain.Models.YouTube;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using MTD.CouchBot.Dals;
+using MTD.CouchBot.Domain.Models.YouTube;
 
-namespace MTD.CouchBot.Managers.Implementations
+namespace MTD.CouchBot.Managers
 {
     public class YouTubeManager
     {

@@ -7,7 +7,6 @@ using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
-using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Services;
 using System;
 using System.Threading;
