@@ -159,7 +159,7 @@ namespace MTD.CouchBot.Services
                 footer.IconUrl = Constants.MixerLogoUrl;
             }
 
-            author.IconUrl = (user.GetAvatarUrl() != null ? user.GetAvatarUrl() : "http://mattthedev.codes/img/bot/discord.png") + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+            author.IconUrl = (!string.IsNullOrEmpty(user.GetAvatarUrl()) ? user.GetAvatarUrl() : "http://mattthedev.codes/img/bot/discord.png") + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
             author.Name = ((IGuildUser)user).Nickname ?? _discord.CurrentUser.Username;
             author.Url = url;
             embed.Author = author;
@@ -430,15 +430,16 @@ namespace MTD.CouchBot.Services
                 {
                     try
                     {
-                        var channelMessage = new ChannelMessage();
-                        channelMessage.ChannelId = message.ChannelId;
-                        channelMessage.GuildId = message.GuildId;
-                        channelMessage.DeleteOffline = message.DeleteOffline;
+                        var channelMessage = new ChannelMessage
+                        {
+                            ChannelId = message.ChannelId,
+                            GuildId = message.GuildId,
+                            DeleteOffline = message.DeleteOffline
+                        };
 
                         if (message.Embed != null)
                         {
-                            var options = new RequestOptions();
-                            options.RetryMode = RetryMode.AlwaysRetry;
+                            var options = new RequestOptions {RetryMode = RetryMode.AlwaysRetry};
                             var msg = await chat.SendMessageAsync(message.Message, false, message.Embed, options);
 
                             if (msg != null || msg.Id != 0)

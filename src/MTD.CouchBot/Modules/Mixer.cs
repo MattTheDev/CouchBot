@@ -232,7 +232,7 @@ namespace MTD.CouchBot.Modules
             {
                 var gameName = channel.type == null ? "A game" : channel.type.name;
                 var url = "http://mixer.com/" + channel.token;
-                var avatarUrl = channel.user.avatarUrl != null ? channel.user.avatarUrl : "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                var avatarUrl = channel.user.avatarUrl ?? "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
                 var thumbnailUrl = "https://thumbs.mixer.com/channel/" + channel.id + ".small.jpg";
                 var channelId = channel.id?.ToString();
 
