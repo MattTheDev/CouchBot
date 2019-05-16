@@ -139,7 +139,7 @@ namespace MTD.CouchBot.Services
                                                 server.LiveMessage = "%CHANNEL% just went live - %TITLE% - %URL%";
                                             }
 
-                                            var streamUrl = $"https://piczel.tv/{stream.User.Username}";
+                                            var streamUrl = $"https://piczel.tv/watch/{stream.User.Username}";
                                             var avatarUrl = stream.User.Avatar.Avatar.Url;
                                             var thumbnailUrl = $"https://apollo.piczel.tv/static/thumbnail/stream_{stream.Id}.jpg?{Guid.NewGuid().ToString().Replace("-", "")}";
 
@@ -229,7 +229,7 @@ namespace MTD.CouchBot.Services
 
                                                 message += "**[Piczel]** " + server.LiveMessage.Replace("%CHANNEL%", Format.Sanitize(stream.User.Username))
                                                                .Replace("%TITLE%", stream.Title)
-                                                               .Replace("%URL%", "https://piczel.tv/" + stream.User.Username).Replace("%GAME%", "Art!");
+                                                               .Replace("%URL%", "https://piczel.tv/watch/" + stream.User.Username).Replace("%GAME%", "Art!");
                                             }
 
                                             var broadcastMessage = new BroadcastMessage
@@ -346,7 +346,7 @@ namespace MTD.CouchBot.Services
                                             server.LiveMessage = "%CHANNEL% just went live - %TITLE% - %URL%";
                                         }
 
-                                        var streamUrl = $"https://piczel.tv/{stream.User.Username}";
+                                        var streamUrl = $"https://piczel.tv/watch/{stream.User.Username}";
                                         var avatarUrl = stream.User.Avatar.Avatar.Url;
                                         var thumbnailUrl = $"https://apollo.piczel.tv/static/thumbnail/stream_{stream.Id}.jpg?{Guid.NewGuid().ToString().Replace("-", "")}";
 
