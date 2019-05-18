@@ -30,27 +30,105 @@ namespace MTD.CouchBot.Services
 
         public void Init()
         {
-            // Not needed. Initially ran to fix new data structure. Keeping just in case needed in future. FixGuilds();
-
             _discord.JoinedGuild += Client_JoinedGuild;
             _discord.LeftGuild += Client_LeftGuild;
+            _discord.UserJoined += Client_UserJoined;
+            _discord.UserLeft += Client_UserLeft;
         }
-        
-        public async Task Client_JoinedGuild(IGuild arg)
+
+        private async Task Client_JoinedGuild(IGuild arg)
         {
             await CreateGuild(arg);
             var owner = await arg.GetOwnerAsync();
             await _loggingService.LogAudit($"Joined guild {arg.Name} ({arg.Id}) owned by {owner.Username} ({owner.Id}).");
         }
 
-        public async Task Client_LeftGuild(IGuild arg)
+        private async Task Client_LeftGuild(IGuild arg)
         {
             File.Delete(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Id + ".json");
             var owner = await arg.GetOwnerAsync();
             await _loggingService.LogAudit($"Left guild {arg.Name} ({arg.Id}) owned by {owner.Username} ({owner.Id}).");
-        }      
+        }
 
-        public async Task CreateGuild(IGuild arg)
+        private async Task Client_UserLeft(IGuildUser arg)
+        {
+            var guild = new DiscordServer();
+            var guildFile = _botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Guild.Id + ".json";
+
+            if (File.Exists(guildFile))
+            {
+                var json = File.ReadAllText(guildFile);
+                guild = JsonConvert.DeserializeObject<DiscordServer>(json);
+            }
+
+            if (guild != null)
+            {
+                if (guild.GreetingsChannel != 0 && guild.Goodbyes)
+                {
+                    var channel = (IMessageChannel)await arg.Guild.GetChannelAsync(guild.GreetingsChannel);
+
+                    if (string.IsNullOrEmpty(guild.GoodbyeMessage))
+                    {
+                        guild.GoodbyeMessage = "Good bye, " + arg.Username + ", thanks for hanging out!";
+                    }
+
+                    var name = "";
+                    if (guild.GreetingMessage.Contains("%RANDOMUSER%"))
+                    {
+                        var users = (await arg.Guild.GetUsersAsync(CacheMode.AllowDownload));
+
+                        var random = new Random().Next(0, users.Count - 1);
+
+                        name = users.ElementAt(random).Username;
+                    }
+
+                    guild.GoodbyeMessage = guild.GoodbyeMessage.Replace("%USER%", arg.Username).Replace("%NEWLINE%", "\r\n").Replace("%RANDOMUSER%", name);
+
+                    await channel.SendMessageAsync(guild.GoodbyeMessage);
+                }
+            }
+        }
+
+        private async Task Client_UserJoined(IGuildUser arg)
+        {
+            var guild = new DiscordServer();
+            var guildFile = _botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Guild.Id + ".json";
+
+            if (File.Exists(guildFile))
+            {
+                var json = File.ReadAllText(guildFile);
+                guild = JsonConvert.DeserializeObject<DiscordServer>(json);
+            }
+
+            if (guild != null)
+            {
+                if (guild.GreetingsChannel != 0 && guild.Greetings)
+                {
+                    var channel = (IMessageChannel)await arg.Guild.GetChannelAsync(guild.GreetingsChannel);
+
+                    if (string.IsNullOrEmpty(guild.GreetingMessage))
+                    {
+                        guild.GreetingMessage = "Welcome to the server, " + arg.Mention;
+                    }
+
+                    var name = "";
+                    if (guild.GreetingMessage.Contains("%RANDOMUSER%"))
+                    {
+                        var users = (await arg.Guild.GetUsersAsync(CacheMode.AllowDownload));
+
+                        var random = new Random().Next(0, users.Count - 1);
+
+                        name = users.ElementAt(random).Username;
+                    }
+
+                    guild.GreetingMessage = guild.GreetingMessage.Replace("%USER%", arg.Mention).Replace("%NEWLINE%", "\r\n").Replace("%RANDOMUSER%", name);
+
+                    await channel.SendMessageAsync(guild.GreetingMessage);
+                }
+            }
+        }
+
+        private async Task CreateGuild(IGuild arg)
         {
             var guild = new DiscordServer();
             var guildFile = _botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Id + ".json";
