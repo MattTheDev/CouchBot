@@ -22,7 +22,7 @@ namespace MTD.CouchBot.Modules
         private readonly FileService _fileService;
         private readonly LoggingService _loggingService;
 
-        public BaseCommands(IYouTubeManager youtubeManager, DiscordShardedClient discord, 
+        public BaseCommands(IYouTubeManager youtubeManager, DiscordShardedClient discord,
             IOptions<BotSettings> botSettings, FileService fileService, LoggingService loggingService) : base(botSettings, fileService)
         {
             _youtubeManager = youtubeManager;
@@ -226,7 +226,7 @@ namespace MTD.CouchBot.Modules
                 return;
             }
 
-            if(count > 100)
+            if (count > 100)
             {
                 await Context.Channel.SendMessageAsync("You can only purge up to 100 messages.");
 
@@ -342,7 +342,7 @@ namespace MTD.CouchBot.Modules
             if (!IsAdmin) return;
 
             var server = GetServer();
-                        
+
             server.Prefix = prefix;
             _fileService.SaveDiscordServer(server);
 
@@ -376,9 +376,9 @@ namespace MTD.CouchBot.Modules
         }
 
         [Command("NotSetupForAnnouncements")]
-        public async Task NotSetupForAnnouncements(bool purge, string count)
+        public async Task NotSetupForAnnouncements(bool purge, int count)
         {
-            if(!IsBotOwner)
+            if (!IsBotOwner)
             {
                 return;
             }
@@ -389,15 +389,37 @@ namespace MTD.CouchBot.Modules
 
             await Context.Channel.SendMessageAsync($"Channels not configured for announcements: {allServersNotSetup.Count}");
 
-            if(purge)
+            if (purge)
             {
                 await Context.Channel.SendMessageAsync("Purging...");
 
-                foreach(var server in allServersNotSetup)
+                var processed = 1;
+                foreach (var server in allServersNotSetup)
                 {
-                    var guild = _discord.GetGuild(server.Id);
-                    await guild.LeaveAsync();
-                    break;
+                    try
+                    {
+                        File.Copy($"C:\\ProgramData\\Couchbot\\Guilds\\{server.Id}.json", $"C:\\programdata\\couchbot\\Guilds_Left\\{server.Id}.json");
+                    }
+                    catch (Exception)
+                    {
+                        // Couldnt backup. Whatever, lets go.
+                    }
+
+                    try
+                    {
+                        var guild = _discord.GetGuild(server.Id);
+                        await guild.LeaveAsync();
+                    }
+                    catch (Exception)
+                    {
+                        // Most likely, already out of server. Just continue.
+                    }
+
+                    processed++;
+                    if (processed == count)
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -405,7 +427,7 @@ namespace MTD.CouchBot.Modules
         [Command("MessageServerOwner")]
         public async Task MessageServerOwner(ulong guildId, string message)
         {
-            if(!IsBotOwner)
+            if (!IsBotOwner)
             {
                 return;
             }
@@ -415,7 +437,7 @@ namespace MTD.CouchBot.Modules
             if (serverOwnerId.HasValue)
             {
                 var serverOwner = _discord.GetUser(serverOwnerId.Value);
-               
+
                 try
                 {
                     var dmChannel = await serverOwner.GetOrCreateDMChannelAsync();
@@ -423,7 +445,7 @@ namespace MTD.CouchBot.Modules
                         $"Please join the support server (<http://discord.mattthedev.codes>) if you need any further help.");
 
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     await Context.Channel.SendMessageAsync($"Unable to open DM with {serverOwner.Username} ({serverOwnerId}).");
                 }
@@ -433,6 +455,5 @@ namespace MTD.CouchBot.Modules
                 await Context.Channel.SendMessageAsync($"Unable to open DM with {serverOwnerId}.");
             }
         }
-
     }
 }

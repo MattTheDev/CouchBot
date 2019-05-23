@@ -42,7 +42,7 @@ namespace MTD.CouchBot.Services
 
         public async Task LogAudit(string message)
         {
-            var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordErrorChannelId);
+            var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordAuditChannelId);
 
             await ((IMessageChannel)guildChannel).SendMessageAsync($"[Audit] [{DateTime.UtcNow}] - {message}");
         }
