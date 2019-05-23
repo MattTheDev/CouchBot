@@ -1,11 +1,11 @@
-﻿using MTD.CouchBot.Dals;
-using MTD.CouchBot.Domain.Models.Twitch;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using MTD.CouchBot.Dals;
+using MTD.CouchBot.Domain.Models.Twitch;
 
-namespace MTD.CouchBot.Managers.Implementations
+namespace MTD.CouchBot.Managers
 {
-    public class TwitchManager : ITwitchManager
+    public class TwitchManager
     {
         private readonly ITwitchDal _twitchDal;
 
@@ -19,27 +19,9 @@ namespace MTD.CouchBot.Managers.Implementations
             return await _twitchDal.GetStreamById(twitchId);
         }
 
-        public async Task<TwitchFollowers> GetFollowersByName(string name)
-        {
-            return await _twitchDal.GetFollowersByName(name);
-        }
-
         public async Task<string> GetTwitchIdByLogin(string name)
         {
             return await _twitchDal.GetTwitchIdByLogin(name);
-        }
-
-        public async Task<TwitchStreamsV5> GetStreamsByIdList(List<string> twitchIdList)
-        {
-            var list = "";
-            foreach (var id in twitchIdList)
-            {
-                list += id + ",";
-            }
-
-            list = list.TrimEnd(',');
-
-            return await _twitchDal.GetStreamsByIdList(list);
         }
 
         public async Task<TwitchStreamsV5> GetStreamsByIdList(string twitchIdList)
@@ -70,11 +52,6 @@ namespace MTD.CouchBot.Managers.Implementations
         public async Task<TwitchChannelResponse> GetTwitchChannelById(string twitchId)
         {
             return await _twitchDal.GetTwitchChannelById(twitchId);
-        }
-
-        public async Task<List<string>> GetTwitchIdsByLoginList(string twitchNameList)
-        {
-            return await _twitchDal.GetTwitchIdsByLoginList(twitchNameList);
         }
 
         public async Task<List<TwitchUser.User>> GetTwitchUsersByLoginList(string twitchNameList)

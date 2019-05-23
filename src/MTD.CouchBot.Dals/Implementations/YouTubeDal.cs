@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Models.YouTube;
-using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -72,7 +71,7 @@ namespace MTD.CouchBot.Dals.Implementations
                     str = streamReader.ReadToEnd();
                 return JsonConvert.DeserializeObject<YouTubeSearchListChannel>(str);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 // TODO MS
                 //Logging.LogError("Error in GetVideoById: " + ex.Message); 
@@ -126,20 +125,6 @@ namespace MTD.CouchBot.Dals.Implementations
             return JsonConvert.DeserializeObject<YouTubeChannelSnippet>(str);
         }
 
-        public async Task<YouTubeChannelUpcomingEvents> GetChannelUpcomingEvents(string channelId)
-        {
-            var webRequest = (HttpWebRequest)WebRequest.Create(
-                            "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=" + channelId +
-                            "&type=video&eventType=upcoming&maxResults=25&key=" + _botSettings.KeySettings.YouTubeApiKey);
-            webRequest.ContentType = "application/json; charset=utf-8";
-            var str = "";
-
-            using (var streamReader = new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()))
-                str = streamReader.ReadToEnd();
-
-            return JsonConvert.DeserializeObject<YouTubeChannelUpcomingEvents>(str);
-        }
-
         public async Task<string> GetPreviewUrl(string videoId)
         {
             var url = "https://i.ytimg.com/an_webp/" + videoId + "/mqdefault_6s.webp";//?du=3000&amp;sqp=CLyroMsF&amp;rs=";
@@ -180,11 +165,6 @@ namespace MTD.CouchBot.Dals.Implementations
             catch(Exception) { }
 
             return null;
-        }
-
-        public Task<YouTubeSearchListChannel> GetRandomLiveCouchBotChannel()
-        {
-            throw new NotImplementedException();
         }
     }
 }

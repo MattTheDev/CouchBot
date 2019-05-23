@@ -1,10 +1,10 @@
-﻿using MTD.CouchBot.Dals;
+﻿using System.Threading.Tasks;
+using MTD.CouchBot.Dals;
 using MTD.CouchBot.Domain.Models;
-using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Managers.Implementations
+namespace MTD.CouchBot.Managers
 {
-    public class StrawPollManager : IStrawPollManager
+    public class StrawPollManager
     {
         private readonly IStrawpollDal _strawPollDal;
 

@@ -9,9 +9,9 @@ namespace MTD.CouchBot.Modules
     [Group("strawpoll")]
     public class StrawPoll : ModuleBase
     {
-        private readonly IStrawPollManager _strawPollManager;
+        private readonly StrawPollManager _strawPollManager;
 
-        public StrawPoll(IStrawPollManager strawPollManager)
+        public StrawPoll(StrawPollManager strawPollManager)
         {
             _strawPollManager = strawPollManager;
         }

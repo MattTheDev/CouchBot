@@ -5,9 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MTD.CouchBot.Dals;
 using MTD.CouchBot.Dals.Implementations;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Managers;
-using MTD.CouchBot.Managers.Implementations;
 using MTD.CouchBot.Services;
 using System;
 using System.Threading;
@@ -72,14 +70,14 @@ namespace MTD.CouchBot
                 .AddSingleton<ITwitchDal, TwitchDal>()
                 .AddSingleton<IYouTubeDal, YouTubeDal>()
                 .AddSingleton<IPiczelDal, PiczelDal>()
-                .AddSingleton<IMixerManager, MixerManager>()
-                .AddSingleton<IMobcrushManager, MobcrushManager>()
-                .AddSingleton<IPicartoManager, PicartoManager>()
-                .AddSingleton<ISmashcastManager, SmashcastManager>()
-                .AddSingleton<IStrawPollManager, StrawPollManager>()
-                .AddSingleton<ITwitchManager, TwitchManager>()
-                .AddSingleton<IYouTubeManager, YouTubeManager>()
-                .AddSingleton<IPiczelManager, PiczelManager>()
+                .AddSingleton<MixerManager>()
+                .AddSingleton<MobcrushManager>()
+                .AddSingleton<PicartoManager>()
+                .AddSingleton<SmashcastManager>()
+                .AddSingleton<StrawPollManager>()
+                .AddSingleton<TwitchManager>()
+                .AddSingleton<YouTubeManager>()
+                .AddSingleton<PiczelManager>()
                 .AddSingleton<Random>();
 
             services.AddOptions();

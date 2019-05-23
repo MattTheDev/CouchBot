@@ -1,10 +1,10 @@
-﻿using MTD.CouchBot.Dals;
+﻿using System.Threading.Tasks;
+using MTD.CouchBot.Dals;
 using MTD.CouchBot.Domain.Models.Piczel;
-using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Managers.Implementations
+namespace MTD.CouchBot.Managers
 {
-    public class PiczelManager : IPiczelManager
+    public class PiczelManager
     {
         private readonly IPiczelDal _piczelDal;
 

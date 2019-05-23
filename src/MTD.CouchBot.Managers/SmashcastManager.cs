@@ -1,10 +1,10 @@
-﻿using MTD.CouchBot.Dals;
+﻿using System.Threading.Tasks;
+using MTD.CouchBot.Dals;
 using MTD.CouchBot.Domain.Models.Smashcast;
-using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Managers.Implementations
+namespace MTD.CouchBot.Managers
 {
-    public class SmashcastManager : ISmashcastManager
+    public class SmashcastManager
     {
         private readonly ISmashcastDal _smashcastDal;
 

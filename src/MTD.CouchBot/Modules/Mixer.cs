@@ -5,8 +5,6 @@ using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Models.Mixer;
-using MTD.CouchBot.Managers;
-using MTD.CouchBot.Models.Bot;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
 using System;
@@ -16,20 +14,21 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 
 namespace MTD.CouchBot.Modules
 {
     [Group("mixer")]
     public class Mixer : BaseModule
     {
-        private readonly IMixerManager _mixerManager;
+        private readonly MixerManager _mixerManager;
         private readonly DiscordShardedClient _discord;
         private readonly MixerConstellationService _mixerService;
         private readonly MessagingService _messagingService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Mixer(IMixerManager mixerManager, MessagingService messagingService, DiscordShardedClient discord, MixerConstellationService mixerService,
+        public Mixer(MixerManager mixerManager, MessagingService messagingService, DiscordShardedClient discord, MixerConstellationService mixerService,
             IOptions<BotSettings> botSettings, FileService fileService) : base (botSettings, fileService)
         {
             _mixerManager = mixerManager;
@@ -232,7 +231,7 @@ namespace MTD.CouchBot.Modules
             {
                 var gameName = channel.type == null ? "A game" : channel.type.name;
                 var url = "http://mixer.com/" + channel.token;
-                var avatarUrl = channel.user.avatarUrl != null ? channel.user.avatarUrl : "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                var avatarUrl = channel.user.avatarUrl ?? "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
                 var thumbnailUrl = "https://thumbs.mixer.com/channel/" + channel.id + ".small.jpg";
                 var channelId = channel.id?.ToString();
 
@@ -324,7 +323,7 @@ namespace MTD.CouchBot.Modules
             authorBuilder.IconUrl = $"{_discord.CurrentUser.GetAvatarUrl()}?_={Guid.NewGuid().ToString().Replace("-", "")}";
             authorBuilder.Name = _discord.CurrentUser.Username;
 
-            footerBuilder.IconUrl = "http://mattthedev.codes/img/mixer2.png";
+            footerBuilder.IconUrl = Constants.MixerLogoUrl;
             footerBuilder.Text = $"Mixer Team Information for {team.name} ({token})";
             builder.Author = authorBuilder;
             builder.Footer = footerBuilder;

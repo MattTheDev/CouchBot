@@ -1,27 +1,26 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers;
-using MTD.CouchBot.Models.Bot;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 
 namespace MTD.CouchBot.Modules
 {
     [Group("youtube")]
     public class YouTube : BaseModule
     {
-        private readonly IYouTubeManager _youTubeManager;
+        private readonly YouTubeManager _youTubeManager;
         private readonly MessagingService _messagingService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public YouTube(IYouTubeManager youTubeManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService)
+        public YouTube(YouTubeManager youTubeManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService)
             : base(botSettings, fileService)
         {
             _youTubeManager = youTubeManager;

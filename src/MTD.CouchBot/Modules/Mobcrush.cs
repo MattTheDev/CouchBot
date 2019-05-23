@@ -2,25 +2,24 @@
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers;
-using MTD.CouchBot.Models.Bot;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 
 namespace MTD.CouchBot.Modules
 {
     [Group("mobcrush")]
     public class Mobcrush : BaseModule
     {
-        private readonly IMobcrushManager _mobcrushManager;
+        private readonly MobcrushManager _mobcrushManager;
         private readonly MessagingService _messagingService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
 
-        public Mobcrush(IMobcrushManager mobcrushManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService)
+        public Mobcrush(MobcrushManager mobcrushManager, MessagingService messagingService, IOptions<BotSettings> botSettings, FileService fileService)
             : base (botSettings, fileService)
         {
             _mobcrushManager = mobcrushManager;
@@ -232,7 +231,7 @@ namespace MTD.CouchBot.Modules
             {
                 var gameName = broadcast.Game == null ? "A game" : broadcast.Game.Name;
                 var url = "http://mobcrush.com/" + channelName;
-                var avatarUrl = user.ProfileLogo == null ? "http://cdn.mobcrush.com/static/images/default-profile-pic.png" : user.ProfileLogo;
+                var avatarUrl = user.ProfileLogo ?? "http://cdn.mobcrush.com/static/images/default-profile-pic.png";
                 var thumbnailUrl = "http://cdn.mobcrush.com/u/video/" + broadcast.Id + "/snapshot.jpg";
 
                 var message = _messagingService.BuildMessage(channelName, gameName, "",

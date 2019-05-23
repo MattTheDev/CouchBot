@@ -2,25 +2,25 @@
 using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 
 namespace MTD.CouchBot.Modules
 {
     [Group("picarto")]
     public class Picarto : BaseModule
     {
-        private readonly IPicartoManager _picartoManager;
+        private readonly PicartoManager _picartoManager;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
         private readonly StringService _stringService;
 
-        public Picarto(IPicartoManager picartoManager, IOptions<BotSettings> botSettings, FileService fileService, StringService stringService) 
+        public Picarto(PicartoManager picartoManager, IOptions<BotSettings> botSettings, FileService fileService, StringService stringService) 
             : base(botSettings, fileService)
         {
             _picartoManager = picartoManager;

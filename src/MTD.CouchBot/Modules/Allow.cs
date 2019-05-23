@@ -4,8 +4,6 @@ using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Utilities;
 using MTD.CouchBot.Services;
 using System;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace MTD.CouchBot.Modules

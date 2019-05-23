@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Utilities;
-using MTD.CouchBot.Models.Bot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +57,7 @@ namespace MTD.CouchBot.Services
             author.Name = ((IGuildUser)user).Nickname ?? _discord.CurrentUser.Username;
             author.Url = url;
             footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-            footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
+            footer.IconUrl = Constants.YouTubeLogoUrl;
             embed.Author = author;
             embed.Color = red;
             embed.Description = _stringService.AnnouncementText(server.PublishedMessage, "Test Channel", "Test Title", url, "");
@@ -138,28 +137,28 @@ namespace MTD.CouchBot.Services
             {
                 color = new Color(100, 65, 164);
                 footer.Text = "[" + Constants.Twitch + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                footer.IconUrl = "http://mattthedev.codes/img/twitch.jpg";
+                footer.IconUrl = Constants.TwitchLogoUrl;
             }
             else if (platform.Equals(Constants.YouTube) || platform.Equals(Constants.YouTubeGaming))
             {
                 color = new Color(179, 18, 23);
                 footer.Text = "[" + Constants.YouTubeGaming + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
+                footer.IconUrl = Constants.YouTubeLogoUrl;
             }
             else if (platform.Equals(Constants.Smashcast))
             {
                 color = new Color(153, 204, 0);
                 footer.Text = "[" + Constants.Smashcast + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                footer.IconUrl = "http://mattthedev.codes/img/smashcast2.png";
+                footer.IconUrl = Constants.SmashcastLogoUrl;
             }
             else if (platform.Equals(Constants.Mixer))
             {
                 color = new Color(76, 144, 243);
                 footer.Text = "[" + Constants.Mixer + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                footer.IconUrl = "http://mattthedev.codes/img/mixer2.png";
+                footer.IconUrl = Constants.MixerLogoUrl;
             }
 
-            author.IconUrl = (user.GetAvatarUrl() != null ? user.GetAvatarUrl() : "http://mattthedev.codes/img/bot/discord.png") + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
+            author.IconUrl = (!string.IsNullOrEmpty(user.GetAvatarUrl()) ? user.GetAvatarUrl() : "http://mattthedev.codes/img/bot/discord.png") + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
             author.Name = ((IGuildUser)user).Nickname ?? _discord.CurrentUser.Username;
             author.Url = url;
             embed.Author = author;
@@ -292,14 +291,14 @@ namespace MTD.CouchBot.Services
                 embed.ThumbnailUrl = avatarUrl != null ?
                         avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
                         "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
-                footer.IconUrl = "http://mattthedev.codes/img/mixer2.png";
+                footer.IconUrl = Constants.MixerLogoUrl;
                 allowEveryone = owner ? server.AllowMentionOwnerMixerLive : server.AllowMentionMixerLive;
             }
             else if (platform.Equals(Constants.YouTubeGaming))
             {
                 embed.Color = Constants.Red;
                 embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
+                footer.IconUrl = Constants.YouTubeLogoUrl;
                 allowEveryone = owner ? server.AllowMentionOwnerYouTubeLive : server.AllowMentionYouTubeLive;
             }
             else if (platform.Equals(Constants.Twitch))
@@ -308,21 +307,21 @@ namespace MTD.CouchBot.Services
                 embed.ThumbnailUrl = avatarUrl != null ?
                         avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "") :
                         "https://static-cdn.jtvnw.net/jtv_user_pictures/xarth/404_user_70x70.png";
-                footer.IconUrl = "http://mattthedev.codes/img/twitch.jpg";
+                footer.IconUrl = Constants.TwitchLogoUrl;
                 allowEveryone = owner ? server.AllowMentionOwnerTwitchLive : server.AllowMentionTwitchLive;
             }
             else if (platform.Equals(Constants.Smashcast))
             {
                 embed.Color = Constants.Green;
                 embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                footer.IconUrl = "http://mattthedev.codes/img/smashcast2.png";
+                footer.IconUrl = Constants.SmashcastLogoUrl;
                 allowEveryone = owner ? server.AllowMentionOwnerSmashcastLive : server.AllowMentionSmashcastLive;
             }
             else if (platform.Equals(Constants.Mobcrush))
             {
                 embed.Color = Constants.Yellow;
                 embed.ThumbnailUrl = avatarUrl + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
-                footer.IconUrl = "http://mattthedev.codes/img/mobcrush.jpg";
+                footer.IconUrl = Constants.MobcrushLogoUrl;
                 allowEveryone = owner ? server.AllowMentionOwnerMobcrushLive : server.AllowMentionMobcrushLive;
             }
 
@@ -430,15 +429,16 @@ namespace MTD.CouchBot.Services
                 {
                     try
                     {
-                        var channelMessage = new ChannelMessage();
-                        channelMessage.ChannelId = message.ChannelId;
-                        channelMessage.GuildId = message.GuildId;
-                        channelMessage.DeleteOffline = message.DeleteOffline;
+                        var channelMessage = new ChannelMessage
+                        {
+                            ChannelId = message.ChannelId,
+                            GuildId = message.GuildId,
+                            DeleteOffline = message.DeleteOffline
+                        };
 
                         if (message.Embed != null)
                         {
-                            var options = new RequestOptions();
-                            options.RetryMode = RetryMode.AlwaysRetry;
+                            var options = new RequestOptions {RetryMode = RetryMode.AlwaysRetry};
                             var msg = await chat.SendMessageAsync(message.Message, false, message.Embed, options);
 
                             if (msg != null || msg.Id != 0)

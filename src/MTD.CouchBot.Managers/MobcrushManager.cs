@@ -1,10 +1,10 @@
-﻿using MTD.CouchBot.Dals;
+﻿using System.Threading.Tasks;
+using MTD.CouchBot.Dals;
 using MTD.CouchBot.Domain.Models.Mobcrush;
-using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Managers.Implementations
+namespace MTD.CouchBot.Managers
 {
-    public class MobcrushManager : IMobcrushManager
+    public class MobcrushManager
     {
         private readonly IMobcrushDal _mobcrushDal;
 

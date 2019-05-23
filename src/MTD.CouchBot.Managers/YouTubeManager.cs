@@ -3,9 +3,9 @@ using MTD.CouchBot.Domain.Models.YouTube;
 using System;
 using System.Threading.Tasks;
 
-namespace MTD.CouchBot.Managers.Implementations
+namespace MTD.CouchBot.Managers
 {
-    public class YouTubeManager : IYouTubeManager
+    public class YouTubeManager
     {
         private readonly IYouTubeDal _youtubeDal;
 
@@ -17,11 +17,6 @@ namespace MTD.CouchBot.Managers.Implementations
         public async Task<YouTubeChannelStatistics> GetChannelStatisticsById(string id)
         {
             return await _youtubeDal.GetChannelStatisticsById(id);
-        }
-
-        public async Task<YouTubeChannelUpcomingEvents> GetChannelUpcomingEventsAsync(string channelId)
-        {
-            return await _youtubeDal.GetChannelUpcomingEvents(channelId);
         }
 
         public async Task<YouTubeChannelContentDetails> GetContentDetailsByChannelId(string channelId)
@@ -62,11 +57,6 @@ namespace MTD.CouchBot.Managers.Implementations
         public async Task<LiveChatStatusResponse> GetLiveChannels(string channelIds)
         {
             return await _youtubeDal.GetLiveChannels(channelIds);
-        }
-
-        public Task<YouTubeSearchListChannel> GetRandomLiveCouchBotChannel()
-        {
-            throw new NotImplementedException();
         }
     }
 }

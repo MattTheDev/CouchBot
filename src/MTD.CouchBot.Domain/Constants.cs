@@ -22,5 +22,13 @@ namespace MTD.CouchBot.Domain
 
         public static readonly string TwitchTypeLive = "live";
         public static readonly string TwitchTypeVodcast = "watch_party";
+
+        public static readonly string MixerLogoUrl = "http://couchbot.mattthedev.codes/img/platforms/mixer_logo.png";
+        public static readonly string MobcrushLogoUrl = "http://couchbot.mattthedev.codes/img/platforms/mobcrush_logo.jpg";
+        public static readonly string PicartoLogoUrl = "http://couchbot.mattthedev.codes/img/platforms/picarto_logo.png";
+        public static readonly string PiczelLogoUrl = "http://couchbot.mattthedev.codes/img/platforms/piczel_logo.png";
+        public static readonly string SmashcastLogoUrl = "http://couchbot.mattthedev.codes/img/platforms/smashcast_logo.png";
+        public static readonly string TwitchLogoUrl = "http://couchbot.mattthedev.codes/img/platforms/twitch_logo.png";
+        public static readonly string YouTubeLogoUrl = "http://couchbot.mattthedev.codes/img/platforms/youtube_logo.png";
     }
 }

@@ -2,9 +2,6 @@
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Models.Mixer;
-using MTD.CouchBot.Domain.Utilities;
-using MTD.CouchBot.Managers;
-using MTD.CouchBot.Models.Bot;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,13 +11,14 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 
 namespace MTD.CouchBot.Services
 {
     public class MixerConstellationService
     {
         public ClientWebSocket client = new ClientWebSocket();
-        private readonly IMixerManager _mixerManager;
+        private readonly MixerManager _mixerManager;
         private readonly MessagingService _messagingService;
         private readonly DiscordService _discordService;
         private readonly BotSettings _botSettings;
@@ -29,7 +27,7 @@ namespace MTD.CouchBot.Services
 
         private bool _reconnecting = false;
 
-        public MixerConstellationService(IMixerManager mixerManager, MessagingService messagingService,
+        public MixerConstellationService(MixerManager mixerManager, MessagingService messagingService,
             DiscordService discordService, IOptions<BotSettings> botSettings, FileService fileService,
             LoggingService loggingService)
         {
@@ -254,7 +252,7 @@ namespace MTD.CouchBot.Services
                         var stream = channel;
                         var gameName = stream.type == null ? "A game" : stream.type.name;
                         var url = "http://mixer.com/" + stream.token;
-                        var avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                        var avatarUrl = stream.user.avatarUrl ?? "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
                         var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
                         var channelId = stream.id.Value.ToString();
                         var test = stream.audience;
@@ -275,7 +273,7 @@ namespace MTD.CouchBot.Services
                         var stream = channel;
                         var gameName = stream.type == null ? "A game" : stream.type.name;
                         var url = "http://mixer.com/" + stream.token;
-                        var avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                        var avatarUrl = stream.user.avatarUrl ?? "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
                         var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
                         var channelId = stream.id.Value.ToString();
 
@@ -298,7 +296,7 @@ namespace MTD.CouchBot.Services
                         var stream = channel;
                         var gameName = stream.type == null ? "A game" : stream.type.name;
                         var url = "http://mixer.com/" + stream.token;
-                        var avatarUrl = stream.user.avatarUrl != null ? stream.user.avatarUrl : "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                        var avatarUrl = stream.user.avatarUrl ?? "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
                         var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
                         var channelId = stream.id.Value.ToString();
 

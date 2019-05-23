@@ -10,8 +10,6 @@ using MTD.CouchBot.Domain.Models.Shared;
 using MTD.CouchBot.Domain.Models.Smashcast;
 using MTD.CouchBot.Domain.Models.Twitch;
 using MTD.CouchBot.Domain.Models.YouTube;
-using MTD.CouchBot.Managers;
-using MTD.CouchBot.Models.Bot;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,28 +17,29 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 
 namespace MTD.CouchBot.Services
 {
     public class PlatformService
     {
-        private readonly IYouTubeManager _youtubeManager;
-        private readonly ITwitchManager _twitchManager;
-        private readonly ISmashcastManager _smashcastManager;
-        private readonly IPiczelManager _piczelManager;
-        private readonly IPicartoManager _picartoManager;
+        private readonly YouTubeManager _youtubeManager;
+        private readonly TwitchManager _twitchManager;
+        private readonly SmashcastManager _smashcastManager;
+        private readonly PiczelManager _piczelManager;
+        private readonly PicartoManager _picartoManager;
         private readonly DiscordShardedClient _discord;
         private readonly MessagingService _messagingService;
         private readonly DiscordService _discordService;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
-        private readonly IMobcrushManager _mobcrushManager;
+        private readonly MobcrushManager _mobcrushManager;
         private readonly LoggingService _loggingService;
 
-        public PlatformService(IYouTubeManager youtubeManager, ITwitchManager twitchManager, ISmashcastManager smashcastManager, IPiczelManager piczelManager,
-            IPicartoManager picartoManager, DiscordShardedClient discord,
+        public PlatformService(YouTubeManager youtubeManager, TwitchManager twitchManager, SmashcastManager smashcastManager, PiczelManager piczelManager,
+            PicartoManager picartoManager, DiscordShardedClient discord,
             MessagingService messagingService, DiscordService discordService, FileService fileService, IOptions<BotSettings> botSettings,
-            IMobcrushManager mobcrushManager, LoggingService loggingService)
+            MobcrushManager mobcrushManager, LoggingService loggingService)
         {
             _youtubeManager = youtubeManager;
             _twitchManager = twitchManager;
@@ -139,7 +138,7 @@ namespace MTD.CouchBot.Services
                                                 server.LiveMessage = "%CHANNEL% just went live - %TITLE% - %URL%";
                                             }
 
-                                            var streamUrl = $"https://piczel.tv/{stream.User.Username}";
+                                            var streamUrl = $"https://piczel.tv/watch/{stream.User.Username}";
                                             var avatarUrl = stream.User.Avatar.Avatar.Url;
                                             var thumbnailUrl = $"https://apollo.piczel.tv/static/thumbnail/stream_{stream.Id}.jpg?{Guid.NewGuid().ToString().Replace("-", "")}";
 
@@ -152,7 +151,7 @@ namespace MTD.CouchBot.Services
                                             author.Url = streamUrl;
                                             embedBuilder.Author = author;
 
-                                            footer.IconUrl = "https://mattthedev.codes/img/piczel.png";
+                                            footer.IconUrl = Constants.PiczelLogoUrl;
                                             footer.Text = "[Piczel] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                                             embedBuilder.Footer = footer;
 
@@ -188,16 +187,12 @@ namespace MTD.CouchBot.Services
                                                 f.IsInline = true;
                                             });
 
-                                            var tags = new StringBuilder();
-                                            foreach (var t in stream.Tags)
-                                            {
-                                                tags.Append(t + ", ");
-                                            }
+                                            var tags = (stream.Tags != null && stream.Tags.Count > 0) ? string.Join(", ", stream.Tags.Select(x => x.Title)) : "None";
 
                                             embedBuilder.AddField(f =>
                                             {
                                                 f.Name = "Stream Tags";
-                                                f.Value = string.IsNullOrEmpty(tags.ToString().Trim().TrimEnd(',')) ? "None" : tags.ToString().Trim().TrimEnd(',');
+                                                f.Value = tags;
                                                 f.IsInline = false;
                                             });
 
@@ -233,7 +228,7 @@ namespace MTD.CouchBot.Services
 
                                                 message += "**[Piczel]** " + server.LiveMessage.Replace("%CHANNEL%", Format.Sanitize(stream.User.Username))
                                                                .Replace("%TITLE%", stream.Title)
-                                                               .Replace("%URL%", "https://piczel.tv/" + stream.User.Username).Replace("%GAME%", "Art!");
+                                                               .Replace("%URL%", "https://piczel.tv/watch/" + stream.User.Username).Replace("%GAME%", "Art!");
                                             }
 
                                             var broadcastMessage = new BroadcastMessage
@@ -350,7 +345,7 @@ namespace MTD.CouchBot.Services
                                             server.LiveMessage = "%CHANNEL% just went live - %TITLE% - %URL%";
                                         }
 
-                                        var streamUrl = $"https://piczel.tv/{stream.User.Username}";
+                                        var streamUrl = $"https://piczel.tv/watch/{stream.User.Username}";
                                         var avatarUrl = stream.User.Avatar.Avatar.Url;
                                         var thumbnailUrl = $"https://apollo.piczel.tv/static/thumbnail/stream_{stream.Id}.jpg?{Guid.NewGuid().ToString().Replace("-", "")}";
 
@@ -363,7 +358,7 @@ namespace MTD.CouchBot.Services
                                         author.Url = streamUrl;
                                         embedBuilder.Author = author;
 
-                                        footer.IconUrl = "https://mattthedev.codes/img/piczel.png";
+                                        footer.IconUrl = Constants.PiczelLogoUrl;
                                         footer.Text = "[Piczel] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
                                         embedBuilder.Footer = footer;
 
@@ -2386,7 +2381,7 @@ namespace MTD.CouchBot.Services
                             author.Url = url;
                             footer.Text = "[" + Constants.YouTube + "] - " +
                                           DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                            footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
+                            footer.IconUrl = Constants.YouTubeLogoUrl;
                             embed.Author = author;
                             embed.Color = red;
                             embed.Description = server.PublishedMessage
@@ -2581,7 +2576,7 @@ namespace MTD.CouchBot.Services
                     author.Name = _discord.CurrentUser.Username;
                     author.Url = url;
                     footer.Text = "[" + Constants.YouTube + "] - " + DateTime.UtcNow.AddHours(server.TimeZoneOffset);
-                    footer.IconUrl = "http://mattthedev.codes/img/ytg.jpg";
+                    footer.IconUrl = Constants.YouTubeLogoUrl;
                     embed.Author = author;
                     embed.Color = red;
                     embed.Description = server.PublishedMessage.Replace("%CHANNEL%", Format.Sanitize(video.snippet.channelTitle)).Replace("%GAME%", "A game").Replace("%TITLE%", video.snippet.title).Replace("%URL%", url);

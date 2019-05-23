@@ -2,29 +2,30 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
+using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers;
 using MTD.CouchBot.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 
 namespace MTD.CouchBot.Modules
 {
     [Group("streamer"), Alias("creator")]
     public class Streamer : BaseModule
     {
-        private readonly IYouTubeManager _youtubeManager;
-        private readonly IMixerManager _mixerManager;
-        private readonly ITwitchManager _twitchManager;
-        private readonly IMobcrushManager _mobCrushManager;
-        private readonly IPiczelManager _piczelManager;
+        private readonly YouTubeManager _youtubeManager;
+        private readonly MixerManager _mixerManager;
+        private readonly TwitchManager _twitchManager;
+        private readonly MobcrushManager _mobCrushManager;
+        private readonly PiczelManager _piczelManager;
         private readonly FileService _fileService;
         private readonly DiscordShardedClient _discord;
 
-        public Streamer(IYouTubeManager youTubeManager, IMixerManager mixerManager, ITwitchManager twitchManager, FileService fileService, IMobcrushManager mobCrushManager,
-            DiscordShardedClient discord, IPiczelManager piczelManager, IOptions<BotSettings> botSettings) : base(botSettings, fileService)
+        public Streamer(YouTubeManager youTubeManager, MixerManager mixerManager, TwitchManager twitchManager, FileService fileService, MobcrushManager mobCrushManager,
+            DiscordShardedClient discord, PiczelManager piczelManager, IOptions<BotSettings> botSettings) : base(botSettings, fileService)
         {
             _youtubeManager = youTubeManager;
             _twitchManager = twitchManager;
@@ -140,7 +141,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
                     
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/mixer2.png";
+                    builder.ThumbnailUrl = Constants.MixerLogoUrl;
 
                     break;
                 case "mobcrush":
@@ -190,7 +191,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/mobcrush.jpg";
+                    builder.ThumbnailUrl = Constants.MobcrushLogoUrl;
 
                     break;
                 case "picarto":
@@ -255,7 +256,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/piczeltv.png";
+                    builder.ThumbnailUrl = Constants.PiczelLogoUrl;
 
                     break;
                 case "smashcast":
@@ -271,7 +272,7 @@ namespace MTD.CouchBot.Modules
                     }
 
                     owner = (string.IsNullOrEmpty(server.OwnerHitboxChannel) ? "Not Set" : server.OwnerHitboxChannel);
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/smashcast2.png";
+                    builder.ThumbnailUrl = Constants.SmashcastLogoUrl;
 
                     break;
                 case "twitch":
@@ -322,7 +323,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/twitch2.png";
+                    builder.ThumbnailUrl = Constants.TwitchLogoUrl;
 
                     break;
                 case "youtube":
@@ -349,7 +350,7 @@ namespace MTD.CouchBot.Modules
                         }
                     }
 
-                    builder.ThumbnailUrl = "http://mattthedev.codes/img/yt.png";
+                    builder.ThumbnailUrl = Constants.YouTubeLogoUrl;
 
                     break;
                 default:

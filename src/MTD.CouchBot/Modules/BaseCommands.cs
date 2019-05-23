@@ -3,26 +3,26 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Managers;
 using MTD.CouchBot.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MTD.CouchBot.Managers;
 using EmbedBuilder = Discord.EmbedBuilder;
 
 namespace MTD.CouchBot.Modules
 {
     public class BaseCommands : BaseModule
     {
-        private readonly IYouTubeManager _youtubeManager;
+        private readonly YouTubeManager _youtubeManager;
         private readonly DiscordShardedClient _discord;
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
         private readonly LoggingService _loggingService;
 
-        public BaseCommands(IYouTubeManager youtubeManager, DiscordShardedClient discord,
+        public BaseCommands(YouTubeManager youtubeManager, DiscordShardedClient discord, 
             IOptions<BotSettings> botSettings, FileService fileService, LoggingService loggingService) : base(botSettings, fileService)
         {
             _youtubeManager = youtubeManager;
