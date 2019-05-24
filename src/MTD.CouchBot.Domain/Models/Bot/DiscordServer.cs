@@ -23,7 +23,6 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public List<string> ServerHitboxChannels { get; set; }
         public List<string> PicartoChannels { get; set; }
         public List<int> ServerPiczelChannelIds { get; set; }
-        public List<string> DLiveChanneNames { get; set; }
         public float TimeZoneOffset { get; set; }
         public bool AllowThumbnails { get; set; }
         public bool Greetings { get; set; }
@@ -83,5 +82,9 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public ulong LiveTwitchRole { get; set; }
         public List<RoleCommand> RoleCommands { get; set; }
         public List<string> Subreddits { get; set; }
+
+
+
+        public List<DiscordStreamer> Streamers { get; set; }
     }
 }
