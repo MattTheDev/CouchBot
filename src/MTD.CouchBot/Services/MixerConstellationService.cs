@@ -412,30 +412,30 @@ namespace MTD.CouchBot.Services
                         }
                     }
 
-                    if (s.MixerTeams != null && s.MixerTeams.Count > 0)
-                    {
-                        foreach (var t in s.MixerTeams)
-                        {
-                            if (!alreadyProcessedTeams.Contains(t))
-                            {
-                                var teamUsers = await _mixerManager.GetTeamUsersByTeamId(t);
+                    //if (s.MixerTeams != null && s.MixerTeams.Count > 0)
+                    //{
+                    //    foreach (var t in s.MixerTeams)
+                    //    {
+                    //        if (!alreadyProcessedTeams.Contains(t))
+                    //        {
+                    //            var teamUsers = await _mixerManager.GetTeamUsersByTeamId(t);
 
-                                foreach (var user in teamUsers)
-                                {
-                                    var mixerUser =
-                                        await _mixerManager.GetUserById(user.teamMembership.userId.ToString());
-                                    if (!alreadyProcessed.Contains(mixerUser.channel.id.ToString()))
-                                    {
-                                        await SubscribeToLiveAnnouncements(mixerUser.channel.id.ToString());
-                                        count++;
-                                        alreadyProcessed.Add(user.id.ToString());
-                                    }
-                                }
+                    //            foreach (var user in teamUsers)
+                    //            {
+                    //                var mixerUser =
+                    //                    await _mixerManager.GetUserById(user.teamMembership.userId.ToString());
+                    //                if (!alreadyProcessed.Contains(mixerUser.channel.id.ToString()))
+                    //                {
+                    //                    await SubscribeToLiveAnnouncements(mixerUser.channel.id.ToString());
+                    //                    count++;
+                    //                    alreadyProcessed.Add(user.id.ToString());
+                    //                }
+                    //            }
 
-                                alreadyProcessedTeams.Add(t);
-                            }
-                        }
-                    }
+                    //            alreadyProcessedTeams.Add(t);
+                    //        }
+                    //    }
+                    //}
                 }
             }
         }

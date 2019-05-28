@@ -35,16 +35,33 @@ namespace MTD.CouchBot.Services
 
         public async Task LogError(string message)
         {
-            var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordErrorChannelId);
+            try
+            {
+                //TODO MS
+                //var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordErrorChannelId);
 
-            await ((IMessageChannel)guildChannel).SendMessageAsync($"[Error] [{DateTime.UtcNow}] - {message}");
+                //await ((IMessageChannel) guildChannel).SendMessageAsync($"[Error] [{DateTime.UtcNow}] - {message}");
+            }
+            catch (Exception ex)
+            {
+                // Can't log atm. All good homey <3
+                Console.WriteLine($"Couldn't write error to channel. Error: {ex.Message} - OG Message: {message}");
+            }
         }
 
         public async Task LogAudit(string message)
         {
-            var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordAuditChannelId);
+            try
+            {
+                var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordAuditChannelId);
 
-            await ((IMessageChannel)guildChannel).SendMessageAsync($"[Audit] [{DateTime.UtcNow}] - {message}");
+                await ((IMessageChannel)guildChannel).SendMessageAsync($"[Audit] [{DateTime.UtcNow}] - {message}");
+            }
+            catch (Exception ex)
+            {
+                // Can't log atm. All good homey <3
+                Console.WriteLine($"Couldn't write audit message to channel. Error: {ex.Message} - OG Message: {message}");
+            }
         }
 
         private Task OnLogAsync(LogMessage msg)
@@ -78,121 +95,145 @@ namespace MTD.CouchBot.Services
 
         public void LogMixer(string message)
         {
-            lock (_messageLog)
+            if (_botSettings.BotConfig.EnableChannelLogging)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.Write("[" + Constants.Mixer + "]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
+                lock (_messageLog)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("[" + DateTime.UtcNow + "] - ");
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Write("[" + Constants.Mixer + "]");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" " + message);
+                    Console.ResetColor();
+                }
             }
         }
 
         public void LogTwitch(string message)
         {
-            lock (_messageLog)
+            if (_botSettings.BotConfig.EnableChannelLogging)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                Console.Write("[" + Constants.Twitch + "]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
+                lock (_messageLog)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("[" + DateTime.UtcNow + "] - ");
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Console.Write("[" + Constants.Twitch + "]");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" " + message);
+                    Console.ResetColor();
+                }
             }
         }
 
         public void LogYouTube(string message)
         {
-            lock (_messageLog)
+            if (_botSettings.BotConfig.EnableChannelLogging)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("[" + Constants.YouTube + "]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
+                lock (_messageLog)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("[" + DateTime.UtcNow + "] - ");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("[" + Constants.YouTube + "]");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" " + message);
+                    Console.ResetColor();
+                }
             }
         }
 
         public void LogYouTubeGaming(string message)
         {
-            lock (_messageLog)
+            if (_botSettings.BotConfig.EnableChannelLogging)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("[" + Constants.YouTubeGaming + "]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
+                lock (_messageLog)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("[" + DateTime.UtcNow + "] - ");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("[" + Constants.YouTubeGaming + "]");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" " + message);
+                    Console.ResetColor();
+                }
             }
         }
 
         public void LogSmashcast(string message)
         {
-            lock (_messageLog)
+            if (_botSettings.BotConfig.EnableChannelLogging)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("[" + Constants.Smashcast + "]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
+                lock (_messageLog)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("[" + DateTime.UtcNow + "] - ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("[" + Constants.Smashcast + "]");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" " + message);
+                    Console.ResetColor();
+                }
             }
         }
 
         public void LogPicarto(string message)
         {
-            lock (_messageLog)
+            if (_botSettings.BotConfig.EnableChannelLogging)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.Write("[" + Constants.Picarto + "]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
+                lock (_messageLog)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("[" + DateTime.UtcNow + "] - ");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write("[" + Constants.Picarto + "]");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" " + message);
+                    Console.ResetColor();
+                }
             }
         }
 
         public void LogPiczel(string message)
         {
-            lock (_messageLog)
+            if (_botSettings.BotConfig.EnableChannelLogging)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.Write("[" + Constants.Piczel + "]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
+                lock (_messageLog)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("[" + DateTime.UtcNow + "] - ");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write("[" + Constants.Piczel + "]");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" " + message);
+                    Console.ResetColor();
+                }
             }
         }
 
         public void LogMobcrush(string message)
         {
-            lock (_messageLog)
+            if (_botSettings.BotConfig.EnableChannelLogging)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.Write("[" + DateTime.UtcNow + "] - ");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("[" + Constants.Mobcrush + "]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(" " + message);
-                Console.ResetColor();
+                lock (_messageLog)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("[" + DateTime.UtcNow + "] - ");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write("[" + Constants.Mobcrush + "]");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(" " + message);
+                    Console.ResetColor();
+                }
             }
         }
     }
