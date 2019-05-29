@@ -91,7 +91,7 @@ namespace MTD.CouchBot.Modules
             {
                 server.ServerBeamChannelIds.Add(channel.id?.ToString());
 
-                if (_botSettings.PlatformSettings.EnableMixer)
+                if (_botSettings.PlatformSettings.EnableMixer && server.AllowLive)
                 {
                     await _mixerService.SubscribeToLiveAnnouncements(channel.id?.ToString());
 
