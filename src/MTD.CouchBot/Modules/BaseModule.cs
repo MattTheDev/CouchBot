@@ -40,7 +40,7 @@ namespace MTD.CouchBot.Modules
             {
                 var user = ((IGuildUser)Context.Message.Author);
 
-                if (!user.GuildPermissions.ManageGuild && !IsApprovedAdmin)
+                if (!user.GuildPermissions.ManageGuild && !IsApprovedAdmin && !IsBotOwner)
                 {
                     return false;
                 }

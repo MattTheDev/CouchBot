@@ -27,7 +27,7 @@ namespace MTD.CouchBot.Modules
         [Command("add")]
         public async Task Add(string name)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -78,7 +78,7 @@ namespace MTD.CouchBot.Modules
         [Command("remove")]
         public async Task Remove(string name)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
