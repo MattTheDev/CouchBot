@@ -12,7 +12,7 @@ namespace MTD.CouchBot.Modules
     {
         private readonly BotSettings _botSettings;
         private readonly FileService _fileService;
-        
+
         public BaseModule(IOptions<BotSettings> botSettings, FileService fileService)
         {
             _botSettings = botSettings.Value;
@@ -65,14 +65,13 @@ namespace MTD.CouchBot.Modules
                     return false;
                 }
 
-                if ((server.ApprovedAdmins != null && server.ApprovedAdmins.Contains(Context.User.Id)) || IsAdmin)
+                if ((server.ApprovedAdmins != null && server.ApprovedAdmins.Contains(Context.User.Id)))
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
+
             }
         }
 

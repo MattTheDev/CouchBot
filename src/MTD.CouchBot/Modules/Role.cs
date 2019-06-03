@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System;
+using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Enums;
@@ -19,6 +20,78 @@ namespace MTD.CouchBot.Modules
         public Role(IOptions<BotSettings> botSettings, FileService fileService) : base(botSettings, fileService)
         {
             _fileService = fileService;
+        }
+
+        [Command("Join")]
+        public async Task Join(IRole role)
+        {
+            if (!IsAdmin)
+            {
+                return;
+            }
+
+            if (!BotHasManageRoles)
+            {
+                await Context.Channel.SendMessageAsync(
+                    "Please note: This setting will be set. However, I do not have 'Manage Roles' permission on this server.");
+            }
+
+            var server = GetServer();
+
+            server.JoinRole = role.Id;
+
+            _fileService.SaveDiscordServer(server);
+            await Context.Channel.SendMessageAsync($"This servers join role has been set to {role.Name}.");
+        }
+
+        [Command("Join")]
+        public async Task Join(string input)
+        {
+            if (!input.Equals("reset", StringComparison.InvariantCultureIgnoreCase))
+            {
+                await Context.Channel.SendMessageAsync(
+                    $"Want to reset your join role? Use '!cb role join reset' - Want to add a join role? Use '!cb role join @RoleName' or '!cb role join \"RoleName\"");
+                return;
+            }
+
+            if (!IsAdmin)
+            {
+                return;
+            }
+
+            var server = GetServer();
+
+            server.JoinRole = 0;
+
+            _fileService.SaveDiscordServer(server);
+            await Context.Channel.SendMessageAsync($"This servers join role has been reset and will no longer automatically assign a role to new users.");
+        }
+
+        [Command("Join")]
+        public async Task Join()
+        {
+            if (!IsAdmin)
+            {
+                return;
+            }
+
+            var server = GetServer();
+
+            if (server.JoinRole == 0)
+            {
+                await Context.Channel.SendMessageAsync($"This servers join role has not been set.");
+                return;
+            }
+
+            var role = Context.Guild.GetRole(server.JoinRole);
+
+            if (role == null)
+            {
+                await Context.Channel.SendMessageAsync($"This servers join role is invalid. More than likely it was deleted after being set.");
+                return;
+            }
+
+            await Context.Channel.SendMessageAsync($"This servers join role is set to {role.Name}.");
         }
 
         [Command("Add")]

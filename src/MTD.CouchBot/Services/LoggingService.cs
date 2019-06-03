@@ -35,16 +35,30 @@ namespace MTD.CouchBot.Services
 
         public async Task LogError(string message)
         {
-            var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordErrorChannelId);
+            try
+            {
+                var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordErrorChannelId);
 
-            await ((IMessageChannel)guildChannel).SendMessageAsync($"[Error] [{DateTime.UtcNow}] - {message}");
+                await ((IMessageChannel)guildChannel).SendMessageAsync($"[Error] [{DateTime.UtcNow}] - {message}");
+            }
+            catch (Exception e)
+            {
+                // Swallow it
+            }
         }
 
         public async Task LogAudit(string message)
         {
-            var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordAuditChannelId);
+            try
+            {
+                var guildChannel = _discord.GetChannel(_botSettings.BotConfig.DiscordAuditChannelId);
 
-            await ((IMessageChannel)guildChannel).SendMessageAsync($"[Audit] [{DateTime.UtcNow}] - {message}");
+                await ((IMessageChannel)guildChannel).SendMessageAsync($"[Audit] [{DateTime.UtcNow}] - {message}");
+            }
+            catch (Exception e)
+            {
+                // Swallow it
+            }
         }
 
         private Task OnLogAsync(LogMessage msg)

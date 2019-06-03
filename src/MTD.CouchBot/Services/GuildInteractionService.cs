@@ -125,6 +125,19 @@ namespace MTD.CouchBot.Services
 
                     await channel.SendMessageAsync(guild.GreetingMessage);
                 }
+
+                if (guild.JoinRole != 0)
+                {
+                    var discordGuild = _discord.GetGuild(guild.Id);
+
+                    var role = discordGuild?.GetRole(guild.JoinRole);
+                    if (role == null)
+                    {
+                        return;
+                    }
+
+                    await arg.AddRoleAsync(role);
+                }
             }
         }
 

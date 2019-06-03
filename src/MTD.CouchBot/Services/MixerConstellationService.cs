@@ -222,20 +222,20 @@ namespace MTD.CouchBot.Services
                     }
                 }
 
-                if (server.MixerTeams != null && server.MixerTeams.Count > 0)
-                {
-                    foreach (var team in teams)
-                    {
-                        if (server.MixerTeams.Contains(team.id))
-                        {
-                            teamServers.Add(new MixerServerTeam
-                            {
-                                DiscordGuildId = server.Id,
-                                Team = team
-                            });
-                        }
-                    }
-                }
+                //if (server.MixerTeams != null && server.MixerTeams.Count > 0)
+                //{
+                //    foreach (var team in teams)
+                //    {
+                //        if (server.MixerTeams.Contains(team.id))
+                //        {
+                //            teamServers.Add(new MixerServerTeam
+                //            {
+                //                DiscordGuildId = server.Id,
+                //                Team = team
+                //            });
+                //        }
+                //    }
+                //}
             }
             
 
@@ -387,7 +387,7 @@ namespace MTD.CouchBot.Services
             var servers = _fileService.GetConfiguredServers().Where(x => x.ServerBeamChannelIds != null && 
                                                                          x.ServerBeamChannelIds.Count > 0).ToList();
             servers.AddRange(_fileService.GetConfiguredServers().Where(x => !string.IsNullOrEmpty(x.OwnerBeamChannelId)));
-            servers.AddRange(_fileService.GetConfiguredServers().Where(x => x.MixerTeams != null && x.MixerTeams.Count > 0));
+            //servers.AddRange(_fileService.GetConfiguredServers().Where(x => x.MixerTeams != null && x.MixerTeams.Count > 0));
 
             if (client.State != WebSocketState.Open)
             {
@@ -425,30 +425,30 @@ namespace MTD.CouchBot.Services
                         }
                     }
 
-                    if (s.MixerTeams != null && s.MixerTeams.Count > 0)
-                    {
-                        foreach (var t in s.MixerTeams)
-                        {
-                            if (!alreadyProcessedTeams.Contains(t))
-                            {
-                                var teamUsers = await _mixerManager.GetTeamUsersByTeamId(t);
+                    //if (s.MixerTeams != null && s.MixerTeams.Count > 0)
+                    //{
+                    //    foreach (var t in s.MixerTeams)
+                    //    {
+                    //        if (!alreadyProcessedTeams.Contains(t))
+                    //        {
+                    //            var teamUsers = await _mixerManager.GetTeamUsersByTeamId(t);
 
-                                foreach (var user in teamUsers)
-                                {
-                                    var mixerUser =
-                                        await _mixerManager.GetUserById(user.teamMembership.userId.ToString());
-                                    if (!alreadyProcessed.Contains(mixerUser.channel.id.ToString()))
-                                    {
-                                        await SubscribeToLiveAnnouncements(mixerUser.channel.id.ToString());
-                                        count++;
-                                        alreadyProcessed.Add(user.id.ToString());
-                                    }
-                                }
+                    //            foreach (var user in teamUsers)
+                    //            {
+                    //                var mixerUser =
+                    //                    await _mixerManager.GetUserById(user.teamMembership.userId.ToString());
+                    //                if (!alreadyProcessed.Contains(mixerUser.channel.id.ToString()))
+                    //                {
+                    //                    await SubscribeToLiveAnnouncements(mixerUser.channel.id.ToString());
+                    //                    count++;
+                    //                    alreadyProcessed.Add(user.id.ToString());
+                    //                }
+                    //            }
 
-                                alreadyProcessedTeams.Add(t);
-                            }
-                        }
-                    }
+                    //            alreadyProcessedTeams.Add(t);
+                    //        }
+                    //    }
+                    //}
                 }
             }
         }
