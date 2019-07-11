@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using MTD.CouchBot.Domain;
 using MTD.CouchBot.Managers;
 using EmbedBuilder = Discord.EmbedBuilder;
 
@@ -361,20 +363,6 @@ namespace MTD.CouchBot.Modules
                 "Couch Commander Supreme");
         }
 
-        [Command("audit")]
-        public async Task Audit()
-        {
-            var allServersConfigured = _fileService.GetConfiguredServers();
-            var allServersConfiguredWithLive = _fileService.GetConfiguredServersWithLiveChannel();
-            var allServersConfiguredWithPublished = _fileService.GetConfiguredServersWithPublishedChannel();
-            var totalConnected = _discord.Guilds.Count;
-
-            await Context.Channel.SendMessageAsync($"Currently connected to {totalConnected} guilds.\r\n" +
-                                                   $"- {allServersConfigured.Count} are configured.\r\n" +
-                                                   $"- {allServersConfiguredWithLive.Count} have a live channel set.\r\n" +
-                                                   $"- {allServersConfiguredWithPublished.Count} have a published channel set.\r\n");
-        }
-
         [Command("NotSetupForAnnouncements")]
         public async Task NotSetupForAnnouncements(bool purge, int count)
         {
@@ -454,6 +442,102 @@ namespace MTD.CouchBot.Modules
             {
                 await Context.Channel.SendMessageAsync($"Unable to open DM with {serverOwnerId}.");
             }
+        }
+
+        [Command("ConfigurationCleanup")]
+        public async Task ConfigurationCleanup(bool liveProcess)
+        {
+            if (!IsBotOwner)
+            {
+                return;
+            }
+
+            _botSettings.PlatformSettings.EnableMixer = false;
+            _botSettings.PlatformSettings.EnableMobcrush = false;
+            _botSettings.PlatformSettings.EnablePicarto = false;
+            _botSettings.PlatformSettings.EnablePiczel = false;
+            _botSettings.PlatformSettings.EnableSmashcast = false;
+            _botSettings.PlatformSettings.EnableTwitch = false;
+            _botSettings.PlatformSettings.EnableYouTube = false;
+
+            var allServersNotSetup = _fileService.GetServersNotSetupForAnnouncements();
+            var allServersConfiguredButNotConnected = _fileService.GetServersConfiguredButNotConnected();
+            var allServersConnectedButNotConfigured = _fileService.GetServersConnectedByNotConfigured();
+
+            await Context.Channel.SendMessageAsync("Removing the bot configurations for servers I'm not connected to.");
+
+            if (liveProcess)
+            {
+                foreach (var server in allServersConfiguredButNotConnected)
+                {
+                    var fileFrom = $"C:\\ProgramData\\CouchBot\\Guilds\\{server.Id}.json";
+                    var fileTo = $"C:\\ProgramData\\CouchBot\\Guilds_Left\\{server.Id}.json";
+                    try
+                    {
+                        if (File.Exists(fileTo))
+                        {
+                            File.Delete(fileTo);
+                        }
+
+                        File.Move(fileFrom, fileTo);
+                    }
+                    catch (Exception)
+                    {
+                        // TODO MS
+                        // Move on
+                    }
+                }
+            }
+
+            await Context.Channel.SendMessageAsync($"I've removed {allServersConfiguredButNotConnected.Count} server configurations.\r\n" +
+                                                   $"Now I am going to leave servers that I do not have a configuration for.");
+
+            if (liveProcess)
+            {
+                foreach (var server in allServersConnectedButNotConfigured)
+                {
+                    await server.LeaveAsync();
+                }
+            }
+
+            await Context.Channel.SendMessageAsync($"I've left {allServersConnectedButNotConfigured.Count} servers.\r\n" +
+                                                   $"Now we're going to leave servers that I'm not being used on.");
+
+            if (liveProcess)
+            {
+                foreach (var server in allServersNotSetup)
+                {
+                    var fileFrom = $"C:\\ProgramData\\CouchBot\\Guilds\\{server.Id}.json";
+                    var fileTo = $"C:\\ProgramData\\CouchBot\\Guilds_Left\\{server.Id}.json";
+                    try
+                    {
+                        if (File.Exists(fileTo))
+                        {
+                            File.Delete(fileTo);
+                        }
+
+                        File.Move(fileFrom, fileTo);
+                        var guild = _discord.GetGuild(server.Id);
+                        await guild.LeaveAsync();
+                    }
+                    catch (Exception)
+                    {
+                        // TODO MS
+                        // Move on
+                    }
+                }
+            }
+
+            await Context.Channel.SendMessageAsync($"I've left {allServersNotSetup.Count} servers.\r\n" +
+                                                   $"Done.");
+
+            _botSettings.PlatformSettings.EnableMixer = true;
+            _botSettings.PlatformSettings.EnableMobcrush = true;
+            _botSettings.PlatformSettings.EnablePicarto = true;
+            _botSettings.PlatformSettings.EnablePiczel = true;
+            _botSettings.PlatformSettings.EnableSmashcast = true;
+            _botSettings.PlatformSettings.EnableTwitch = true;
+            _botSettings.PlatformSettings.EnableYouTube = true;
         }
     }
 }

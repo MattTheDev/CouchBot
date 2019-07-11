@@ -2,6 +2,13 @@
 {
     public enum Platform
     {
-        DLive
+        DLive,
+        Mixer,
+        Mobcrush,
+        Picarto,
+        Piczel,
+        Smashcast,
+        Twitch,
+        YouTube
     }
 }
