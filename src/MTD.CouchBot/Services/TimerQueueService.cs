@@ -97,7 +97,11 @@ namespace MTD.CouchBot.Services
 
             QueueCleanUp();
             QueueHealthChecks();
-            QueueCustomCommands();
+
+            if (_botSettings.BotConfig.EnableCustomTimerCommands)
+            {
+                QueueCustomCommands();
+            }
         }
 
         public void QueueCustomCommands()
