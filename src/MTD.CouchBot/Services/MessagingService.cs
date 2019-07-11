@@ -45,7 +45,6 @@ namespace MTD.CouchBot.Services
             var author = new EmbedAuthorBuilder();
             var footer = new EmbedFooterBuilder();
 
-
             if (server.PublishedMessage == null)
             {
                 server.PublishedMessage = "%CHANNEL% just published a new video.";
@@ -66,7 +65,12 @@ namespace MTD.CouchBot.Services
             embed.ThumbnailUrl = "http://mattthedev.codes/img/bot/vader.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "");
             embed.ImageUrl = server.AllowThumbnails ? "http://mattthedev.codes/img/bot/test_thumbnail.jpg" + "?_=" + Guid.NewGuid().ToString().Replace("-", "") : "";
             embed.Footer = footer;
-            
+
+            if (server.PublishedMessage == null)
+            {
+                server.PublishedMessage = "%CHANNEL% just published a new video.";
+            }
+
             var role = _discordService.GetRoleByGuildAndId(server.Id, server.MentionRole);
             var roleName = "";
 
@@ -97,7 +101,7 @@ namespace MTD.CouchBot.Services
                     url = "<" + url + ">";
                 }
 
-                message += $"**[Test]** {_stringService.AnnouncementText(server.LiveMessage, "Test Channel", "Test Title", url, "")}";
+                message += $"**[Test]** {_stringService.AnnouncementText(server.PublishedMessage, "Test Channel", "Test Title", url, "")}";
             }
 
             var broadcastMessage = new BroadcastMessage()

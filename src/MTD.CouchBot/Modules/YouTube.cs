@@ -32,7 +32,7 @@ namespace MTD.CouchBot.Modules
         [Command("add")]
         public async Task Add(string channelId)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -83,7 +83,7 @@ namespace MTD.CouchBot.Modules
         [Command("remove")]
         public async Task Remove(string channel)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }

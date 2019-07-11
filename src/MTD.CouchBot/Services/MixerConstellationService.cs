@@ -222,20 +222,20 @@ namespace MTD.CouchBot.Services
                     }
                 }
 
-                if (server.MixerTeams != null && server.MixerTeams.Count > 0)
-                {
-                    foreach (var team in teams)
-                    {
-                        if (server.MixerTeams.Contains(team.id))
-                        {
-                            teamServers.Add(new MixerServerTeam
-                            {
-                                DiscordGuildId = server.Id,
-                                Team = team
-                            });
-                        }
-                    }
-                }
+                //if (server.MixerTeams != null && server.MixerTeams.Count > 0)
+                //{
+                //    foreach (var team in teams)
+                //    {
+                //        if (server.MixerTeams.Contains(team.id))
+                //        {
+                //            teamServers.Add(new MixerServerTeam
+                //            {
+                //                DiscordGuildId = server.Id,
+                //                Team = team
+                //            });
+                //        }
+                //    }
+                //}
             }
             
 
@@ -245,42 +245,50 @@ namespace MTD.CouchBot.Services
             {
                 // Check to see if we have a message already queued up. If so, jump to the next server.
 
-                if (server.GoLiveChannel != 0 && server.Id != 0)
+                if (server.AllowLive)
                 {
-                    if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
+                    if (server.GoLiveChannel != 0 && server.Id != 0)
                     {
-                        var stream = channel;
-                        var gameName = stream.type == null ? "A game" : stream.type.name;
-                        var url = "http://mixer.com/" + stream.token;
-                        var avatarUrl = stream.user.avatarUrl ?? "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
-                        var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
-                        var channelId = stream.id.Value.ToString();
-                        var test = stream.audience;
-                        messages.Add(_messagingService.BuildMessage(stream.token, gameName, stream.name, url,
-                            avatarUrl, thumbnailUrl,
-                            Constants.Mixer, channelId, server, server.GoLiveChannel, null, false, 
-                            stream.viewersCurrent, stream.viewersTotal, stream.numFollowers));
+                        if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
+                        {
+                            var stream = channel;
+                            var gameName = stream.type == null ? "A game" : stream.type.name;
+                            var url = "http://mixer.com/" + stream.token;
+                            var avatarUrl = stream.user.avatarUrl ??
+                                            "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                            var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
+                            var channelId = stream.id.Value.ToString();
+                            var test = stream.audience;
+                            messages.Add(_messagingService.BuildMessage(stream.token, gameName, stream.name, url,
+                                avatarUrl, thumbnailUrl,
+                                Constants.Mixer, channelId, server, server.GoLiveChannel, null, false,
+                                stream.viewersCurrent, stream.viewersTotal, stream.numFollowers));
+                        }
                     }
                 }
             }
 
             foreach (var server in ownerBeamServers)
             {
-                if (server.OwnerLiveChannel != 0 && server.Id != 0)
+                if (server.AllowLive)
                 {
-                    if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
+                    if (server.OwnerLiveChannel != 0 && server.Id != 0)
                     {
-                        var stream = channel;
-                        var gameName = stream.type == null ? "A game" : stream.type.name;
-                        var url = "http://mixer.com/" + stream.token;
-                        var avatarUrl = stream.user.avatarUrl ?? "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
-                        var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
-                        var channelId = stream.id.Value.ToString();
+                        if (messages.FirstOrDefault(x => x.GuildId == server.Id && x.UserId == beamId) == null)
+                        {
+                            var stream = channel;
+                            var gameName = stream.type == null ? "A game" : stream.type.name;
+                            var url = "http://mixer.com/" + stream.token;
+                            var avatarUrl = stream.user.avatarUrl ??
+                                            "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                            var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
+                            var channelId = stream.id.Value.ToString();
 
-                        messages.Add(_messagingService.BuildMessage(stream.token, gameName, stream.name, url,
-                            avatarUrl, thumbnailUrl,
-                            Constants.Mixer, channelId, server, server.OwnerLiveChannel, null, true, 
-                            stream.viewersCurrent, stream.viewersTotal, stream.numFollowers));
+                            messages.Add(_messagingService.BuildMessage(stream.token, gameName, stream.name, url,
+                                avatarUrl, thumbnailUrl,
+                                Constants.Mixer, channelId, server, server.OwnerLiveChannel, null, true,
+                                stream.viewersCurrent, stream.viewersTotal, stream.numFollowers));
+                        }
                     }
                 }
             }
@@ -289,20 +297,25 @@ namespace MTD.CouchBot.Services
             {
                 var server = servers.FirstOrDefault(x => x.Id == teamServer.DiscordGuildId);
 
-                if (server?.GoLiveChannel != 0 && server?.Id != 0)
+                if (server != null && server.AllowLive)
                 {
-                    if (messages.FirstOrDefault(x => x.GuildId == server?.Id && x.UserId == beamId) == null)
+                    if (server?.GoLiveChannel != 0 && server?.Id != 0)
                     {
-                        var stream = channel;
-                        var gameName = stream.type == null ? "A game" : stream.type.name;
-                        var url = "http://mixer.com/" + stream.token;
-                        var avatarUrl = stream.user.avatarUrl ?? "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
-                        var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
-                        var channelId = stream.id.Value.ToString();
+                        if (messages.FirstOrDefault(x => x.GuildId == server?.Id && x.UserId == beamId) == null)
+                        {
+                            var stream = channel;
+                            var gameName = stream.type == null ? "A game" : stream.type.name;
+                            var url = "http://mixer.com/" + stream.token;
+                            var avatarUrl = stream.user.avatarUrl ??
+                                            "https://mixer.com/_latest/assets/images/main/avatars/default.jpg";
+                            var thumbnailUrl = "https://thumbs.mixer.com/channel/" + stream.id + ".small.jpg";
+                            var channelId = stream.id.Value.ToString();
 
-                        messages.Add(_messagingService.BuildMessage(stream.token, gameName, stream.name, url,
-                            avatarUrl, thumbnailUrl,
-                            Constants.Mixer, channelId, server, server.GoLiveChannel, teamServer.Team.name, false, stream.viewersCurrent, stream.viewersTotal, stream.numFollowers));
+                            messages.Add(_messagingService.BuildMessage(stream.token, gameName, stream.name, url,
+                                avatarUrl, thumbnailUrl,
+                                Constants.Mixer, channelId, server, server.GoLiveChannel, teamServer.Team.name, false,
+                                stream.viewersCurrent, stream.viewersTotal, stream.numFollowers));
+                        }
                     }
                 }
             }
@@ -374,7 +387,7 @@ namespace MTD.CouchBot.Services
             var servers = _fileService.GetConfiguredServers().Where(x => x.ServerBeamChannelIds != null && 
                                                                          x.ServerBeamChannelIds.Count > 0).ToList();
             servers.AddRange(_fileService.GetConfiguredServers().Where(x => !string.IsNullOrEmpty(x.OwnerBeamChannelId)));
-            servers.AddRange(_fileService.GetConfiguredServers().Where(x => x.MixerTeams != null && x.MixerTeams.Count > 0));
+            //servers.AddRange(_fileService.GetConfiguredServers().Where(x => x.MixerTeams != null && x.MixerTeams.Count > 0));
 
             if (client.State != WebSocketState.Open)
             {

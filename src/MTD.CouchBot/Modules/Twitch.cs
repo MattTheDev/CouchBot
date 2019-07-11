@@ -36,7 +36,7 @@ namespace MTD.CouchBot.Modules
         [Command("add")]
         public async Task Add(string name)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -87,7 +87,7 @@ namespace MTD.CouchBot.Modules
         [Command("remove")]
         public async Task Remove(string name)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -235,7 +235,7 @@ namespace MTD.CouchBot.Modules
         [Command("addgame")]
         public async Task AddGame(string gameName)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -286,7 +286,7 @@ namespace MTD.CouchBot.Modules
         [Command("removegame")]
         public async Task RemoveGame(string gameName)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -320,7 +320,7 @@ namespace MTD.CouchBot.Modules
         [Command("listgames")]
         public async Task ListGames()
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -356,7 +356,7 @@ namespace MTD.CouchBot.Modules
         [Command("addteam")]
         public async Task AddTeam(string teamName)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -399,7 +399,7 @@ namespace MTD.CouchBot.Modules
         [Command("removeteam")]
         public async Task RemoveTeam(string teamName)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -435,7 +435,7 @@ namespace MTD.CouchBot.Modules
         [Command("listteams")]
         public async Task ListTeams()
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }

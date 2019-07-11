@@ -48,7 +48,7 @@ namespace MTD.CouchBot.Modules
         [Command("add")]
         public async Task Add(string name)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -91,7 +91,7 @@ namespace MTD.CouchBot.Modules
             {
                 server.ServerBeamChannelIds.Add(channel.id?.ToString());
 
-                if (_botSettings.PlatformSettings.EnableMixer)
+                if (_botSettings.PlatformSettings.EnableMixer && server.AllowLive)
                 {
                     await _mixerService.SubscribeToLiveAnnouncements(channel.id?.ToString());
 
@@ -113,7 +113,7 @@ namespace MTD.CouchBot.Modules
         [Command("remove")]
         public async Task Remove(string name)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -264,7 +264,7 @@ namespace MTD.CouchBot.Modules
         [Command("team")]
         public async Task Team(string token)
         {
-            if (!IsApprovedAdmin) return;
+            if (!IsAdmin) return;
 
             var team = await _mixerManager.GetTeamByToken(token);
 
@@ -334,7 +334,7 @@ namespace MTD.CouchBot.Modules
         [Command("addteam")]
         public async Task AddTeam(string token)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -384,7 +384,7 @@ namespace MTD.CouchBot.Modules
         [Command("removeteam")]
         public async Task RemoveTeam(string token)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -421,7 +421,7 @@ namespace MTD.CouchBot.Modules
         [Command("listteams")]
         public async Task ListTeams()
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }

@@ -32,6 +32,7 @@ namespace MTD.CouchBot.Domain.Models.Bot
             public bool EnableSendingMessages { get; set; }
             public ulong DiscordErrorChannelId { get; set; }
             public ulong DiscordAuditChannelId { get; set; }
+            public bool EnableCustomTimerCommands { get; set; }
             public bool EnableChannelLogging { get; set; }
         }
 

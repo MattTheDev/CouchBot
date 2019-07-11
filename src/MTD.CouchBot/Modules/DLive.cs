@@ -24,7 +24,7 @@ namespace MTD.CouchBot.Modules
         [Alias("+")]
         public async Task Add(string channelName, IGuildChannel guildChannel)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }
@@ -70,7 +70,7 @@ namespace MTD.CouchBot.Modules
         [Alias("-")]
         public async Task Remove(string channelName, IGuildChannel guildChannel)
         {
-            if (!IsApprovedAdmin)
+            if (!IsAdmin)
             {
                 return;
             }

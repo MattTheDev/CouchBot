@@ -81,7 +81,7 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public string Prefix { get; set; } = "!cb";
         public ulong LiveTwitchRole { get; set; }
         public List<RoleCommand> RoleCommands { get; set; }
-        public List<string> Subreddits { get; set; }
+        public ulong JoinRole { get; set; }
 
 
 
