@@ -34,6 +34,7 @@ namespace MTD.CouchBot.Domain.Models.Bot
             public ulong DiscordAuditChannelId { get; set; }
             public bool EnableCustomTimerCommands { get; set; }
             public bool EnableChannelLogging { get; set; }
+            public ulong JoinAndLeaveFeedChannelId { get; set; }
         }
 
         public class Directories

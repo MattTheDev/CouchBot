@@ -2,10 +2,10 @@
 using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain.Models.Bot;
-using MTD.CouchBot.Domain.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,15 +39,17 @@ namespace MTD.CouchBot.Services
         private async Task Client_JoinedGuild(IGuild arg)
         {
             await CreateGuild(arg);
-            var owner = await arg.GetOwnerAsync();
-            await _loggingService.LogAudit($"Joined guild {arg.Name} ({arg.Id}) owned by {owner.Username} ({owner.Id}).");
+            var channel = (IMessageChannel) _discord.GetChannel(_botSettings.BotConfig.JoinAndLeaveFeedChannelId);
+
+            await channel.SendMessageAsync("", false, await GetJoinLeftEmbed(arg, true));
         }
 
         private async Task Client_LeftGuild(IGuild arg)
         {
             File.Delete(_botSettings.DirectorySettings.ConfigRootDirectory + _botSettings.DirectorySettings.GuildDirectory + arg.Id + ".json");
-            var owner = await arg.GetOwnerAsync();
-            await _loggingService.LogAudit($"Left guild {arg.Name} ({arg.Id}) owned by {owner.Username} ({owner.Id}).");
+            var channel = (IMessageChannel)_discord.GetChannel(_botSettings.BotConfig.JoinAndLeaveFeedChannelId);
+
+            await channel.SendMessageAsync("", false, await GetJoinLeftEmbed(arg, false));
         }
 
         private async Task Client_UserLeft(IGuildUser arg)
@@ -233,6 +235,70 @@ namespace MTD.CouchBot.Services
                 await channel.SendMessageAsync(
                     "I was unable to remove you from the role successfully. Check my permissions, and try again.");
             }
+        }
+
+        public async Task<Embed> GetJoinLeftEmbed(IGuild guild, bool isJoining)
+        {
+            var random = new Random();
+
+            var owner = await guild.GetOwnerAsync();
+            var users = await guild.GetUsersAsync();
+
+            var embedBuilder = new EmbedBuilder();
+            var footerBuilder = new EmbedFooterBuilder();
+            var authorBuilder = new EmbedAuthorBuilder();
+
+            authorBuilder.Name = isJoining ? "Joined a New Server" : "Left a Server";
+
+            embedBuilder.Fields.Add(
+                new EmbedFieldBuilder
+                {
+                    IsInline = true,
+                    Name = "Name",
+                    Value = guild.Name
+                }
+            );
+
+            embedBuilder.Fields.Add(
+                new EmbedFieldBuilder
+                {
+                    IsInline = true,
+                    Name = "Owner",
+                    Value = owner.Nickname ?? owner.Username
+                }
+            );
+
+            embedBuilder.Fields.Add(
+                new EmbedFieldBuilder
+                {
+                    IsInline = true,
+                    Name = "Users",
+                    Value = users.Count(x => !x.IsBot)
+                }
+            );
+
+            embedBuilder.Fields.Add(
+                new EmbedFieldBuilder
+                {
+                    IsInline = true,
+                    Name = "Bots",
+                    Value = users.Count(x => x.IsBot)
+                }
+            );
+
+            embedBuilder.Color = new Color(
+                random.Next(1, 256),
+                random.Next(1, 256),
+                random.Next(1, 256));
+
+            embedBuilder.ThumbnailUrl = guild.IconUrl ?? _discord.CurrentUser.GetAvatarUrl();
+
+            footerBuilder.Text = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+
+            embedBuilder.Author = authorBuilder;
+            embedBuilder.Footer = footerBuilder;
+
+            return embedBuilder.Build();
         }
     }
 }
