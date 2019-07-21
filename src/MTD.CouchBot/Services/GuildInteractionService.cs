@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MTD.CouchBot.Domain.Utilities;
 
 namespace MTD.CouchBot.Services
 {
@@ -177,6 +178,20 @@ namespace MTD.CouchBot.Services
                 {
                     var server = JsonConvert.DeserializeObject<DiscordServer>(File.ReadAllText(file));
 
+                    // Reconfigure Admins - Remove this soon. TODO MS
+                    if (server.ApprovedAdmins != null && server.ApprovedAdmins.Count > 0)
+                    {
+                        if (server.Admins.Users == null)
+                        {
+                            server.Admins.Users = new List<ulong>();
+                        }
+
+                        server.Admins.Users.AddRange(server.ApprovedAdmins);
+                        server.ApprovedAdmins = null;
+
+                        _fileService.SaveDiscordServer(server);
+                    }
+                    
                     if (server.Id != ulong.Parse(path))
                     {
                         _loggingService.LogInfo("Bad Configuration Found: " + path);
@@ -239,8 +254,6 @@ namespace MTD.CouchBot.Services
 
         public async Task<Embed> GetJoinLeftEmbed(IGuild guild, bool isJoining)
         {
-            var random = new Random();
-
             var owner = await guild.GetOwnerAsync();
             var users = await guild.GetUsersAsync();
 
@@ -286,10 +299,7 @@ namespace MTD.CouchBot.Services
                 }
             );
 
-            embedBuilder.Color = new Color(
-                random.Next(1, 256),
-                random.Next(1, 256),
-                random.Next(1, 256));
+            embedBuilder.Color = DiscordUtilities.GetRandomColor();
 
             embedBuilder.ThumbnailUrl = guild.IconUrl ?? _discord.CurrentUser.GetAvatarUrl();
 

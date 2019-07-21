@@ -1420,6 +1420,11 @@ namespace MTD.CouchBot.Services
             {
                 TwitchStreamsV5 streams = null;
 
+                if (string.IsNullOrEmpty(list))
+                {
+                    continue;
+                }
+
                 try
                 {
                     // Query Twitch for our stream.
@@ -1565,6 +1570,11 @@ namespace MTD.CouchBot.Services
                             // Query Twitch for our stream.
                             foreach (var list in userList)
                             {
+                                if (string.IsNullOrEmpty(list))
+                                {
+                                    continue;
+                                }
+
                                 var response = await _twitchManager.GetStreamsByIdList(list);
 
                                 if (response != null && response.streams.Count > 0)

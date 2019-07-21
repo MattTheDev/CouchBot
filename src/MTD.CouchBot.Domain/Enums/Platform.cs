@@ -9,6 +9,7 @@
         Piczel,
         Smashcast,
         Twitch,
-        YouTube
+        YouTube,
+        All
     }
 }

@@ -171,22 +171,12 @@ namespace MTD.CouchBot.Modules
                         server.PublishedChannel = 0;
                         label = "Published";
                         break;
-                    case "twitter":
-                        server.TwitterChannel = 0;
-                        label = "Twitter";
-                        break;
-                    case "ownertwitter":
-                        server.OwnerTwitterChannel = 0;
-                        label = "Owner Twitter";
-                        break;
                     case "all":
                         server.GoLiveChannel = 0;
                         server.GreetingsChannel = 0;
                         server.PublishedChannel = 0;
                         server.OwnerPublishedChannel = 0;
                         server.OwnerLiveChannel = 0;
-                        server.TwitterChannel = 0;
-                        server.OwnerTwitterChannel = 0;
                         label = "All";
                         break;
                 }
