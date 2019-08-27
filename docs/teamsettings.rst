@@ -4,7 +4,8 @@
 Team Announce Setup
 ===================
 
-These commands have to do with creator, streamers, who gets announced etc.
+If you have a team or want to announce a team, then use the following settings.
+An example is the XboxAmbassador channel on Mixer.
 
 -----------
 Add a Team

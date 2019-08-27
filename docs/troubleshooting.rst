@@ -21,6 +21,8 @@ To ensure that **CouchBot*** can function fully on your server, please ensure al
 
 If you are having issues you can use the following commands to help in identifying where they are.
 
+.. attention:: Ensure the channel also has the correct permissions to allow **CouchBot** to post!
+
 -----
 Ping
 -----

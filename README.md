@@ -1,21 +1,58 @@
-# CouchBot
+<h1 align="center">
+  <br>
+  <a href="https://github.com/MattTheDev/CouchBot"><img src="https://i.imgur.com/6nPQ8vN.png" alt="CouchBot"></a>
+  <br>
+  CouchBot
+  <br>
+</h1>
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f37e6c619ab14e49acb5b2259db2fe6a)](https://www.codacy.com/app/MattTheDev/CouchBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MattTheDev/CouchBot&amp;utm_campaign=Badge_Grade)
- 
-Let your Discord community know when you go live on Mixer (formerly Beam), Mobcrush, Smashcast (formerly Hitbox), Twitch, or YouTube Gaming! Want to let your friends know when you publish a new YouTube or Vid.me Video? Want to make a list of your favorite streamers, and get notified when they go live? CouchBot does that too!
- 
-**Platforms Supported**
-1. Mixer (Formerly Beam) (http://mixer.com)
-2. Mobcrush (http://mobcrush.com)
-3. Picarto (http://picarto.tv)
-4. Smashcast (Formerly Hitbox) (http://smashcast.tv)
-5. Twitch (http://twitch.tv)
-6. YouTube and YouTube Gaming (http://youtube.com / http://gaming.youtube.com)
-   
-**The Website**
-A self host version of this bot will come out eventually. For more info, check out http://couchbot.mattthedev.codes.
+<h4 align="center">Streaming Announcements, Role Hoisting, Cross-Platform.</h4>
 
-**Simple Tutorial**: 
-The CouchBot simple tutorial can be found in the CouchBot Wiki: https://github.com/dawgeth/CouchBot/wiki/Setup-Tutorial
+<p align="center">
+  <a href="http://discord.mattthedev.codes">
+    <img src="https://discordapp.com/api/guilds/263688866978988032/widget.png?style=shield" alt="Discord Server">
+  </a>
+  <a href="https://www.patreon.com/MattTheDev">
+    <img src="https://img.shields.io/badge/Support-CouchBot!-blueviolet.svg" alt="Support CouchBot on Patreon!">
+  </a>
+  <a href="http://couchbot.readthedocs.io/en/stable/?badge=stable">
+    <img src="https://readthedocs.org/projects/couchbot/badge/?version=latest" alt="CouchBot on readthedocs.org">
+  </a>
+</p>
 
-Twitter: http://twitter.com/mattthedev
+<p align="center">
+  <a href="#overview">Overview</a>
+  •
+  <a href="#platforms-supported">Platforms Supported</a>
+  •
+  <a href="https://couchbot.readthedocs.io/en/latest/">Documentation</a>
+</p>
+
+# Overview
+
+You've seen other bots like this I'm sure - Have Discord server, setup bot, bot announces when you go live. But do other bots have loose springs? Maybe a nacho cheese stain or two? And what is that smell..?? Yes, that is unique.
+
+**CouchBot's main feature set includes:**
+
+- Stream Announcing (across all major streaming platforms)
+- Role Hoisting
+- Greeting/Welcome Message (fully configurable)
+- Custom Live Messages (Twitch, Youtube, Mixer, Hitbox, Picarto)
+- Beautiful Embeds
+- VOD Publishing
+- Seperate announcements for owners!
+- Automatic Twitch announcements when going live
+- Can configure the offline message or delete the announcement once finished!
+
+# Platforms Supported
+
+Red is fully modular, allowing you to load and unload plugins of your choice, and install 3rd party
+plugins directly from Discord! A few examples are:
+
+- [Mixer](https://mixer.com)
+- [Mobcrush](https://mobcrush.com)
+- [Picarto](https://picarto.tv)
+- [Smashcast](https://smashcast.tv)
+- [Twitch](https://twitch.tv)
+- [YouTube](https://youtube.com)
+- [YouTube Gaming](https://gaming.youtube.com)
