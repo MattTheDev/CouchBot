@@ -32,6 +32,9 @@ namespace MTD.CouchBot.Domain.Models.Bot
             public bool EnableSendingMessages { get; set; }
             public ulong DiscordErrorChannelId { get; set; }
             public ulong DiscordAuditChannelId { get; set; }
+            public bool EnableCustomTimerCommands { get; set; }
+            public bool EnableChannelLogging { get; set; }
+            public ulong JoinAndLeaveFeedChannelId { get; set; }
         }
 
         public class Directories
@@ -55,7 +58,6 @@ namespace MTD.CouchBot.Domain.Models.Bot
             public bool EnableSmashcast { get; set; }
             public bool EnableTwitch { get; set; }
             public bool EnableYouTube { get; set; }
-            public bool EnableTwitter { get; set; }
             public bool EnableMobcrush { get; set; }
             public bool EnablePiczel { get; set; }
         }
@@ -70,7 +72,6 @@ namespace MTD.CouchBot.Domain.Models.Bot
             public int YouTubeLive { get; set; }
             public int TwitchServer { get; set; }
             public int Mobcrush { get; set; }
-            public int Twitter { get; set; }
         }
     }
 }

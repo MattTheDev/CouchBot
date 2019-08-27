@@ -18,7 +18,6 @@ namespace MTD.CouchBot.Domain
         public static readonly string Picarto = "Picarto";
         public static readonly string Piczel = "Piczel";
         public static readonly string Mobcrush = "Mobcrush";
-        public static readonly string Twitter = "Twitter";
 
         public static readonly string TwitchTypeLive = "live";
         public static readonly string TwitchTypeVodcast = "watch_party";

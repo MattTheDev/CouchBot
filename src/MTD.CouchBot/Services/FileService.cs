@@ -214,6 +214,52 @@ namespace MTD.CouchBot.Services
             return servers;
         }
 
+        public List<IGuild> GetServersConnectedByNotConfigured()
+        {
+            var guilds = new List<IGuild>();
+            var returnServers = new List<IGuild>();
+
+            foreach (var shard in _discord.Shards)
+            {
+                guilds.AddRange(shard.Guilds);
+            }
+
+            var configuredServers = GetConfiguredServers();
+
+            foreach (var connectedGuild in guilds)
+            {
+                if (configuredServers.All(x => x.Id != connectedGuild.Id))
+                {
+                    returnServers.Add(connectedGuild);
+                }
+            }
+
+            return returnServers;
+        }
+
+        public List<DiscordServer> GetServersConfiguredButNotConnected()
+        {
+            var guilds = new List<IGuild>();
+            var returnServers = new List<DiscordServer>();
+
+            foreach (var shard in _discord.Shards)
+            {
+                guilds.AddRange(shard.Guilds);
+            }
+
+            var configuredServers = GetConfiguredServers();
+
+            foreach (var configuredServer in configuredServers)
+            {
+                if (guilds.All(x => x.Id != configuredServer.Id))
+                {
+                    returnServers.Add(configuredServer);
+                }
+            }
+
+            return returnServers;
+        }
+
 
         public List<DiscordServer> GetServersWithLiveChannelAndAllowDiscover()
         {

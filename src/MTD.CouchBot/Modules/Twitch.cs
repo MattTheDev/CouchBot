@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MTD.CouchBot.Domain.Enums;
 using MTD.CouchBot.Managers;
 
 namespace MTD.CouchBot.Modules
@@ -586,6 +587,112 @@ namespace MTD.CouchBot.Modules
             server.LiveTwitchRole = role.Id;
             _fileService.SaveDiscordServer(server);
             await Context.Channel.SendMessageAsync($"Your Live Twitch Role has been set to: {role.Name}");
+        }
+
+        /* New Methods */
+        [Command("add")]
+        [Alias("+")]
+        public async Task Add(string channelName, IGuildChannel guildChannel)
+        {
+            if (!IsAdmin)
+            {
+                return;
+            }
+
+            var twitchChannelId = await _twitchManager.GetTwitchIdByLogin(channelName);
+
+            if (string.IsNullOrEmpty(twitchChannelId))
+            {
+                await Context.Channel.SendMessageAsync($"Sorry, {channelName}, doesn't appear to be a valid channel name.");
+
+                return;
+            }
+
+            var server = GetServer();
+
+            if (server == null)
+            {
+                server = new DiscordServer();
+            }
+
+            if (server.Streamers == null)
+            {
+                server.Streamers = new List<DiscordStreamer>();
+            }
+
+            var streamer = server.Streamers.Count == 0 ? null : server.Streamers
+                .FirstOrDefault(s => s.Platform == Platform.Twitch &&
+                                     s.DisordChannelId == guildChannel.Id &&
+                                     s.StreamerChannelId == twitchChannelId);
+
+            if (streamer != null)
+            {
+                await Context.Channel.SendMessageAsync($"Sorry, {channelName} is already configured on that channel.");
+                return;
+            }
+
+            streamer = new DiscordStreamer
+            {
+                DisordChannelId = guildChannel.Id,
+                Platform = Platform.Twitch,
+                StreamerChannelId = twitchChannelId
+            };
+
+            server.Streamers.Add(streamer);
+
+            _fileService.SaveDiscordServer(server);
+
+            await Context.Channel.SendMessageAsync($"{channelName} will now announce on <#{guildChannel.Id}> when they go live.");
+        }
+
+        [Command("remove")]
+        [Alias("-")]
+        public async Task Remove(string channelName, IGuildChannel guildChannel)
+        {
+            if (!IsAdmin)
+            {
+                return;
+            }
+
+            var twitchChannelId = await _twitchManager.GetTwitchIdByLogin(channelName);
+
+            if (string.IsNullOrEmpty(twitchChannelId))
+            {
+                await Context.Channel.SendMessageAsync($"Sorry, {channelName}, doesn't appear to be a valid channel name.");
+
+                return;
+            }
+
+            var server = GetServer();
+
+            if (server == null)
+            {
+                await Context.Channel.SendMessageAsync($"Sorry, {channelName} is not configured on this server.");
+                return;
+            }
+
+            if (server.Streamers == null)
+            {
+                await Context.Channel.SendMessageAsync($"Sorry, {channelName} is not configured on this server.");
+                return;
+            }
+
+            var streamer = server.Streamers.Count == 0 ? null : server.Streamers
+                .FirstOrDefault(s => s.Platform == Platform.Twitch &&
+                                     s.DisordChannelId == guildChannel.Id &&
+                                     s.StreamerChannelId == twitchChannelId);
+
+            if (streamer == null)
+            {
+                await Context.Channel.SendMessageAsync($"Sorry, {channelName} is not configured on that channel.");
+                return;
+            }
+
+            server.Streamers.Remove(streamer);
+
+            _fileService.SaveDiscordServer(server);
+
+            await Context.Channel.SendMessageAsync($"{channelName} will no longer announce on <#{guildChannel.Id}> when they go live.");
         }
     }
 }

@@ -11,7 +11,10 @@
     "TotalShards": 1,
     "OwnerId": 0,
     "EnableSendingMessages": true,
-    "DiscordConsoleChannelId": 0
+    "EnableCustomTimerCommands": true, 
+    "DiscordErrorChannelId": 0,
+    "DiscordAuditChannelId": 0,
+    "JoinAndLeaveFeedChannelId": 0
   },
   "DirectorySettings": {
     "ConfigRootDirectory": "C:\\programdata\\CouchBot\\",

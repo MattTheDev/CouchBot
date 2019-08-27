@@ -1,10 +1,12 @@
-﻿using Discord.WebSocket;
+﻿using System;
+using Discord.WebSocket;
 using Microsoft.Extensions.Options;
 using MTD.CouchBot.Domain;
 using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Domain.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord;
 
 namespace MTD.CouchBot.Services
 {
@@ -13,20 +15,36 @@ namespace MTD.CouchBot.Services
         private readonly BotSettings _botSettings;
 
         private Timer _mixerPingTimer;
-        private Timer _hitboxTimer;
-        private Timer _hitboxOwnerTimer;
+
+        private Timer _etaTimer;
+
         private Timer _mobcrushTimer;
         private Timer _mobcrushOwnerTimer;
+        private DateTime _mobcrushLastCompleted;
+
+        private Timer _picartoTimer;
+        private Timer _picartoOwnerTimer;
+        private DateTime _picartoLastCompleted;
+
+        private Timer _piczelTimer;
+        private Timer _piczelOwnerTimer;
+        private DateTime _piczelLastCompleted;
+
+        private Timer _smashcastTimer;
+        private Timer _smashcastOwnerTimer;
+        private DateTime _smashcastLastCompleted;
+
+        private Timer _twitchTeamTimer;
+        private Timer _twitchGameTimer;
         private Timer _twitchTimer;
+        private DateTime _twitchLastCompleted;
+
         private Timer _youtubeTimer;
         private Timer _youtubePublishedTimer;
         private Timer _youtubePublishedOwnerTimer;
-        private Timer _twitchTeamTimer;
-        private Timer _twitchGameTimer;
-        private Timer _picartoTimer;
-        private Timer _picartoOwnerTimer;
-        private Timer _piczelTimer;
-        private Timer _piczelOwnerTimer;
+        private DateTime _youtubeLiveLastCompleted;
+        private DateTime _youtubePublishedLastCompleted;
+
         private Timer _guildCheckTimer;
         private Timer _twitchServerTimer;
         private Timer _cleanupTimer;
@@ -97,7 +115,64 @@ namespace MTD.CouchBot.Services
 
             QueueCleanUp();
             QueueHealthChecks();
-            QueueCustomCommands();
+
+            if (_botSettings.BotConfig.EnableCustomTimerCommands)
+            {
+                QueueCustomCommands();
+            }
+
+            return; 
+            // TODO MS
+            _etaTimer = new Timer(async (e) =>
+            {
+                var mobcrushEta = (int)(DateTime.UtcNow - _mobcrushLastCompleted).TotalSeconds;
+                var picartoEta = (int)(DateTime.UtcNow - _picartoLastCompleted).TotalSeconds;
+                var piczelEta = (int)(DateTime.UtcNow - _piczelLastCompleted).TotalSeconds;
+                var smashcastEta = (int)(DateTime.UtcNow - _smashcastLastCompleted).TotalSeconds;
+                var twitchEta = (int)(DateTime.UtcNow - _twitchLastCompleted).TotalSeconds;
+                var youtubeLiveEta = (int)(DateTime.UtcNow - _youtubeLiveLastCompleted).TotalSeconds;
+                var youtubePublishedEta = (int)(DateTime.UtcNow - _youtubePublishedLastCompleted).TotalSeconds;
+
+                if (_discord == null)
+                {
+                    return;
+                }
+
+                try
+                {
+
+                    var statusChannel = (IMessageChannel) _discord.GetChannel(601514799612035092);
+
+                    if (statusChannel == null)
+                    {
+                        return;
+                    }
+
+                    var statusMessage =
+                        (IUserMessage) await statusChannel.GetMessageAsync(601797024870039552);
+
+                    if (statusMessage == null)
+                    {
+                        return;
+                    }
+
+                    await statusMessage.ModifyAsync(m =>
+                        m.Content = $"**Bot Timer Status** \r\n" +
+                                    $"**[Mixer]:** Constellation Status: {_mixerService.Status()}\r\n" +
+                                    $"**[Mobcrush]:** {_botSettings.IntervalSettings.Mobcrush / 1000 - mobcrushEta} seconds remain. (Checked every {_botSettings.IntervalSettings.Mobcrush / 1000} seconds.)\r\n" +
+                                    $"**[Picarto]:** {_botSettings.IntervalSettings.Picarto / 1000 - picartoEta} seconds remain. (Checked every {_botSettings.IntervalSettings.Picarto / 1000} seconds.)\r\n" +
+                                    $"**[Piczel]:** {_botSettings.IntervalSettings.Piczel / 1000 - piczelEta} seconds remain. (Checked every {_botSettings.IntervalSettings.Piczel / 1000} seconds.)\r\n" +
+                                    $"**[Smashcast]:** {_botSettings.IntervalSettings.Smashcast / 1000 - smashcastEta} seconds remain. (Checked every {_botSettings.IntervalSettings.Smashcast / 1000} seconds.)\r\n" +
+                                    $"**[Twitch]:** {_botSettings.IntervalSettings.Twitch / 1000 - twitchEta} seconds remain. (Checked every {_botSettings.IntervalSettings.Twitch / 1000} seconds.)\r\n" +
+                                    $"**[YouTube Live]:** {_botSettings.IntervalSettings.YouTubeLive / 1000 - youtubeLiveEta} seconds remain. (Checked every {_botSettings.IntervalSettings.YouTubeLive / 1000} seconds.)\r\n" +
+                                    $"**[YouTube Published]:** {_botSettings.IntervalSettings.YouTubePublished / 1000 - youtubePublishedEta} seconds remain. (Checked every {_botSettings.IntervalSettings.YouTubePublished / 1000} seconds.)\r\n\r\n" +
+                                    $"*(Last Checked: {DateTime.UtcNow})*");
+                }
+                catch (Exception)
+                {
+                    // Throwaway for now. TODO MS
+                }
+            }, null, 0, 5000);
         }
 
         public void QueueCustomCommands()
@@ -118,28 +193,22 @@ namespace MTD.CouchBot.Services
                 _loggingService.LogMixer("Pinging Mixer.");
                 await _mixerService.Ping();
             }, null, 0, 30000);
-
         }
 
         public void QueueHitboxChecks()
         {
-            _hitboxTimer = new Timer(async (e) =>
+            _smashcastTimer = new Timer(async (e) =>
             {
-                ////var sw = new Stopwatch();
-                ////sw.Start();
                 _loggingService.LogSmashcast("Checking Smashcast Channels.");
                 await _platformServices.CheckHitboxLive();
-                ////sw.Stop();
                 _loggingService.LogSmashcast("Smashcast Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _smashcastLastCompleted = DateTime.UtcNow;
             }, null, 0, _botSettings.IntervalSettings.Smashcast);
 
-            _hitboxOwnerTimer = new Timer(async (e) =>
+            _smashcastOwnerTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogSmashcast("Checking Owner Smashcast Channels.");
                 await _platformServices.CheckOwnerHitboxLive();
-                //sw.Stop();
                 _loggingService.LogSmashcast("Owner Smashcast Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Smashcast);
         }
@@ -148,33 +217,24 @@ namespace MTD.CouchBot.Services
         {
             _twitchTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogTwitch("Checking Twitch Channels.");
                 await _platformServices.CheckTwitchLive();
-                //sw.Stop();
                 _loggingService.LogTwitch("Twitch Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
-
+                _twitchLastCompleted = DateTime.UtcNow;
                 _initialServicesRan = true;
             }, null, 0, _botSettings.IntervalSettings.Twitch);
             
             _twitchTeamTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogTwitch("Checking Twitch Teams.");
                 await _platformServices.CheckTwitchTeams();
-                //sw.Stop();
                 _loggingService.LogTwitch("Checking Twitch Teams Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Twitch);
 
             _twitchGameTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogTwitch("Checking Twitch Games.");
                 await _platformServices.CheckTwitchGames();
-                //sw.Stop();
                 _loggingService.LogTwitch("Checking Twitch Games Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Twitch);
         }
@@ -183,31 +243,24 @@ namespace MTD.CouchBot.Services
         {
             _youtubeTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogYouTubeGaming("Checking YouTube Gaming Channels.");
                 await _platformServices.CheckYouTubeLive();
-                //sw.Stop();
                 _loggingService.LogYouTubeGaming("YouTube Gaming Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _youtubeLiveLastCompleted = DateTime.UtcNow;
             }, null, 0, _botSettings.IntervalSettings.YouTubeLive);
 
             _youtubePublishedTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogYouTube("Checking YouTube Published");
                 await _platformServices.CheckPublishedYouTube();
-                //sw.Stop();
                 _loggingService.LogYouTube("YouTube Published Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _youtubePublishedLastCompleted = DateTime.UtcNow;
             }, null, 0, _botSettings.IntervalSettings.YouTubePublished);
 
             _youtubePublishedOwnerTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogYouTube("Checking Owner YouTube Published");
                 await _platformServices.CheckOwnerPublishedYouTube();
-                //sw.Stop();
                 _loggingService.LogYouTube("Owner YouTube Published Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.YouTubePublished);
         }
@@ -216,21 +269,16 @@ namespace MTD.CouchBot.Services
         {
             _picartoTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogPicarto("Checking Picarto Channels.");
                 await _platformServices.CheckPicartoLive();
-                //sw.Stop();
                 _loggingService.LogPicarto("Picarto Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _picartoLastCompleted = DateTime.UtcNow;
             }, null, 0, _botSettings.IntervalSettings.Picarto);
 
             _picartoOwnerTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogPicarto("Checking Picarto Smashcast Channels.");
                 await _platformServices.CheckOwnerPicartoLive();
-                //sw.Stop();
                 _loggingService.LogPicarto("Owner Picarto Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Picarto);
         }
@@ -239,21 +287,16 @@ namespace MTD.CouchBot.Services
         {
             _piczelTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogPiczel("Checking piczel Channels.");
                 await _platformServices.CheckPiczelLive();
-                //sw.Stop();
                 _loggingService.LogPiczel("piczel Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _piczelLastCompleted = DateTime.UtcNow;
             }, null, 0, _botSettings.IntervalSettings.Piczel);
 
             _piczelOwnerTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogPiczel("Checking piczel Smashcast Channels.");
                 await _platformServices.CheckOwnerPiczelLive();
-                //sw.Stop();
                 _loggingService.LogPiczel("Owner piczel Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Piczel);
         }
@@ -262,21 +305,16 @@ namespace MTD.CouchBot.Services
         {
             _mobcrushTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogMobcrush("Checking Mobcrush Channels.");
                 await _platformServices.CheckMobcrushLive();
-                //sw.Stop();
                 _loggingService.LogMobcrush("Mobcrush Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
+                _mobcrushLastCompleted = DateTime.UtcNow;
             }, null, 0, _botSettings.IntervalSettings.Mobcrush);
 
             _mobcrushOwnerTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogMobcrush("Checking Owner Mobcrush Channels.");
                 await _platformServices.CheckOwnerMobcrushLive();
-                //sw.Stop();
                 _loggingService.LogMobcrush("Owner Mobcrush Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, _botSettings.IntervalSettings.Mobcrush);
         }
@@ -285,11 +323,8 @@ namespace MTD.CouchBot.Services
         {
             _guildCheckTimer = new Timer(async (e) =>
             {
-                //var sw = new Stopwatch();
-                //sw.Start();
                 _loggingService.LogInfo("Checking Guild Configurations.");
                 await _guildServices.CheckGuildConfigurations();
-                //sw.Stop();
                 _loggingService.LogInfo("Guild Configuration Check Complete - Elapsed Runtime: " + " " + " milliseconds.");
             }, null, 0, 600000);
         }

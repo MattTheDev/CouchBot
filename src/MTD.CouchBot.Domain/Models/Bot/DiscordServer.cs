@@ -13,8 +13,6 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public ulong OwnerLiveChannel { get; set; }
         public ulong OwnerPublishedChannel { get; set; }
         public ulong PublishedChannel { get; set; }
-        public ulong TwitterChannel { get; set; }
-        public ulong OwnerTwitterChannel { get; set; }
         public bool AllowEveryone { get; set; }
         public bool BroadcastSubGoals { get; set; }
         public List<string> ServerYouTubeChannelIds { get; set; }
@@ -73,8 +71,6 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public ulong DiscoverTwitchRole { get; set; }
         public List<CustomCommand> CustomCommands { get; set; }
         public bool AllowVodcasts { get; set; }
-        public long OwnerTwitterId { get; set; }
-        public List<long> TwitterIds{get;set;}
         public long OwnerFacebookId { get; set; }
         public List<long> FacebookIds { get; set; }
         public bool DisplayStreamStatistics { get; set; } = true;
@@ -82,8 +78,8 @@ namespace MTD.CouchBot.Domain.Models.Bot
         public ulong LiveTwitchRole { get; set; }
         public List<RoleCommand> RoleCommands { get; set; }
         public ulong JoinRole { get; set; }
-
-
+        public XPromo XPromo { get; set; }
+        public Admin Admins { get; set; }
 
         public List<DiscordStreamer> Streamers { get; set; }
     }

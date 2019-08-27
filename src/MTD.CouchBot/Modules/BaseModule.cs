@@ -5,6 +5,7 @@ using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Services;
 using Newtonsoft.Json;
 using System.IO;
+using System.Linq;
 
 namespace MTD.CouchBot.Modules
 {
@@ -40,7 +41,7 @@ namespace MTD.CouchBot.Modules
             {
                 var user = ((IGuildUser)Context.Message.Author);
 
-                if (!user.GuildPermissions.ManageGuild && !IsApprovedAdmin && !IsBotOwner)
+                if (!user.GuildPermissions.ManageGuild && !IsAdminUser && !HasAdminRole && !IsBotOwner)
                 {
                     return false;
                 }
@@ -49,7 +50,7 @@ namespace MTD.CouchBot.Modules
             }
         }
 
-        public bool IsApprovedAdmin
+        public bool IsAdminUser
         {
             get
             {
@@ -72,6 +73,23 @@ namespace MTD.CouchBot.Modules
 
                 return false;
 
+            }
+        }
+
+        public bool HasAdminRole
+        {
+            get
+            {
+                var server = GetServer();
+
+                if (server.Admins?.Roles == null)
+                {
+                    return false;
+                }
+
+                var user = (IGuildUser)Context.User;
+
+                return user.RoleIds.Intersect(server.Admins.Roles).Any();
             }
         }
 

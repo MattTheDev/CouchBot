@@ -5,6 +5,7 @@ using MTD.CouchBot.Domain.Models.Bot;
 using MTD.CouchBot.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MTD.CouchBot.Domain.Utilities;
 
 namespace MTD.CouchBot.Modules
 {
@@ -30,21 +31,58 @@ namespace MTD.CouchBot.Modules
 
             var server = GetServer();
 
-            if (server.ApprovedAdmins == null)
+            if (server.Admins.Users == null)
             {
-                server.ApprovedAdmins = new List<ulong>();
+                server.Admins.Users = new List<ulong>();
             }
 
-            if (server.ApprovedAdmins.Contains(user.Id))
+            if (server.Admins.Users.Contains(user.Id))
             {
                 await Context.Channel.SendMessageAsync($"{user.Username} is already on the approved admins list for this server.");
                 return;
             }
 
-            server.ApprovedAdmins.Add(user.Id);
+            server.Admins.Users.Add(user.Id);
             await _fileService.SaveDiscordServer(server, Context.Guild);
 
             await Context.Channel.SendMessageAsync($"{user.Username} has been added to the approved admin list for this server.");
+        }
+
+        [Command("add")]
+        [Alias("+")]
+        public async Task Add(IRole role)
+        {
+            if (!IsAdmin)
+            {
+                return;
+            }
+
+            var server = GetServer();
+
+            if (server.Admins == null)
+            {
+                server.Admins = new Domain.Models.Bot.Admin()
+                {
+                    Users = new List<ulong>(),
+                    Roles = new List<ulong>()
+                };
+            }
+
+            if (server.Admins.Roles == null)
+            {
+                server.Admins.Roles = new List<ulong>();
+            }
+
+            if (server.Admins.Roles.Contains(role.Id))
+            {
+                await Context.Channel.SendMessageAsync($"{role.Name} is already on the admins list for this server.");
+                return;
+            }
+
+            server.Admins.Roles.Add(role.Id);
+            await _fileService.SaveDiscordServer(server, Context.Guild);
+
+            await Context.Channel.SendMessageAsync($"{role.Name} has been added to the approved admin list for this server.");
         }
 
         [Command("remove")]
@@ -58,16 +96,39 @@ namespace MTD.CouchBot.Modules
 
             var server = GetServer();
 
-            if (server.ApprovedAdmins == null || !server.ApprovedAdmins.Contains(user.Id))
+            if (server.Admins == null || !server.Admins.Users.Contains(user.Id))
             {
                 await Context.Channel.SendMessageAsync($"{user.Username} is not on the approved admins list for this server.");
                 return;
             }
 
-            server.ApprovedAdmins.Remove(user.Id);
+            server.Admins.Users.Remove(user.Id);
             await _fileService.SaveDiscordServer(server, Context.Guild);
 
             await Context.Channel.SendMessageAsync($"{user.Username} has been removed from the approved admin list for this server.");
+        }
+
+        [Command("remove")]
+        [Alias("-")]
+        public async Task Remove(IRole role)
+        {
+            if (!IsAdmin)
+            {
+                return;
+            }
+
+            var server = GetServer();
+
+            if (server.Admins?.Roles == null || !server.Admins.Roles.Contains(role.Id))
+            {
+                await Context.Channel.SendMessageAsync($"{role.Name} is not on the admins list for this server.");
+                return;
+            }
+
+            server.Admins.Roles.Remove(role.Id);
+            await _fileService.SaveDiscordServer(server, Context.Guild);
+
+            await Context.Channel.SendMessageAsync($"{role.Name} has been removed from the approved admin list for this server.");
         }
 
         [Command("list")]
@@ -80,23 +141,68 @@ namespace MTD.CouchBot.Modules
 
             var server = GetServer();
 
-            var admins = new List<string>();
-            if (server.ApprovedAdmins == null || server.ApprovedAdmins.Count == 0)
+            var builder = new EmbedBuilder();
+            var authorBuilder = new EmbedAuthorBuilder {Name = "Server Administrators of CouchBot"};
+
+            builder.Author = authorBuilder;
+            builder.Color = DiscordUtilities.GetRandomColor();
+
+            var userList = new List<string>();
+            var roleList = new List<string>();
+
+            if (server.Admins != null)
             {
-                admins.Add("There are currently no approved admins.");
+                if (server.Admins.Users == null || server.Admins.Users.Count == 0)
+                {
+                    userList.Add("None");
+                }
+                else
+                {
+                    foreach (var userId in server.Admins.Users)
+                    {
+                        var user = await Context.Guild.GetUserAsync(userId);
+                        userList.Add(user.Nickname ?? user.Username);
+                    }
+                }
+
+                if (server.Admins.Roles == null || server.Admins.Roles.Count == 0)
+                {
+                    roleList.Add("None");
+                }
+                else
+                {
+                    foreach (var roleId in server.Admins.Roles)
+                    {
+                        var role = Context.Guild.GetRole(roleId);
+                        roleList.Add(role.Name);
+                    }
+                }
             }
             else
             {
-                foreach (var aa in server.ApprovedAdmins)
-                {
-                    var user = await Context.Guild.GetUserAsync(aa);
-                    admins.Add(user.Nickname ?? user.Username);
-                }
+                userList.Add("None");
+                roleList.Add("None");
             }
 
-            var info = $"```Markdown\r\n# Server Approved Admins\r\n{string.Join(", ", admins)}\r\n```\r\n";
+            builder.AddField(
+                new EmbedFieldBuilder
+                {
+                    IsInline = true,
+                    Name = "Users",
+                    Value = string.Join("\r\n", userList)
+                }
+                );
 
-            await Context.Channel.SendMessageAsync(info);
+            builder.AddField(
+                new EmbedFieldBuilder
+                {
+                    IsInline = true,
+                    Name = "Roles",
+                    Value = string.Join("\r\n", roleList)
+                }
+            );
+
+            await Context.Channel.SendMessageAsync("", false, builder.Build());
         }
     }
 }
