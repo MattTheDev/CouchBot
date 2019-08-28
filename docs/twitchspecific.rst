@@ -4,7 +4,8 @@
 Twitch Specific Configuration
 =============================
 
-These commands have to do with games that should be announced.
+Specific to the Twitch platform, these will only work if people have the "Twitch Integration" enabled on their Discord
+and have the status of **"Streaming"**
 
 ----------------
 Twitch Discovery
