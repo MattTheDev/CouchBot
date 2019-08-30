@@ -4,7 +4,8 @@
 Add Specific Games
 ==================
 
-These commands have to do with games that should be announced.
+These commands have to do with games that should be announced. Using these will announce any instances of the game being
+streamed on the platform you choose, use it wisely!
 
 -----------
 Add a Game

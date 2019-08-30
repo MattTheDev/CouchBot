@@ -4,6 +4,8 @@
 CouchBot Install Guide
 ============================
 
+.. hint:: You can also view a quick video guide on `Youtube <https://www.youtube.com/watch?v=UYdqiy9Snl8>`_.
+
 1. `Get CouchBot in your server! <https://discordapp.com/oauth2/authorize?client_id=308371905667137536&scope=bot&permissions=158720>`_
 2. Add your Mixer, Mobcrush, Picarto, Smashcast, Twitch, or YouTube Channels:
 

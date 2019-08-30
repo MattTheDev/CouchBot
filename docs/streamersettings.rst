@@ -4,7 +4,7 @@
 Streamer and Content Creator Settings
 =====================================
 
-These commands have to do with creator, streamers, who gets announced etc.
+These commands have to do with creators, streamers, who gets announced etc.
 
 ------------------
 List Your Creators

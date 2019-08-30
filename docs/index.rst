@@ -30,18 +30,3 @@ Welcome to CouchBot's documentation!
     greeting
     misc
     troubleshooting
-
-
-.. toctree::
-    :maxdepth: 2
-    :caption: Changelogs:
-
-    changelog
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
