@@ -23,6 +23,7 @@ Welcome to CouchBot's documentation!
     allowconfig
     channelconfiguration
     streamersettings
+    gameandtitlefilters
     teamsettings
     gamessettings
     twitchspecific
