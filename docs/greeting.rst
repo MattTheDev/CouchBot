@@ -6,6 +6,23 @@ Greeting / Goodbye Configuration
 
 Use the following commands to configure greeting and goodbye functionality when people join and leave the server.
 
+-----------------
+Greeting Channel
+-----------------
+
+Command
+    ``channel greetings``
+
+Description
+    Run this command to configure greetings channel.
+
+Required Parameters
+    * #channelname
+
+Example Usage
+    ``!cb channel greetings #discord-channel``
+
+
 ---------
 Greetings
 ---------
