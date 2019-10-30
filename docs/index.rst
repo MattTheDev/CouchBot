@@ -20,6 +20,7 @@ Welcome to CouchBot's documentation!
     howtoread
     approvedadmin
     customcommands
+    roleassignment
     allowconfig
     channelconfiguration
     streamersettings
