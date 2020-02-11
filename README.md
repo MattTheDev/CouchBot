@@ -30,36 +30,6 @@
 
 # Overview
 
-You've seen other bots like this I'm sure - Have Discord server, setup bot, bot announces when you go live. But do other bots have loose springs? Maybe a nacho cheese stain or two? And what is that smell..?? Yes, that is unique.
+Looking for CouchBot Documentation? 
 
-# Getting Started
-
-**Quick Start**
-
-You can jump straight into the [Documentation](https://couchbot.readthedocs.io/en/latest/), watch the [Video](https://youtu.be/UYdqiy9Snl8) or [Invite CouchBot](https://discordapp.com/oauth2/authorize?client_id=308371905667137536&scope=bot&permissions=158720) to jump right in!
-
-**CouchBot's main feature set includes:**
-
-- Stream Announcing (across all major streaming platforms)
-- Role Hoisting
-- Greeting/Welcome Message (fully configurable)
-- Custom Live Messages (Twitch, Youtube, Mixer, Hitbox, Picarto)
-- Beautiful Embeds
-- VOD Publishing
-- Seperate announcements for owners!
-- Automatic Twitch announcements when going live
-- Can configure the offline message or delete the announcement once finished!
-
-# Platforms Supported
-
-Let your Discord community know when you go live on Mixer, Mobcrush, Smashcast, Twitch, or YouTube Gaming! 
-Want to let your friends know when you publish a new YouTube Video? 
-Want to make a list of your favorite streamers, and get notified when they go live? CouchBot does that too!
-
-- [Mixer](https://mixer.com)
-- [Mobcrush](https://mobcrush.com)
-- [Picarto](https://picarto.tv)
-- [Smashcast](https://smashcast.tv)
-- [Twitch](https://twitch.tv)
-- [YouTube](https://youtube.com)
-- [YouTube Gaming](https://gaming.youtube.com)
+[https;//docs.couch.bot](https://docs.couch.bot)
