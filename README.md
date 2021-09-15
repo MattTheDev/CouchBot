@@ -46,8 +46,8 @@ CouchBot is monetized to ensure people that use the bot are willing to invest in
 1. Select the Tier You'd Like from Patreon - https://patreon.com/CouchBot
 2. Make sure your Discord Account is linked to your Patreon account - https://www.patreon.com/settings/apps
 3. Join the CouchBot Discord Community - https://discord.couch.bot
-4. Acknowledge the rules in #i-understand
-5. Visit #spam-on-the-couch
+4. Acknowledge the rules in #welcome-to-the-couch
+5. Visit #bot-setup
 6. Type '!cb patreon' without quotes to confirm your allowances.
 7. Type '!cb patreon addserver ServerId' without quotes to add your first server to the whitelist. Repeat as needed.
 8. Invite the bot to the servers that you've added - https://invite.couch.bot
