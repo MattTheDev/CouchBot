@@ -21,6 +21,12 @@
 </p>
 
 <p align="center">
+  <img src="https://github.com/MTDCodes/CouchBot/actions/workflows/deploy-antenna.yml/badge.svg" />
+  <img src="https://github.com/MTDCodes/CouchBot/actions/workflows/deploy-couchbot.yml/badge.svg" />
+  <img src="https://github.com/MTDCodes/CouchBot/actions/workflows/deploy-reclinerbot.yml/badge.svg" />
+</p>
+
+<p align="center">
   <a href="https://docs.couch.bot/#overview">Overview</a>
   •
   <a href="https://docs.couch.bot/#platforms-supported">Platforms Supported</a>
