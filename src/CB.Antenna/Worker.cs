@@ -1,4 +1,4 @@
-namespace CB.Bot
+namespace CB.Antenna
 {
     public class Worker(ILogger<Worker> logger) : BackgroundService
     {

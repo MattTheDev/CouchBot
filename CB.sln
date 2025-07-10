@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CB.Data", "src\CB.Data\CB.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CB.Api", "src\CB.Api\CB.Api.csproj", "{940D58E6-443D-48A1-81DC-4D75E05D3F86}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CB.Antenna", "src\CB.Antenna\CB.Antenna.csproj", "{22F26662-DF20-4802-851A-13414F806763}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{940D58E6-443D-48A1-81DC-4D75E05D3F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{940D58E6-443D-48A1-81DC-4D75E05D3F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{940D58E6-443D-48A1-81DC-4D75E05D3F86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22F26662-DF20-4802-851A-13414F806763}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22F26662-DF20-4802-851A-13414F806763}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22F26662-DF20-4802-851A-13414F806763}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22F26662-DF20-4802-851A-13414F806763}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
