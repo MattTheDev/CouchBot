@@ -49,17 +49,7 @@ CouchBot is monetized to ensure people that use the bot are willing to invest in
 
 ## Want the Bot?!
 
-1. Select the tier you'd like from Patreon - https://patreon.com/CouchBot
-2. Make sure your Discord account is linked to your Patreon account - https://patreon.com/settings/apps
-3. Join the CouchBot Discord Community - https://discord.couch.bot
-4. Acknowledge the rules in #how-to-get-couchbot
-5. Visit #bot-setup
-6. Type '!cb me' without quotes to confirm your allowances.
-7. Type '!cb addserver ServerId' without quotes to add your first server to the whitelist. Repeat as needed.
-8. Invite the bot to the servers that you've added - https://invite.couch.bot
-9. Want to remove the bot from a server, and add it to another? Type '!cb removeserver ServerId' without quotes. 
-> Note: There is a verification string you have to enter to confirm the removal of the server. **THIS WILL DELETE ALL SERVER DATA. TREAD LIGHTLY**
-10. Install Guide and Command List: [CouchBot ReadTheDocs](https://docs.couch.bot)
+TBD 
 
 #### How do I get my server id?
 Discord Resource: https://dis.gd/findmyid

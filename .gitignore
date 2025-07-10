@@ -1,0 +1,144 @@
+## Ignore Visual Studio temporary files, build results, and
+## user-generated files
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+TestResults/
+out/
+generated/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.VC.db
+*.vscode/
+.vscode/
+
+# Rider
+.idea/
+
+# VS for Mac
+*.userprefs
+
+# Auto-generated files
+*.pidb
+*.svd
+
+# OS junk
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# dotCover
+*.dotCover
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+
+# VS Code launch configs
+.vscode/launch.json
+.vscode/tasks.json
+
+# docker-compose override
+docker-compose.override.yml
+
+# dotenv / secrets
+.env
+*.env
+
+# local db
+*.mdf
+*.ldf
+*.sqlite
+*.db
+*.db-shm
+*.db-wal
+
+# Entity Framework
+Migrations/*Snapshot.cs
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Global.json SDK resolver caches
+global.json.sdk.*
+
+# Visual Studio Code settings
+.vscode/*
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# dotnet watch
+dotnet-watch.json
+
+# Logs
+*.log
+
+# Tye
+.tye/
+
+# Coverage reports
+coverage/
+coverage.*.xml
+*.lcov
+
+# Reports
+reports/
+
+# Publish artifacts
+publish/
+dist/
+
+# Binaries
+*.dll
+*.exe
+*.app
+*.appx
+*.apk
+*.so
+*.dylib
+*.a
+*.lib
+*.pdb
+
+# Docker files
+docker-compose.override.yml
+docker-compose.*.yml
+
+# Terraform / infra junk
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Local certs
+*.pfx
+*.cer
+*.key
+
+# IDE settings backups
+*.bak
+*.orig
+
+# Temporary files
+~$*
+*.tmp
+
+# .vs folder
+.vs/
