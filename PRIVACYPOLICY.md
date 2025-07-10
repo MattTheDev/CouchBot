@@ -12,7 +12,7 @@ Matthew Smith - me@mattthedev.codes
 * Discord Data
   * User, Channel, and Guild Ids
 * Platform Data
-  * Platform Channel Id, Channel Name, and meta data required to announced new content.
+  * Platform Channel Id, Channel Name, and meta data required to announce new content.
 * Analytics for website 
   *  Google analytics is used for tracking website visits and geographic demographics of visitors. 
 
