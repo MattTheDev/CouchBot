@@ -17,4 +17,10 @@ public class Guild
     public DateTime ModifiedDate { get; set; }
 
     public virtual User User { get; set; }
+    public virtual ICollection<Channel> Channels { get; set; }
+    public virtual AllowConfiguration AllowConfiguration { get; set; }
+    public virtual ChannelConfiguration ChannelConfiguration { get; set; }
+    public virtual GuildConfiguration GuildConfiguration { get; set; }
+    public virtual MessageConfiguration MessageConfiguration { get; set; }
+    public virtual RoleConfiguration RoleConfiguration { get; set; }
 }
