@@ -18,5 +18,4 @@ public class User
 
     public virtual ICollection<Guild> Guilds { get; set; }
     public virtual ICollection<Creator> Creators { get; set; }
-
 }
