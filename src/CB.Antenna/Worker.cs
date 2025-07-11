@@ -1,17 +1,16 @@
-namespace CB.Antenna
+namespace CB.Antenna;
+
+public class Worker(ILogger<Worker> logger) : BackgroundService
 {
-    public class Worker(ILogger<Worker> logger) : BackgroundService
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            if (logger.IsEnabled(LogLevel.Information))
             {
-                if (logger.IsEnabled(LogLevel.Information))
-                {
-                    logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                }
-                await Task.Delay(1000, stoppingToken);
+                logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
             }
+            await Task.Delay(1000, stoppingToken);
         }
     }
 }

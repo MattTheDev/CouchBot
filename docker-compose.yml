@@ -22,10 +22,21 @@ services:
     ports:
       - "5000:8080"
 
-  worker:
+  bot:
     build:
       context: .
       dockerfile: src/CB.Bot/Dockerfile
+    depends_on:
+      - db
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Database=myappdb;Username=myuser;Password=mypassword
+      - ASPNETCORE_ENVIRONMENT=Development
+      - BOT_TOKEN=BOT_TOKEN_HERE
+
+  antenna:
+    build:
+      context: .
+      dockerfile: src/CB.Antenna/Dockerfile
     depends_on:
       - db
     environment:
