@@ -118,7 +118,13 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
             .WithOne(x => x.Guild)
             .HasForeignKey<RoleConfiguration>(x => x.GuildId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
+        modelBuilder.Entity<Guild>()
+            .HasOne(x => x.Owner)
+            .WithMany(x => x.Guilds)
+            .HasForeignKey(x => x.OwnerId)
+            .OnDelete(DeleteBehavior.NoAction);
+
         // Configure GuildConfiguration table
         modelBuilder.Entity<GuildConfiguration>().ToTable("GuildConfigurations");
 

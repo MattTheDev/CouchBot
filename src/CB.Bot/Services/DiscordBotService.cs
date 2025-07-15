@@ -10,7 +10,8 @@ public class DiscordBotService(ILogger<DiscordBotService> logger,
     DiscordSocketClient discordSocketClient,
     IServiceProvider serviceProvider,
     InteractionService interactionService,
-    CommandService commandService)
+    CommandService commandService,
+    GuildInteractionService guildInteractionService)
     : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -18,6 +19,7 @@ public class DiscordBotService(ILogger<DiscordBotService> logger,
         await StartConnectionAsync();
         await ValidateBotConnection(cancellationToken);
         await InitializeCommands();
+        InitializeEventListeners();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
@@ -98,5 +100,10 @@ public class DiscordBotService(ILogger<DiscordBotService> logger,
                     services: serviceProvider)
                 .ConfigureAwait(false);
         };
+    }
+
+    private void InitializeEventListeners()
+    {
+guildInteractionService.Init();
     }
 }

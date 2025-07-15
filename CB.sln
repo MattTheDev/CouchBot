@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CB.Accessors", "src\CB.Acce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CB.Tests.Accessors", "src\tests\CB.Tests.Accessors\CB.Tests.Accessors.csproj", "{C279A45F-028B-454A-AFC5-735E8685C358}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CB.Tests.Api", "src\tests\CB.Tests.Api\CB.Tests.Api.csproj", "{75AC719F-66B3-4F6F-9083-BE26CB60B496}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{C279A45F-028B-454A-AFC5-735E8685C358}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C279A45F-028B-454A-AFC5-735E8685C358}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C279A45F-028B-454A-AFC5-735E8685C358}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75AC719F-66B3-4F6F-9083-BE26CB60B496}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75AC719F-66B3-4F6F-9083-BE26CB60B496}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75AC719F-66B3-4F6F-9083-BE26CB60B496}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75AC719F-66B3-4F6F-9083-BE26CB60B496}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

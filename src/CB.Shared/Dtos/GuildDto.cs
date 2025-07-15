@@ -15,7 +15,7 @@ public class GuildDto
 
     public DateTime ModifiedDate { get; set; }
 
-    public virtual UserDto User { get; set; }
+    public virtual UserDto Owner { get; set; }
     public virtual ICollection<ChannelDto> Channels { get; set; }
     public virtual AllowConfigurationDto AllowConfiguration { get; set; }
     public virtual ChannelConfigurationDto ChannelConfiguration { get; set; }

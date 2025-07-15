@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CB.Data.Entities;
 
@@ -16,7 +15,7 @@ public class Guild
 
     public DateTime ModifiedDate { get; set; }
 
-    public virtual User User { get; set; }
+    public virtual User Owner { get; set; }
     public virtual ICollection<Channel> Channels { get; set; }
     public virtual AllowConfiguration AllowConfiguration { get; set; }
     public virtual ChannelConfiguration ChannelConfiguration { get; set; }

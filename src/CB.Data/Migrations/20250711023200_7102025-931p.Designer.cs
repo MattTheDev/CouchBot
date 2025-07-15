@@ -3,6 +3,7 @@ using System;
 using CB.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CB.Data.Migrations
 {
     [DbContext(typeof(CbContext))]
-    partial class CbContextModelSnapshot : ModelSnapshot
+    [Migration("20250711023200_7102025-931p")]
+    partial class _7102025931p
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,9 +172,12 @@ namespace CB.Data.Migrations
                     b.Property<string>("OwnerId")
                         .HasColumnType("text");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Guilds", (string)null);
                 });
@@ -327,12 +333,11 @@ namespace CB.Data.Migrations
 
             modelBuilder.Entity("CB.Data.Entities.Guild", b =>
                 {
-                    b.HasOne("CB.Data.Entities.User", "Owner")
+                    b.HasOne("CB.Data.Entities.User", "User")
                         .WithMany("Guilds")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("Owner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CB.Data.Entities.GuildConfiguration", b =>
