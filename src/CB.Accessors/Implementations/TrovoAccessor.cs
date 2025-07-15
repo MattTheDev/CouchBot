@@ -7,6 +7,17 @@ namespace CB.Accessors.Implementations;
 
 public class TrovoAccessor : ITrovoAccessor
 {
+    private readonly string _trovoClientId;
+
+    public TrovoAccessor()
+    {
+        _trovoClientId = Environment.GetEnvironmentVariable("TrovoClientId");
+        if (string.IsNullOrEmpty(_trovoClientId))
+        {
+            throw new InvalidOperationException("TrovoClientId Configuration Missing.");
+        }
+    }
+
     public async Task<TrovoUser> GetUserByNameAsync(string name)
     {
         var query = new TrovoUserQuery
@@ -17,7 +28,7 @@ public class TrovoAccessor : ITrovoAccessor
         return await ApiUtilities
             .PostApiHelper<TrovoUser>(
             "https://open-api.trovo.live/openplatform/getusers",
-            [("Client-Id", "2ms6znHvrfVCLTM65bJaaE4LZZqCkpmF")],
+            [("Client-Id", _trovoClientId)],
             JsonConvert.SerializeObject(query))
             .ConfigureAwait(false);
     }
@@ -31,7 +42,7 @@ public class TrovoAccessor : ITrovoAccessor
 
         return await ApiUtilities
             .PostApiHelper<TrovoChannel>("https://open-api.trovo.live/openplatform/channels/id",
-                [("Client-Id", "2ms6znHvrfVCLTM65bJaaE4LZZqCkpmF")],
+                [("Client-Id", _trovoClientId)],
             JsonConvert.SerializeObject(query))
             .ConfigureAwait(false);
     }
