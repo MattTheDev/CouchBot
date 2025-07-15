@@ -10,6 +10,7 @@ public class UtilityApplicationCommands : InteractionModuleBase
         RunMode.Async)]
     private async Task PingAsync()
     {
-        await RespondAsync("Pong!");
+        await RespondAsync("Pong!")
+            .ConfigureAwait(false);
     }
 }

@@ -16,9 +16,12 @@ public class DiscordBotService(ILogger<DiscordBotService> logger,
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await StartConnectionAsync();
-        await ValidateBotConnection(cancellationToken);
-        await InitializeCommands();
+        await StartConnectionAsync()
+            .ConfigureAwait(false);
+        await ValidateBotConnection(cancellationToken)
+            .ConfigureAwait(false);
+        await InitializeCommands()
+            .ConfigureAwait(false);
         InitializeEventListeners();
     }
 
@@ -33,13 +36,15 @@ public class DiscordBotService(ILogger<DiscordBotService> logger,
         while (discordSocketClient.CurrentUser == null)
         {
             logger.LogInformation("Discord user connection pending ...");
-            await Task.Delay(5000, cancellationToken);
+            await Task.Delay(5000, cancellationToken)
+                .ConfigureAwait(false);
         }
 
         while (discordSocketClient.ConnectionState != ConnectionState.Connected)
         {
             logger.LogInformation("Discord user connection pending ...");
-            await Task.Delay(5000, cancellationToken);
+            await Task.Delay(5000, cancellationToken)
+                .ConfigureAwait(false);
         }
 
         logger.LogInformation($"Discord user connected: {discordSocketClient.CurrentUser.Username}");
@@ -57,8 +62,12 @@ public class DiscordBotService(ILogger<DiscordBotService> logger,
 
             throw new Exception(error);
         }
-        await discordSocketClient.LoginAsync(TokenType.Bot, discordToken);
-        await discordSocketClient.StartAsync();
+        await discordSocketClient
+            .LoginAsync(TokenType.Bot, discordToken)
+            .ConfigureAwait(false);
+        await discordSocketClient
+            .StartAsync()
+            .ConfigureAwait(false);
 
         logger.LogInformation("Connection to Discord Established ...");
     }
@@ -66,16 +75,22 @@ public class DiscordBotService(ILogger<DiscordBotService> logger,
     private async Task InitializeCommands()
     {
         await interactionService.AddModulesAsync(Assembly.GetEntryAssembly(),
-            services: serviceProvider);
+            services: serviceProvider)
+            .ConfigureAwait(false);
         await commandService.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),
-            services: serviceProvider);
+            services: serviceProvider)
+            .ConfigureAwait(false);
 
-        await interactionService.RegisterCommandsGloballyAsync();
+        await interactionService
+            .RegisterCommandsGloballyAsync()
+            .ConfigureAwait(false);
 
         discordSocketClient.SlashCommandExecuted += async interaction =>
         {
             var ctx = new SocketInteractionContext<SocketSlashCommand>(discordSocketClient, interaction);
-            await interactionService.ExecuteCommandAsync(ctx, serviceProvider);
+            await interactionService
+                .ExecuteCommandAsync(ctx, serviceProvider)
+                .ConfigureAwait(false);
         };
 
         discordSocketClient.MessageReceived += async socketMessage =>
