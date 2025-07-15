@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace CB.Data.Entities;
+﻿namespace CB.Data.Entities;
 
 public class Creator
 {

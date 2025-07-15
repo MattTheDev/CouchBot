@@ -13,7 +13,9 @@ public class GuildsController(IGuildAccessor guildAccessor) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<GuildDto>>> GetAll()
     {
-        var guilds = await guildAccessor.GetAllAsync();
+        var guilds = await guildAccessor
+            .GetAllAsync()
+            .ConfigureAwait(false);
         return Ok(guilds);
     }
 
@@ -21,7 +23,9 @@ public class GuildsController(IGuildAccessor guildAccessor) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<GuildDto?>> GetById(string id)
     {
-        var guild = await guildAccessor.GetByIdAsync(id);
+        var guild = await guildAccessor
+            .GetByIdAsync(id)
+            .ConfigureAwait(false);
         if (guild == null)
         {
             return NotFound();
