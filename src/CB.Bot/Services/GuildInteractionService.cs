@@ -35,7 +35,8 @@ public class GuildInteractionService(DiscordSocketClient discordSocketClient,
                 ModifiedDate = DateTime.UtcNow,
                 DisplayName = arg.Owner?.Username ?? "",
                 Id = arg.OwnerId.ToString()
-            });
+            })
+            .ConfigureAwait(false);
 
         if (existingGuild == null)
         {
@@ -87,7 +88,9 @@ public class GuildInteractionService(DiscordSocketClient discordSocketClient,
                 Id = arg.Id.ToString()
             };
 
-            existingGuild = await _guildAccessor.CreateAsync(newGuild);
+            existingGuild = await _guildAccessor
+                .CreateAsync(newGuild)
+                .ConfigureAwait(false);
         }
     }
 }

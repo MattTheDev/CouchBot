@@ -37,36 +37,43 @@ public class UserAccessor(CbContext context,
         return mapper.Map<UserDto>(entity);
     }
 
-    public async Task<UserDto?> UpdateAsync(string id, User updated)
+    public async Task<UserDto?> UpdateAsync(string id, 
+        User updated)
     {
-        var User = await context.Users.FindAsync(id);
-        if (User == null)
+        var user = await context
+            .Users
+            .FindAsync(id)
+            .ConfigureAwait(false);
+
+        if (user == null)
         {
             return null;
         }
 
-        User.DisplayName = updated.DisplayName;
-        User.Id = updated.Id;
-        User.ModifiedDate = DateTime.UtcNow;
+        user.DisplayName = updated.DisplayName;
+        user.Id = updated.Id;
+        user.ModifiedDate = DateTime.UtcNow;
 
         await context
             .SaveChangesAsync()
             .ConfigureAwait(false);
-        return mapper.Map<UserDto>(User);
+
+        return mapper.Map<UserDto>(user);
     }
 
     public async Task<bool> DeleteAsync(string id)
     {
-        var User = await context.Users.FindAsync(id);
-        if (User == null)
+        var user = await context.Users.FindAsync(id);
+        if (user == null)
         {
             return false;
         }
 
-        context.Users.Remove(User);
+        context.Users.Remove(user);
         await context
             .SaveChangesAsync()
             .ConfigureAwait(false);
+
         return true;
     }
 }

@@ -10,6 +10,7 @@ public class UtilityTextCommands : ModuleBase
         RunMode = RunMode.Async)]
     private async Task PingAsync()
     {
-        await ReplyAsync("Pong!");
+        await ReplyAsync("Pong!")
+            .ConfigureAwait(false);
     }
 }

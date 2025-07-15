@@ -37,9 +37,14 @@ public class GuildAccessor(CbContext context,
         return mapper.Map<GuildDto>(entity);
     }
 
-    public async Task<GuildDto?> UpdateAsync(string id, Guild updated)
+    public async Task<GuildDto?> UpdateAsync(string id, 
+        Guild updated)
     {
-        var guild = await context.Guilds.FindAsync(id);
+        var guild = await context
+            .Guilds
+            .FindAsync(id)
+            .ConfigureAwait(false);
+
         if (guild == null)
         {
             return null;
@@ -52,12 +57,17 @@ public class GuildAccessor(CbContext context,
         await context
             .SaveChangesAsync()
             .ConfigureAwait(false);
+
         return mapper.Map<GuildDto>(guild);
     }
 
     public async Task<bool> DeleteAsync(string id)
     {
-        var guild = await context.Guilds.FindAsync(id);
+        var guild = await context
+            .Guilds
+            .FindAsync(id)
+            .ConfigureAwait(false);
+
         if (guild == null)
         {
             return false;
@@ -67,6 +77,7 @@ public class GuildAccessor(CbContext context,
         await context
             .SaveChangesAsync()
             .ConfigureAwait(false);
+
         return true;
     }
 }
