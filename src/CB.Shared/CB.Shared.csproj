@@ -14,4 +14,8 @@
     <ProjectReference Include="..\CB.Data\CB.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
+
 </Project>

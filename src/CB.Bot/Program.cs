@@ -33,6 +33,9 @@ builder.Services.AddSingleton<CommandService>();
 builder.Services.AddSingleton(new InteractionService(client));
 builder.Services.AddSingleton<GuildInteractionService>();
 builder.Services.AddScoped<IGuildAccessor, GuildAccessor>();
+builder.Services.AddScoped<IChannelAccessor, ChannelAccessor>();
+builder.Services.AddScoped<IChannelConfigurationAccessor, ChannelConfigurationAccessor>();
+builder.Services.AddScoped<IGuildAccessor, GuildAccessor>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 
 builder.Services.AddDbContext<CbContext>(options =>

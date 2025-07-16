@@ -6,6 +6,7 @@ namespace CB.Data;
 public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
 {
     public DbSet<Channel> Channels => Set<Channel>();
+    public DbSet<ChannelConfiguration> ChannelConfigurations => Set<ChannelConfiguration>();
     public DbSet<Creator> Creators => Set<Creator>();
     public DbSet<Guild> Guilds => Set<Guild>();
     public DbSet<User> Users => Set<User>();
