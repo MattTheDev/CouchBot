@@ -15,10 +15,13 @@ public class CbProfile : Profile
         CreateMap<CreatorChannel, CreatorChannelDto>().ReverseMap();
         CreateMap<DiscordLiveConfiguration, DiscordLiveConfigurationDto>().ReverseMap();
         CreateMap<DropdownPayload, DropdownPayloadDto>().ReverseMap();
+        CreateMap<Filter, FilterDto>().ReverseMap();
+        CreateMap<FilterType, FilterTypeDto>().ReverseMap();
         CreateMap<GuildConfiguration, GuildConfigurationDto>().ReverseMap();
         CreateMap<Guild, GuildDto>().ReverseMap();
         CreateMap<LiveEmbed, LiveEmbedDto>().ReverseMap();
         CreateMap<MessageConfiguration, MessageConfigurationDto>().ReverseMap();
+        CreateMap<Platform, PlatformDto>().ReverseMap();
         CreateMap<RoleConfiguration, RoleConfigurationDto>().ReverseMap();
         CreateMap<User, UserDto>().ReverseMap();
         CreateMap<VodEmbed, VodEmbedDto>().ReverseMap();

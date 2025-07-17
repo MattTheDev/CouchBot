@@ -1,6 +1,7 @@
 ﻿using CB.Data.Entities;
 using CB.Shared.Dtos;
 using CB.Shared.Enums;
+using Platform = CB.Shared.Enums.Platform;
 
 namespace CB.Accessors.Contracts;
 

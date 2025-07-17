@@ -2,11 +2,11 @@
 using CB.Data.Entities;
 using CB.Engines.Contracts;
 using CB.Shared.Dtos;
-using CB.Shared.Enums;
 using CB.Shared.Responses;
 using Discord;
 using Discord.WebSocket;
 using ChannelType = CB.Shared.Enums.ChannelType;
+using Platform = CB.Shared.Enums.Platform;
 
 // ReSharper disable UnusedMember.Global
 
@@ -37,7 +37,7 @@ public class CreatorEngine(ICreatorAccessor creatorAccessor,
 
         if (creator == null || creator.PlatformId != (int)platform)
         {
-            creator = await creatorAccessor.CreateAsync(new Data.Entities.Creator
+            creator = await creatorAccessor.CreateAsync(new Creator
             {
                 ChannelId = validChannel.ChannelId,
                 DisplayName = validChannel.DisplayName ?? "",
