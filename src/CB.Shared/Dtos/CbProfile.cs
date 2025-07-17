@@ -17,12 +17,16 @@ public class CbProfile : Profile
         CreateMap<DropdownPayload, DropdownPayloadDto>().ReverseMap();
         CreateMap<Filter, FilterDto>().ReverseMap();
         CreateMap<FilterType, FilterTypeDto>().ReverseMap();
+        CreateMap<Game, GameDto>().ReverseMap();
+        CreateMap<GameChannel, GameChannelDto>().ReverseMap();
         CreateMap<GuildConfiguration, GuildConfigurationDto>().ReverseMap();
         CreateMap<Guild, GuildDto>().ReverseMap();
         CreateMap<LiveEmbed, LiveEmbedDto>().ReverseMap();
         CreateMap<MessageConfiguration, MessageConfigurationDto>().ReverseMap();
         CreateMap<Platform, PlatformDto>().ReverseMap();
         CreateMap<RoleConfiguration, RoleConfigurationDto>().ReverseMap();
+        CreateMap<Team, TeamDto>().ReverseMap();
+        CreateMap<TeamChannel, TeamChannelDto>().ReverseMap();
         CreateMap<User, UserDto>().ReverseMap();
         CreateMap<VodEmbed, VodEmbedDto>().ReverseMap();
     }

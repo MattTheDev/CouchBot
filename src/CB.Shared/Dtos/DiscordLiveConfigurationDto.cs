@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using CB.Data.Entities;
-
-namespace CB.Shared.Dtos;
+﻿namespace CB.Shared.Dtos;
 
 public class DiscordLiveConfigurationDto
 {
