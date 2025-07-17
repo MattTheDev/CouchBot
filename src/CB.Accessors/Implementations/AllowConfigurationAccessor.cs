@@ -34,12 +34,11 @@ public class AllowConfigurationAccessor(CbContext context,
         return mapper.Map<AllowConfigurationDto>(entity);
     }
 
-    public async Task<AllowConfigurationDto?> UpdateAsync(string id, 
-        AllowConfigurationDto updated)
+    public async Task<AllowConfigurationDto?> UpdateAsync(AllowConfigurationDto updated)
     {
         var allowConfiguration = await context
             .AllowConfigurations
-            .FindAsync(id)
+            .FirstOrDefaultAsync( x => x.GuildId == updated.GuildId)
             .ConfigureAwait(false);
 
         if (allowConfiguration == null)
