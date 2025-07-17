@@ -74,8 +74,8 @@ public class ChannelSlashCommands(IGuildAccessor guildAccessor,
 
         if (guild == null)
         {
-            await FollowupAsync($"There was an issue setting your '{configuredChannelType}' channel. Contact support.", ephemeral: true)
-                .ConfigureAwait(false);
+            await FollowupAsync("There was an issue retrieving your guild. Contact support.", ephemeral: true)
+    .ConfigureAwait(false);
             return;
         }
 

@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CB.Accessors\CB.Accessors.csproj" />
     <ProjectReference Include="..\CB.Data\CB.Data.csproj" />
+    <ProjectReference Include="..\CB.Engines\CB.Engines.csproj" />
   </ItemGroup>
 
   <ItemGroup>

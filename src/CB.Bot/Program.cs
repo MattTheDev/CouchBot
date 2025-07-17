@@ -32,10 +32,15 @@ builder.Services.AddSingleton(client);
 builder.Services.AddSingleton<CommandService>();
 builder.Services.AddSingleton(new InteractionService(client));
 builder.Services.AddSingleton<GuildInteractionService>();
-builder.Services.AddScoped<IGuildAccessor, GuildAccessor>();
+builder.Services.AddSingleton<MessageInteractionService>();
+builder.Services.AddScoped<IAllowConfigurationAccessor, AllowConfigurationAccessor>();
 builder.Services.AddScoped<IChannelAccessor, ChannelAccessor>();
 builder.Services.AddScoped<IChannelConfigurationAccessor, ChannelConfigurationAccessor>();
+builder.Services.AddScoped<ICreatorAccessor, CreatorAccessor>();
+builder.Services.AddScoped<ICreatorChannelAccessor, CreatorChannelAccessor>();
+builder.Services.AddScoped<IDropdownPayloadAccessor, DropdownPayloadAccessor>();
 builder.Services.AddScoped<IGuildAccessor, GuildAccessor>();
+builder.Services.AddScoped<IGuildConfigurationAccessor, GuildConfigurationAccessor>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 
 builder.Services.AddDbContext<CbContext>(options =>

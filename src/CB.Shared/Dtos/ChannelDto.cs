@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CB.Data.Entities;
 
 namespace CB.Shared.Dtos;
 
@@ -13,4 +14,6 @@ public string DisplayName { get; set; }
     public DateTime ModifiedDate { get; set; }
 
     public virtual GuildDto Guild { get; set; }
+
+    public virtual ICollection<CreatorChannelDto> CreatorChannels { get; set; } = new List<CreatorChannelDto>();
 }
