@@ -11,8 +11,7 @@ public interface IAllowConfigurationAccessor
 
     Task<AllowConfigurationDto> CreateAsync(AllowConfiguration entity);
 
-    Task<AllowConfigurationDto?> UpdateAsync(string id, 
-        AllowConfigurationDto entity);
+    Task<AllowConfigurationDto?> UpdateAsync(AllowConfigurationDto entity);
 
     Task<bool> DeleteAsync(string id);
 }

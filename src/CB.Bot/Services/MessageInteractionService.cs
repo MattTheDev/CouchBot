@@ -183,7 +183,7 @@ public class MessageInteractionService(DiscordSocketClient discordSocketClient,
             }
         }
 
-        await _allowConfigurationAccessor.UpdateAsync(guild.Id, guild.AllowConfiguration);
+        await _allowConfigurationAccessor.UpdateAsync(guild.AllowConfiguration);
         await _guildConfigurationAccessor.UpdateAsync(guild.Id, guild.GuildConfiguration);
 
         await message.FollowupAsync(response.ToString(), ephemeral: true);
