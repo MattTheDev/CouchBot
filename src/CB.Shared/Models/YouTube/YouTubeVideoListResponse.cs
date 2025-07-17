@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace CB.Shared.Models.YouTube;
+﻿namespace CB.Shared.Models.YouTube;
 
 public class YouTubeVideoListResponse
 {

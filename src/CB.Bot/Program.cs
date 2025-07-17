@@ -2,6 +2,8 @@ using CB.Accessors.Contracts;
 using CB.Accessors.Implementations;
 using CB.Bot.Services;
 using CB.Data;
+using CB.Engines.Contracts;
+using CB.Engines.Implementations;
 using CB.Shared.Dtos;
 using Discord;
 using Discord.Commands;
@@ -42,12 +44,14 @@ builder.Services.AddScoped<IDropdownPayloadAccessor, DropdownPayloadAccessor>();
 builder.Services.AddScoped<IGuildAccessor, GuildAccessor>();
 builder.Services.AddScoped<IGuildConfigurationAccessor, GuildConfigurationAccessor>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+builder.Services.AddScoped<IYouTubeAccessor, YouTubeAccessor>();
+builder.Services.AddScoped<ICreatorEngine, CreatorEngine>();
 
 builder.Services.AddDbContext<CbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddAutoMapper(cfg => { }, typeof(CbProfile));
 
 builder.Services.AddHostedService<DiscordBotService>();
-
+builder.Services.AddHttpClient();
 var host = builder.Build();
 host.Run();

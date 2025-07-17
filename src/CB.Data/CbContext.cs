@@ -8,12 +8,16 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
     public DbSet<AllowConfiguration> AllowConfigurations => Set<AllowConfiguration>();
     public DbSet<Channel> Channels => Set<Channel>();
     public DbSet<ChannelConfiguration> ChannelConfigurations => Set<ChannelConfiguration>();
+    public DbSet<ClipEmbed> ClipEmbeds => Set<ClipEmbed>();
     public DbSet<Creator> Creators => Set<Creator>();
     public DbSet<CreatorChannel> CreatorChannels => Set<CreatorChannel>();
     public DbSet<DropdownPayload> DropdownPayloads => Set<DropdownPayload>();
     public DbSet<Guild> Guilds => Set<Guild>();
     public DbSet<GuildConfiguration> GuildConfigurations => Set<GuildConfiguration>();
+    public DbSet<LiveEmbed> LiveEmbeds => Set<LiveEmbed>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<VodEmbed> VodEmbeds => Set<VodEmbed>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -136,6 +140,24 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
             .HasOne(x => x.RoleConfiguration)
             .WithOne(x => x.Guild)
             .HasForeignKey<RoleConfiguration>(x => x.GuildId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Guild>()
+            .HasOne(x => x.ClipEmbed)
+            .WithOne(x => x.Guild)
+            .HasForeignKey<ClipEmbed>(x => x.GuildId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Guild>()
+            .HasOne(x => x.LiveEmbed)
+            .WithOne(x => x.Guild)
+            .HasForeignKey<LiveEmbed>(x => x.GuildId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Guild>()
+            .HasOne(x => x.VodEmbed)
+            .WithOne(x => x.Guild)
+            .HasForeignKey<VodEmbed>(x => x.GuildId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Guild>()

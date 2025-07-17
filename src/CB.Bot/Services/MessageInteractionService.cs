@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using CB.Accessors.Contracts;
-using CB.Accessors.Implementations;
 using CB.Engines.Contracts;
 using CB.Shared;
 using CB.Shared.Enums;
@@ -14,16 +13,26 @@ using Newtonsoft.Json;
 
 namespace CB.Bot.Services;
 
-public class MessageInteractionService(DropdownPayloadAccessor dropdownPayloadAccessor,
-    DiscordSocketClient discordSocketClient,
-    IAllowConfigurationAccessor allowConfigurationAccessor,
-    IGuildAccessor guildAccessor,
-    IGuildConfigurationAccessor guildConfigurationAccessor,
-    IYouTubeAccessor youTubeAccessor,
-    ICreatorEngine creatorEngine)
+public class MessageInteractionService(DiscordSocketClient discordSocketClient,
+    IServiceScopeFactory serviceScopeFactory)
 {
+        private IAllowConfigurationAccessor _allowConfigurationAccessor;
+        private IDropdownPayloadAccessor _dropdownPayloadAccessor;
+        private IGuildAccessor _guildAccessor;
+        private IGuildConfigurationAccessor _guildConfigurationAccessor;
+        private IYouTubeAccessor _youTubeAccessor;
+        private ICreatorEngine _creatorEngine;
+
     public void Init()
     {
+        var scope = serviceScopeFactory.CreateScope();
+        _allowConfigurationAccessor = scope.ServiceProvider.GetRequiredService<IAllowConfigurationAccessor>();
+        _dropdownPayloadAccessor = scope.ServiceProvider.GetRequiredService<IDropdownPayloadAccessor>();
+        _guildAccessor = scope.ServiceProvider.GetRequiredService<IGuildAccessor>();
+        _guildConfigurationAccessor = scope.ServiceProvider.GetRequiredService<IGuildConfigurationAccessor>();
+        _youTubeAccessor = scope.ServiceProvider.GetRequiredService<IYouTubeAccessor>();
+        _creatorEngine = scope.ServiceProvider.GetRequiredService<ICreatorEngine>();
+
         discordSocketClient.SelectMenuExecuted += DiscordSelectMenuChanged;
     }
 
@@ -31,10 +40,7 @@ public class MessageInteractionService(DropdownPayloadAccessor dropdownPayloadAc
     {
         var guildChannel = (IGuildChannel)arg.Channel;
 
-        if (arg.Data.CustomId.StartsWith("YouTube"))
-        {
-            await arg.DeferAsync();
-        }
+        await arg.DeferAsync();
 
         var creatorId = ulong.Parse(arg.Data.CustomId.Split(".")[1]);
 
@@ -46,7 +52,7 @@ public class MessageInteractionService(DropdownPayloadAccessor dropdownPayloadAc
 
         var dropdownPayloadId = int.Parse(arg.Data.CustomId.Split(".")[2]);
 
-        var payload = await dropdownPayloadAccessor.GetByIdAsync(dropdownPayloadId);
+        var payload = await _dropdownPayloadAccessor.GetByIdAsync(dropdownPayloadId);
 
         switch (Enum.Parse<DropdownType>(payload.DropdownType))
         {
@@ -73,7 +79,7 @@ public class MessageInteractionService(DropdownPayloadAccessor dropdownPayloadAc
         IReadOnlyCollection<string> options,
         SocketMessageComponent message)
     {
-        var guild = await guildAccessor.GetByIdAsync(discordGuild.Id.ToString());
+        var guild = await _guildAccessor.GetByIdAsync(discordGuild.Id.ToString());
         if (guild == null)
         {
             return;
@@ -177,14 +183,11 @@ public class MessageInteractionService(DropdownPayloadAccessor dropdownPayloadAc
             }
         }
 
-        await allowConfigurationAccessor.UpdateAsync(guild.Id, guild.AllowConfiguration);
-        await guildConfigurationAccessor.UpdateAsync(guild.Id, guild.GuildConfiguration);
+        await _allowConfigurationAccessor.UpdateAsync(guild.Id, guild.AllowConfiguration);
+        await _guildConfigurationAccessor.UpdateAsync(guild.Id, guild.GuildConfiguration);
 
-        await message.UpdateAsync(x =>
-        {
-            x.Content = response.ToString();
-            x.Components = null;
-        });
+        await message.FollowupAsync(response.ToString(), ephemeral: true);
+        await message.DeleteOriginalResponseAsync();
     }
 
     private string GetStatusOutput(IGuild guild, bool oldValue, bool newValue, string setting)
@@ -205,11 +208,11 @@ public class MessageInteractionService(DropdownPayloadAccessor dropdownPayloadAc
     {
         var guildChannel = (IGuildChannel)arg.Channel;
         var discordUser = (IGuildUser)arg.User;
-        var guild = await guildAccessor.GetByIdAsync(guildChannel.GuildId.ToString());
-        var youTubeChannel = await youTubeAccessor.GetYouTubeChannelByIdAsync(comp.Data.Values.FirstOrDefault());
+        var guild = await _guildAccessor.GetByIdAsync(guildChannel.GuildId.ToString());
+        var youTubeChannel = await _youTubeAccessor.GetYouTubeChannelByIdAsync(comp.Data.Values.FirstOrDefault());
         var discordGuildChannel = discordSocketClient.GetChannel(creatorPayload.ChannelId);
 
-        await creatorEngine.ToggleCreatorAsync(
+        await _creatorEngine.ToggleCreatorAsync(
             new ChannelValidityResponse
             {
                 ChannelId = comp.Data.Values.FirstOrDefault(),

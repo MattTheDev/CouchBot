@@ -21,8 +21,4 @@
     <ProjectReference Include="..\CB.Data\CB.Data.csproj" />
     <ProjectReference Include="..\CB.Engines\CB.Engines.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Commands\Application\" />
-  </ItemGroup>
 </Project>

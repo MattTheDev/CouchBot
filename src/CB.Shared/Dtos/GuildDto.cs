@@ -22,4 +22,7 @@ public class GuildDto
     public virtual GuildConfigurationDto GuildConfiguration { get; set; }
     public virtual MessageConfigurationDto MessageConfiguration { get; set; }
     public virtual RoleConfigurationDto RoleConfiguration { get; set; }
+    public virtual ClipEmbedDto ClipEmbed { get; set; }
+    public virtual LiveEmbedDto LiveEmbed { get; set; }
+    public virtual VodEmbedDto VodEmbed { get; set; }
 }
