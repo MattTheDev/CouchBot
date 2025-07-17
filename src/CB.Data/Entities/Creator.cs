@@ -19,4 +19,6 @@ public class Creator
     public DateTime ModifiedDate { get; set; }
 
     public virtual User User { get; set; }
+
+    public virtual ICollection<CreatorChannel> CreatorChannels { get; set; } = new List<CreatorChannel>();
 }

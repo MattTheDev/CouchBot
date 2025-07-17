@@ -5,10 +5,14 @@ namespace CB.Data;
 
 public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
 {
+    public DbSet<AllowConfiguration> AllowConfigurations => Set<AllowConfiguration>();
     public DbSet<Channel> Channels => Set<Channel>();
     public DbSet<ChannelConfiguration> ChannelConfigurations => Set<ChannelConfiguration>();
     public DbSet<Creator> Creators => Set<Creator>();
+    public DbSet<CreatorChannel> CreatorChannels => Set<CreatorChannel>();
+    public DbSet<DropdownPayload> DropdownPayloads => Set<DropdownPayload>();
     public DbSet<Guild> Guilds => Set<Guild>();
+    public DbSet<GuildConfiguration> GuildConfigurations => Set<GuildConfiguration>();
     public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -61,6 +65,20 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
             .WithMany()
             .HasForeignKey(cc => cc.DiscordLiveChannelId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        // Configure CreatorChannels table
+        modelBuilder.Entity<CreatorChannel>()
+            .HasKey(cc => new { cc.CreatorId, cc.ChannelId });
+
+        modelBuilder.Entity<CreatorChannel>()
+            .HasOne(cc => cc.Creator)
+            .WithMany(c => c.CreatorChannels)
+            .HasForeignKey(cc => cc.CreatorId);
+
+        modelBuilder.Entity<CreatorChannel>()
+            .HasOne(cc => cc.Channel)
+            .WithMany(ch => ch.CreatorChannels)
+            .HasForeignKey(cc => cc.ChannelId);
 
         // Configure Creators table
         modelBuilder.Entity<Creator>().ToTable("Creators");

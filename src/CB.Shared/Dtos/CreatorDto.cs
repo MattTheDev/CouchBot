@@ -19,4 +19,6 @@ public class CreatorDto
     public DateTime ModifiedDate { get; set; }
 
     public virtual UserDto User { get; set; }
+
+    public virtual ICollection<CreatorChannelDto> CreatorChannels { get; set; } = new List<CreatorChannelDto>();
 }

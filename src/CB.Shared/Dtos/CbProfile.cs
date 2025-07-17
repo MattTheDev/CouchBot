@@ -11,11 +11,11 @@ public class CbProfile : Profile
         CreateMap<ChannelConfiguration, ChannelConfigurationDto>().ReverseMap();
         CreateMap<Channel, ChannelDto>().ReverseMap();
         CreateMap<Creator, CreatorDto>().ReverseMap();
+        CreateMap<DropdownPayload, DropdownPayloadDto>().ReverseMap();
         CreateMap<GuildConfiguration, GuildConfigurationDto>().ReverseMap();
         CreateMap<Guild, GuildDto>().ReverseMap();
         CreateMap<MessageConfiguration, MessageConfigurationDto>().ReverseMap();
         CreateMap<RoleConfiguration, RoleConfigurationDto>().ReverseMap();
         CreateMap<User, UserDto>().ReverseMap();
-
     }
 }

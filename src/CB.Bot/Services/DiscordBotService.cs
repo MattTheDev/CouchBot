@@ -11,7 +11,8 @@ public class DiscordBotService(ILogger<DiscordBotService> logger,
     IServiceProvider serviceProvider,
     InteractionService interactionService,
     CommandService commandService,
-    GuildInteractionService guildInteractionService)
+    GuildInteractionService guildInteractionService,
+    MessageInteractionService messageInteractionService)
     : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -120,5 +121,6 @@ public class DiscordBotService(ILogger<DiscordBotService> logger,
     private void InitializeEventListeners()
     {
 guildInteractionService.Init();
+messageInteractionService.Init();
     }
 }
