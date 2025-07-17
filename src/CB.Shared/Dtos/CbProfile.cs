@@ -11,6 +11,7 @@ public class CbProfile : Profile
         CreateMap<ChannelConfiguration, ChannelConfigurationDto>().ReverseMap();
         CreateMap<Channel, ChannelDto>().ReverseMap();
         CreateMap<Creator, CreatorDto>().ReverseMap();
+        CreateMap<CreatorChannel, CreatorChannelDto>().ReverseMap();
         CreateMap<DropdownPayload, DropdownPayloadDto>().ReverseMap();
         CreateMap<GuildConfiguration, GuildConfigurationDto>().ReverseMap();
         CreateMap<Guild, GuildDto>().ReverseMap();
