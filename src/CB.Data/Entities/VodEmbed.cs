@@ -1,7 +1,10 @@
-﻿namespace CB.Data.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CB.Data.Entities;
 
 public class VodEmbed
 {
+    [Key]
     public string GuildId { get; set; }
 
     public string Header { get; set; }
