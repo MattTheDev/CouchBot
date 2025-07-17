@@ -4,7 +4,6 @@ namespace CB.Shared.Dtos;
 
 public class GuildDto
 {
-    [Key]
     public string Id { get; set; }
 
     public string DisplayName { get; set; }
@@ -25,4 +24,5 @@ public class GuildDto
     public virtual ClipEmbedDto ClipEmbed { get; set; }
     public virtual LiveEmbedDto LiveEmbed { get; set; }
     public virtual VodEmbedDto VodEmbed { get; set; }
+    public virtual DiscordLiveConfigurationDto DiscordLiveConfiguration { get; set; }
 }

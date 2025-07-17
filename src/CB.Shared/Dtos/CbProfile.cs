@@ -13,6 +13,7 @@ public class CbProfile : Profile
         CreateMap<ClipEmbed, ClipEmbedDto>().ReverseMap();
         CreateMap<Creator, CreatorDto>().ReverseMap();
         CreateMap<CreatorChannel, CreatorChannelDto>().ReverseMap();
+        CreateMap<DiscordLiveConfiguration, DiscordLiveConfigurationDto>().ReverseMap();
         CreateMap<DropdownPayload, DropdownPayloadDto>().ReverseMap();
         CreateMap<GuildConfiguration, GuildConfigurationDto>().ReverseMap();
         CreateMap<Guild, GuildDto>().ReverseMap();

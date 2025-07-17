@@ -7,6 +7,6 @@ public class CreatorChannel
     public int ChannelTypeId { get; set; }
     public string CustomMessage { get; set; }
 
-    public Creator Creator { get; set; }
-    public Channel Channel { get; set; }
+    public virtual Creator Creator { get; set; }
+    public virtual Channel Channel { get; set; }
 }

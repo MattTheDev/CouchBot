@@ -34,30 +34,6 @@ context.DropdownPayloads.Add(entity);
         return mapper.Map<DropdownPayloadDto>(entity);
     }
 
-    //public async Task<DropdownPayloadDto?> UpdateAsync(string id, 
-    //    DropdownPayload updated)
-    //{
-    //    var dropdownPayload = await context
-    //        .DropdownPayloads
-    //        .FindAsync(id)
-    //        .ConfigureAwait(false);
-
-    //    if (dropdownPayload == null)
-    //    {
-    //        return null;
-    //    }
-
-    //    dropdownPayload. = updated.DisplayName;
-    //    dropdownPayload.OwnerId = updated.OwnerId;
-    //    dropdownPayload.ModifiedDate = DateTime.UtcNow;
-
-    //    await context
-    //        .SaveChangesAsync()
-    //        .ConfigureAwait(false);
-
-    //    return mapper.Map<DropdownPayloadDto>(dropdownPayload);
-    //}
-
     public async Task<bool> DeleteAsync(string id)
     {
         var dropdownPayload = await context
