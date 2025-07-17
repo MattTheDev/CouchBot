@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CB.Shared.Dtos;
+﻿namespace CB.Shared.Dtos;
 
 public class AllowConfigurationDto
 {
-    [Key]
     public string GuildId { get; set; }
 
     public bool AllowLive { get; set; }

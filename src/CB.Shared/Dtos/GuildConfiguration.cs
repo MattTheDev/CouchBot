@@ -1,11 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CB.Shared.Dtos;
+﻿namespace CB.Shared.Dtos;
 
 public class GuildConfigurationDto
 {
-    [Key]
-    public string GuildId { get; set; }
+public string GuildId { get; set; }
 
     public bool TextAnnouncements { get; set; }
     public bool DeleteOffline { get; set; }
