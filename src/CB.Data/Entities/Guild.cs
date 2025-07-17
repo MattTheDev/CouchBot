@@ -26,4 +26,5 @@ public class Guild
     public virtual LiveEmbed LiveEmbed { get; set; }
     public virtual VodEmbed VodEmbed { get; set; }
     public virtual DiscordLiveConfiguration DiscordLiveConfiguration { get; set; }
+    public virtual ICollection<Filter> Filters { get; set; }
 }

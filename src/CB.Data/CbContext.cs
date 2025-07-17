@@ -13,6 +13,7 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
     public DbSet<CreatorChannel> CreatorChannels => Set<CreatorChannel>();
     public DbSet<DiscordLiveConfiguration> DiscordLiveConfigurations => Set<DiscordLiveConfiguration>();
     public DbSet<DropdownPayload> DropdownPayloads => Set<DropdownPayload>();
+    public DbSet<Filter> Filters => Set<Filter>();
     public DbSet<Guild> Guilds => Set<Guild>();
     public DbSet<GuildConfiguration> GuildConfigurations => Set<GuildConfiguration>();
     public DbSet<LiveEmbed> LiveEmbeds => Set<LiveEmbed>();
@@ -173,6 +174,12 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
             .WithMany(x => x.Guilds)
             .HasForeignKey(x => x.OwnerId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Guild>()
+            .HasMany(x => x.Filters)
+            .WithOne(x => x.Guild)
+            .HasForeignKey(x => x.GuildId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Configure GuildConfiguration table
         modelBuilder.Entity<GuildConfiguration>().ToTable("GuildConfigurations");
