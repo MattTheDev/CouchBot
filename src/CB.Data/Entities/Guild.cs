@@ -25,4 +25,5 @@ public class Guild
     public virtual ClipEmbed ClipEmbed { get; set; }
     public virtual LiveEmbed LiveEmbed { get; set; }
     public virtual VodEmbed VodEmbed { get; set; }
+    public virtual DiscordLiveConfiguration DiscordLiveConfiguration { get; set; }
 }

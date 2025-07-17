@@ -11,6 +11,7 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
     public DbSet<ClipEmbed> ClipEmbeds => Set<ClipEmbed>();
     public DbSet<Creator> Creators => Set<Creator>();
     public DbSet<CreatorChannel> CreatorChannels => Set<CreatorChannel>();
+    public DbSet<DiscordLiveConfiguration> DiscordLiveConfigurations => Set<DiscordLiveConfiguration>();
     public DbSet<DropdownPayload> DropdownPayloads => Set<DropdownPayload>();
     public DbSet<Guild> Guilds => Set<Guild>();
     public DbSet<GuildConfiguration> GuildConfigurations => Set<GuildConfiguration>();
@@ -158,6 +159,12 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
             .HasOne(x => x.VodEmbed)
             .WithOne(x => x.Guild)
             .HasForeignKey<VodEmbed>(x => x.GuildId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Guild>()
+            .HasOne(x => x.DiscordLiveConfiguration)
+            .WithOne(x => x.Guild)
+            .HasForeignKey<DiscordLiveConfiguration>(x => x.GuildId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Guild>()
