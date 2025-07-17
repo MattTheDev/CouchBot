@@ -37,12 +37,11 @@ public class ChannelAccessor(CbContext context,
         return mapper.Map<ChannelDto>(entity);
     }
 
-    public async Task<ChannelDto?> UpdateAsync(string id, 
-        Channel updated)
+    public async Task<ChannelDto?> UpdateAsync(ChannelDto updated)
     {
         var channel = await context
             .Channels
-            .FindAsync(id)
+            .FirstOrDefaultAsync(x => x.Id == updated.Id)
             .ConfigureAwait(false);
 
         if (channel == null)

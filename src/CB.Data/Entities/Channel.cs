@@ -15,4 +15,6 @@ public string DisplayName { get; set; }
     public virtual Guild Guild { get; set; }
 
     public virtual ICollection<CreatorChannel> CreatorChannels { get; set; } = new List<CreatorChannel>();
+    public virtual ICollection<GameChannel> GameChannels { get; set; } = new List<GameChannel>();
+    public virtual ICollection<TeamChannel> TeamChannels { get; set; } = new List<TeamChannel>();
 }

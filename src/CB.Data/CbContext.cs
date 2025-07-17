@@ -14,10 +14,13 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
     public DbSet<DiscordLiveConfiguration> DiscordLiveConfigurations => Set<DiscordLiveConfiguration>();
     public DbSet<DropdownPayload> DropdownPayloads => Set<DropdownPayload>();
     public DbSet<Filter> Filters => Set<Filter>();
+    public DbSet<Game> Games => Set<Game>();
+    public DbSet<GameChannel> GameChannels => Set<GameChannel>();
     public DbSet<Guild> Guilds => Set<Guild>();
     public DbSet<GuildConfiguration> GuildConfigurations => Set<GuildConfiguration>();
     public DbSet<LiveEmbed> LiveEmbeds => Set<LiveEmbed>();
     public DbSet<RoleConfiguration> RoleConfigurations => Set<RoleConfiguration>();
+    public DbSet<TeamChannel> TeamChannels => Set<TeamChannel>();
     public DbSet<User> Users => Set<User>();
     public DbSet<VodEmbed> VodEmbeds => Set<VodEmbed>();
 
@@ -104,6 +107,31 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        // Configure GameChannels table
+        modelBuilder.Entity<GameChannel>()
+            .HasKey(cc => new { cc.GameId, cc.ChannelId });
+
+        modelBuilder.Entity<GameChannel>()
+            .HasOne(cc => cc.Game)
+            .WithMany(c => c.GameChannels)
+            .HasForeignKey(cc => cc.GameId);
+
+        modelBuilder.Entity<GameChannel>()
+            .HasOne(cc => cc.Channel)
+            .WithMany(ch => ch.GameChannels)
+            .HasForeignKey(cc => cc.ChannelId);
+
+        // Configure Games table
+        modelBuilder.Entity<Game>().ToTable("Games");
+
+        modelBuilder.Entity<Game>()
+            .Property(x => x.CreatedDate)
+            .HasColumnType("timestamp without time zone");
+
+        modelBuilder.Entity<Game>()
+            .Property(x => x.ModifiedDate)
+            .HasColumnType("timestamp without time zone");
+
         // Configure Guilds table
         modelBuilder.Entity<Guild>().ToTable("Guilds");
 
@@ -189,6 +217,20 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
 
         // Configure RoleConfiguration table
         modelBuilder.Entity<RoleConfiguration>().ToTable("RoleConfigurations");
+
+        // Configure TeamChannels table
+        modelBuilder.Entity<TeamChannel>()
+            .HasKey(cc => new { cc.TeamId, cc.ChannelId });
+
+        modelBuilder.Entity<TeamChannel>()
+            .HasOne(cc => cc.Team)
+            .WithMany(c => c.TeamChannels)
+            .HasForeignKey(cc => cc.TeamId);
+
+        modelBuilder.Entity<TeamChannel>()
+            .HasOne(cc => cc.Channel)
+            .WithMany(ch => ch.TeamChannels)
+            .HasForeignKey(cc => cc.ChannelId);
 
         // Configure Users table
         modelBuilder.Entity<User>().ToTable("Users");

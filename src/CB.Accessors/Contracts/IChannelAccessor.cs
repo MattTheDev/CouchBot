@@ -11,8 +11,7 @@ public interface IChannelAccessor
 
     Task<ChannelDto> CreateAsync(Channel entity);
 
-    Task<ChannelDto?> UpdateAsync(string id, 
-        Channel entity);
+    Task<ChannelDto?> UpdateAsync(ChannelDto entity);
 
     Task<bool> DeleteAsync(string id);
 }
