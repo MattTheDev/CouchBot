@@ -18,7 +18,7 @@ public class RoleConfigurationAccessor(CbContext context,
             .ProjectTo<RoleConfigurationDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<RoleConfigurationDto?> GetByIdAsync(string id) => context.RoleConfigurations
+    public Task<RoleConfigurationDto> GetByIdAsync(string id) => context.RoleConfigurations
             .AsNoTracking()
             .Where(g => g.GuildId == id)
             .ProjectTo<RoleConfigurationDto>(mapper.ConfigurationProvider)
@@ -34,7 +34,7 @@ public class RoleConfigurationAccessor(CbContext context,
         return mapper.Map<RoleConfigurationDto>(entity);
     }
 
-    public async Task<RoleConfigurationDto?> UpdateAsync(RoleConfigurationDto updated)
+    public async Task<RoleConfigurationDto> UpdateAsync(RoleConfigurationDto updated)
     {
         var roleConfiguration = await context
             .RoleConfigurations

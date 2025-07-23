@@ -18,7 +18,7 @@ public class DropdownPayloadAccessor(CbContext context,
             .ProjectTo<DropdownPayloadDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<DropdownPayloadDto?> GetByIdAsync(int id) => context.DropdownPayloads
+    public Task<DropdownPayloadDto> GetByIdAsync(int id) => context.DropdownPayloads
             .AsNoTracking()
             .Where(g => g.Id == id)
             .ProjectTo<DropdownPayloadDto>(mapper.ConfigurationProvider)

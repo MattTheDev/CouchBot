@@ -38,6 +38,7 @@ builder.Services.AddSingleton<MessageInteractionService>();
 builder.Services.AddScoped<IAllowConfigurationAccessor, AllowConfigurationAccessor>();
 builder.Services.AddScoped<IChannelAccessor, ChannelAccessor>();
 builder.Services.AddScoped<IChannelConfigurationAccessor, ChannelConfigurationAccessor>();
+builder.Services.AddScoped<IClipEmbedAccessor, ClipEmbedAccessor>();
 builder.Services.AddScoped<ICreatorAccessor, CreatorAccessor>();
 builder.Services.AddScoped<ICreatorChannelAccessor, CreatorChannelAccessor>();
 builder.Services.AddScoped<IDiscordLiveConfigurationAccessor, DiscordLiveConfigurationAccessor>();
@@ -45,7 +46,10 @@ builder.Services.AddScoped<IDropdownPayloadAccessor, DropdownPayloadAccessor>();
 builder.Services.AddScoped<IFilterAccessor, FilterAccessor>();
 builder.Services.AddScoped<IGuildAccessor, GuildAccessor>();
 builder.Services.AddScoped<IGuildConfigurationAccessor, GuildConfigurationAccessor>();
+builder.Services.AddScoped<ILiveEmbedAccessor, LiveEmbedAccessor>();
+builder.Services.AddScoped<IRoleConfigurationAccessor, RoleConfigurationAccessor>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+builder.Services.AddScoped<IVodEmbedAccessor, VodEmbedAccessor>();
 builder.Services.AddScoped<IYouTubeAccessor, YouTubeAccessor>();
 builder.Services.AddScoped<ICreatorEngine, CreatorEngine>();
 

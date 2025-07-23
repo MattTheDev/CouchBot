@@ -22,5 +22,5 @@ public class LiveEmbedDto
 
     public string ChannelButton { get; set; }
 
-    public virtual GuildDto Guild { get; set; }
+    //public virtual GuildDto Guild { get; set; }
 }

@@ -20,13 +20,13 @@ public class CreatorAccessor(CbContext context,
             .ProjectTo<CreatorDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<CreatorDto?> GetByIdAsync(long id) => context.Creators
+    public Task<CreatorDto> GetByIdAsync(long id) => context.Creators
             .AsNoTracking()
             .Where(g => g.Id == id)
             .ProjectTo<CreatorDto>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
 
-    public Task<CreatorDto?> GetByChannelIdAndPlatformAsync(string channelId, Platform platform) => context.Creators
+    public Task<CreatorDto> GetByChannelIdAndPlatformAsync(string channelId, Platform platform) => context.Creators
         .AsNoTracking()
         .Where(g => g.ChannelId == channelId &&
                     g.PlatformId == (int)platform)
@@ -46,7 +46,7 @@ public class CreatorAccessor(CbContext context,
         return mapper.Map<CreatorDto>(entity);
     }
 
-    public async Task<CreatorDto?> UpdateAsync(string id, 
+    public async Task<CreatorDto> UpdateAsync(string id, 
         Creator updated)
     {
         var creator = await context

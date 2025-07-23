@@ -14,5 +14,5 @@ public class VodEmbedDto
 
     public string ChannelButton { get; set; }
 
-    public virtual GuildDto Guild { get; set; }
+    //public virtual GuildDto Guild { get; set; }
 }

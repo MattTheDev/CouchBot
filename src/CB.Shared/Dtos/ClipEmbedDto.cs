@@ -14,5 +14,5 @@ public class ClipEmbedDto
 
     public string MoreButton { get; set; }
 
-    public virtual GuildDto Guild { get; set; }
+    //public virtual GuildDto Guild { get; set; }
 }

@@ -10,6 +10,7 @@ public class CbProfile : Profile
         CreateMap<AllowConfiguration, AllowConfigurationDto>().ReverseMap();
         CreateMap<ChannelConfiguration, ChannelConfigurationDto>().ReverseMap();
         CreateMap<Channel, ChannelDto>().ReverseMap();
+        CreateMap<Channel, ChannelConfigurationSummaryDto>().ReverseMap();
         CreateMap<ClipEmbed, ClipEmbedDto>().ReverseMap();
         CreateMap<Creator, CreatorDto>().ReverseMap();
         CreateMap<CreatorChannel, CreatorChannelDto>().ReverseMap();
@@ -20,6 +21,7 @@ public class CbProfile : Profile
         CreateMap<Game, GameDto>().ReverseMap();
         CreateMap<GameChannel, GameChannelDto>().ReverseMap();
         CreateMap<GuildConfiguration, GuildConfigurationDto>().ReverseMap();
+        CreateMap<Guild, GuildConfigurationSummaryDto>().ReverseMap();
         CreateMap<Guild, GuildDto>().ReverseMap();
         CreateMap<LiveEmbed, LiveEmbedDto>().ReverseMap();
         CreateMap<MessageConfiguration, MessageConfigurationDto>().ReverseMap();

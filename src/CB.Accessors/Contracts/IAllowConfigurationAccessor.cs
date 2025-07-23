@@ -7,11 +7,11 @@ public interface IAllowConfigurationAccessor
 {
     Task<List<AllowConfigurationDto>> GetAllAsync();
 
-    Task<AllowConfigurationDto?> GetByIdAsync(string id);
+    Task<AllowConfigurationDto> GetByIdAsync(string id);
 
     Task<AllowConfigurationDto> CreateAsync(AllowConfiguration entity);
 
-    Task<AllowConfigurationDto?> UpdateAsync(AllowConfigurationDto entity);
+    Task<AllowConfigurationDto> UpdateAsync(AllowConfigurationDto entity);
 
     Task<bool> DeleteAsync(string id);
 }

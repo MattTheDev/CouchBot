@@ -9,8 +9,7 @@ using Platform = CB.Shared.Enums.Platform;
 
 namespace CB.Bot.Commands.Application;
 
-public class FilterSlashCommands(IGuildAccessor guildAccessor, 
-    IFilterAccessor filterAccessor) 
+public class FilterSlashCommands(IFilterAccessor filterAccessor) 
     : BaseSlashCommands
 {
     [SlashCommand(
@@ -29,9 +28,9 @@ public class FilterSlashCommands(IGuildAccessor guildAccessor,
             return;
         }
 
+        var t = (int)platform;
         filterText = filterText.TrimStart('"').TrimEnd('"');
-        var guild = await guildAccessor.GetByIdAsync(SocketInteraction.GuildId.ToString());
-        var existingFilters = await filterAccessor.GetAllAsync(guild?.Id);
+        var existingFilters = await filterAccessor.GetAllAsync(SocketInteraction.GuildId.ToString());
         var existingFilter = existingFilters.FirstOrDefault(
             x => x.PlatformId == (int)platform &&
                  x.FilterTypeId == (int)filterType &&
@@ -44,7 +43,7 @@ public class FilterSlashCommands(IGuildAccessor guildAccessor,
                 Text = filterText,
                 PlatformId = (int)platform,
                 FilterTypeId = (int)filterType,
-                GuildId = guild?.Id.ToString()
+                GuildId = SocketInteraction.GuildId.ToString()
             });
 
             await SocketInteraction.FollowupAsync($"{filterType} filter has been created.");

@@ -7,11 +7,11 @@ public interface IChannelConfigurationAccessor
 {
     Task<List<ChannelConfigurationDto>> GetAllAsync();
 
-    Task<ChannelConfigurationDto?> GetByIdAsync(string id);
+    Task<ChannelConfigurationDto> GetByIdAsync(string id);
 
     Task<ChannelConfigurationDto> CreateAsync(ChannelConfiguration entity);
 
-    Task<ChannelConfigurationDto?> UpdateAsync(string id, 
+    Task<ChannelConfigurationDto> UpdateAsync(string id, 
         ChannelConfigurationDto dto);
 
     Task<bool> DeleteAsync(string id);

@@ -3,6 +3,7 @@ using System;
 using CB.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CB.Data.Migrations
 {
     [DbContext(typeof(CbContext))]
-    partial class CbContextModelSnapshot : ModelSnapshot
+    [Migration("20250718014125_7172025-841p")]
+    partial class _7172025841p
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,7 +262,7 @@ namespace CB.Data.Migrations
                     b.Property<string>("GuildId")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PlatformId")
+                    b.Property<int>("PlatformId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Text")
@@ -476,12 +479,6 @@ namespace CB.Data.Migrations
                     b.ToTable("Platform");
 
                     b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DisplayName = "All",
-                            Enabled = false
-                        },
                         new
                         {
                             Id = 3,
@@ -754,7 +751,9 @@ namespace CB.Data.Migrations
 
                     b.HasOne("CB.Data.Entities.Platform", "Platform")
                         .WithMany()
-                        .HasForeignKey("PlatformId");
+                        .HasForeignKey("PlatformId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("FilterType");
 

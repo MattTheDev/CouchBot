@@ -37,7 +37,7 @@ public class CreatorEngine(ICreatorAccessor creatorAccessor,
 
         if (creator == null || creator.PlatformId != (int)platform)
         {
-            creator = await creatorAccessor.CreateAsync(new Creator
+            creator = await creatorAccessor.CreateAsync(new Data.Entities.Creator
             {
                 ChannelId = validChannel.ChannelId,
                 DisplayName = validChannel.DisplayName ?? "",
@@ -47,48 +47,49 @@ public class CreatorEngine(ICreatorAccessor creatorAccessor,
             });
         }
 
-        var channel = guild.Channels.FirstOrDefault(c => c.Id.Equals(announcementChannel.Id.ToString())) ?? await channelAccessor.CreateAsync(new Channel
-        {
-            Id = announcementChannel.Id.ToString(),
-            CreatedDate = DateTime.UtcNow,
-            DisplayName = announcementChannel.Name,
-            GuildId = guild.Id,
-            ModifiedDate = DateTime.UtcNow
-        });
+        // TODO Temporary. Figuring out navigational property depth and weirdness.
+        //var channel = guild.Channels.FirstOrDefault(c => c.Id.Equals(announcementChannel.Id.ToString())) ?? await channelAccessor.CreateAsync(new Channel
+        //{
+        //    Id = announcementChannel.Id.ToString(),
+        //    CreatedDate = DateTime.UtcNow,
+        //    DisplayName = announcementChannel.Name,
+        //    GuildId = guild.Id,
+        //    ModifiedDate = DateTime.UtcNow
+        //});
 
-        if (await RemoveCreator(
-                creatorName,
-                announcementChannel,
-                channelType,
-                customMessage,
-                channel, 
-                creator,
-                platform,
-                socketInteraction,
-                authorName))
-        {
-            return;
-        }
+        //if (await RemoveCreator(
+        //        creatorName,
+        //        announcementChannel,
+        //        channelType,
+        //        customMessage,
+        //        channel, 
+        //        creator,
+        //        platform,
+        //        socketInteraction,
+        //        authorName))
+        //{
+        //    return;
+        //}
 
-        if (await UpdateCreatorMessage(
-                creatorName,
-                channelType,
-                customMessage, 
-                channel,
-                creator,
-                socketInteraction,
-                authorName))
-        {
-            return;
-        }
+        //if (await UpdateCreatorMessage(
+        //        creatorName,
+        //        channelType,
+        //        customMessage, 
+        //        channel,
+        //        creator,
+        //        socketInteraction,
+        //        authorName))
+        //{
+        //    return;
+        //}
 
-        await creatorChannelAccessor.CreateAsync(new CreatorChannel
-        {
-            ChannelId = channel.Id,
-            CreatorId = creator.Id,
-            ChannelTypeId = (int)channelType,
-            CustomMessage = customMessage
-        });
+        //await creatorChannelAccessor.CreateAsync(new CreatorChannel
+        //{
+        //    ChannelId = channel.Id,
+        //    CreatorId = creator.Id,
+        //    ChannelTypeId = (int)channelType,
+        //    CustomMessage = customMessage
+        //});
 
         await socketInteraction.FollowupAsync(
             $"{Format.Sanitize(creatorName)} will now announce in {announcementChannel.Name}.", 

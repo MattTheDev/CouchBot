@@ -14,5 +14,4 @@ public string DisplayName { get; set; }
     public virtual ICollection<CreatorChannelDto> CreatorChannels { get; set; } = new List<CreatorChannelDto>();
     public virtual ICollection<GameChannelDto> GameChannels { get; set; } = new List<GameChannelDto>();
     public virtual ICollection<TeamChannelDto> TeamChannels { get; set; } = new List<TeamChannelDto>();
-
 }

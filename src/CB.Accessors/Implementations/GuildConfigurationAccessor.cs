@@ -18,7 +18,7 @@ public class GuildConfigurationAccessor(CbContext context,
             .ProjectTo<GuildConfigurationDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<GuildConfigurationDto?> GetByIdAsync(string id) => context.GuildConfigurations
+    public Task<GuildConfigurationDto> GetByIdAsync(string id) => context.GuildConfigurations
             .AsNoTracking()
             .Where(g => g.GuildId == id)
             .ProjectTo<GuildConfigurationDto>(mapper.ConfigurationProvider)
@@ -34,7 +34,7 @@ public class GuildConfigurationAccessor(CbContext context,
         return mapper.Map<GuildConfigurationDto>(entity);
     }
 
-    public async Task<GuildConfigurationDto?> UpdateAsync(string id, 
+    public async Task<GuildConfigurationDto> UpdateAsync(string id, 
         GuildConfigurationDto updated)
     {
         var guildConfiguration = await context

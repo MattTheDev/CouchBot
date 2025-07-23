@@ -7,11 +7,13 @@ public interface IGuildAccessor
 {
     Task<List<GuildDto>> GetAllAsync();
 
-    Task<GuildDto?> GetByIdAsync(string id);
+    Task<GuildDto> GetByIdAsync(string id);
+
+    Task<GuildConfigurationSummaryDto> GetConfigurationSummaryByIdAsync(string id);
 
     Task<GuildDto> CreateAsync(Guild entity);
 
-    Task<GuildDto?> UpdateAsync(string id, 
+    Task<GuildDto> UpdateAsync(string id, 
         Guild entity);
 
     Task<bool> DeleteAsync(string id);
