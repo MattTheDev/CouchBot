@@ -18,7 +18,7 @@ public class CreatorChannelAccessor(CbContext context,
             .ProjectTo<CreatorChannelDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<CreatorChannelDto?> GetAsync(long creatorId,
+    public Task<CreatorChannelDto> GetAsync(long creatorId,
         string channelId,
         int channelTypeId) => context.CreatorChannels
             .AsNoTracking()
@@ -38,7 +38,7 @@ public class CreatorChannelAccessor(CbContext context,
         return mapper.Map<CreatorChannelDto>(entity);
     }
 
-    public async Task<CreatorChannelDto?> UpdateAsync(string id,
+    public async Task<CreatorChannelDto> UpdateAsync(string id,
         CreatorChannelDto updated)
     {
         var creatorChannel = await context

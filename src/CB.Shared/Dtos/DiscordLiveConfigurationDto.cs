@@ -10,5 +10,5 @@ public class DiscordLiveConfigurationDto
     public string Footer { get; set; }
     public string MentionRoleId { get; set; }
 
-    public virtual GuildDto Guild { get; set; }
+    //public virtual GuildDto Guild { get; set; }
 }

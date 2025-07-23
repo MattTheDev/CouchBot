@@ -18,7 +18,7 @@ public class AllowConfigurationAccessor(CbContext context,
             .ProjectTo<AllowConfigurationDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<AllowConfigurationDto?> GetByIdAsync(string id) => context.AllowConfigurations
+    public Task<AllowConfigurationDto> GetByIdAsync(string id) => context.AllowConfigurations
             .AsNoTracking()
             .Where(g => g.GuildId == id)
             .ProjectTo<AllowConfigurationDto>(mapper.ConfigurationProvider)
@@ -34,7 +34,7 @@ public class AllowConfigurationAccessor(CbContext context,
         return mapper.Map<AllowConfigurationDto>(entity);
     }
 
-    public async Task<AllowConfigurationDto?> UpdateAsync(AllowConfigurationDto updated)
+    public async Task<AllowConfigurationDto> UpdateAsync(AllowConfigurationDto updated)
     {
         var allowConfiguration = await context
             .AllowConfigurations

@@ -8,5 +8,5 @@ public class RoleConfigurationDto
     public string DiscoveryRoleId { get; set; }
     public string LiveDiscoveryRoleId { get; set; }
 
-    public virtual GuildDto Guild { get; set; }
+    //public virtual GuildDto Guild { get; set; }
 }

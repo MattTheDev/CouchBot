@@ -7,7 +7,7 @@ public interface IDropdownPayloadAccessor
 {
     Task<List<DropdownPayloadDto>> GetAllAsync();
 
-    Task<DropdownPayloadDto?> GetByIdAsync(int id);
+    Task<DropdownPayloadDto> GetByIdAsync(int id);
 
     Task<DropdownPayloadDto> CreateAsync(DropdownPayload entity);
 

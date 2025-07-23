@@ -43,7 +43,7 @@ public class DiscoverySlashCommands(IGuildAccessor guildAccessor,
         }
 
         var guildChannel = (IGuildChannel)SocketInteraction.Channel;
-        var guild = await guildAccessor.GetByIdAsync(guildChannel.Guild.Id.ToString());
+        var guild = await guildAccessor.GetConfigurationSummaryByIdAsync(guildChannel.Guild.Id.ToString());
         if (guild == null)
         {
             await SocketInteraction.FollowupAsync(

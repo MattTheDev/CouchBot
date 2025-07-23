@@ -107,6 +107,12 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.NoAction);
 
+        // Configure FilterType table
+        modelBuilder.Entity<FilterType>().HasData(
+            new FilterType { Id = 1, DisplayName = "Game" },
+            new FilterType { Id = 2, DisplayName = "Title" }
+        );
+
         // Configure GameChannels table
         modelBuilder.Entity<GameChannel>()
             .HasKey(cc => new { cc.GameId, cc.ChannelId });
@@ -214,6 +220,17 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
 
         // Configure MessageConfiguration table
         modelBuilder.Entity<MessageConfiguration>().ToTable("MessageConfigurations");
+
+        // Configure Platform table
+        modelBuilder.Entity<Platform>().HasData(
+            new Platform { Id = 1, DisplayName = "All" },
+            new Platform { Id = 3, DisplayName = "Picarto" },
+            new Platform { Id = 4, DisplayName = "Piczel" },
+            new Platform { Id = 6, DisplayName = "Twitch" },
+            new Platform { Id = 7, DisplayName = "YouTube" },
+            new Platform { Id = 10, DisplayName = "Trovo" },
+            new Platform { Id = 13, DisplayName = "DLive" }
+        );
 
         // Configure RoleConfiguration table
         modelBuilder.Entity<RoleConfiguration>().ToTable("RoleConfigurations");

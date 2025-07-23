@@ -10,5 +10,5 @@ public class MessageConfigurationDto
     public string PublishedMessage { get; set; }
     public string StreamOfflineMessage { get; set; }
 
-    public virtual GuildDto Guild { get; set; }
+    //public virtual GuildDto Guild { get; set; }
 }

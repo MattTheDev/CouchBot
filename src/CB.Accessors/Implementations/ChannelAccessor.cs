@@ -18,13 +18,19 @@ public class ChannelAccessor(CbContext context,
             .ProjectTo<ChannelDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<ChannelDto?> GetByIdAsync(string id) => context.Channels
+    public Task<ChannelDto> GetByIdAsync(string id) => context.Channels
             .AsNoTracking()
             .Where(g => g.Id == id)
             .ProjectTo<ChannelDto>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
 
-    public async Task<ChannelDto> CreateAsync(Channel entity)
+    public Task<ChannelConfigurationSummaryDto> GetChannelConfigurationSummaryByIdAsync(string id) => context.Channels
+        .AsNoTracking()
+        .Where(g => g.Id == id)
+        .ProjectTo<ChannelConfigurationSummaryDto>(mapper.ConfigurationProvider)
+        .FirstOrDefaultAsync();
+
+    public async Task<ChannelConfigurationSummaryDto> CreateAsync(Channel entity)
     {
         entity.CreatedDate = DateTime.UtcNow;
         entity.ModifiedDate = DateTime.UtcNow;
@@ -34,10 +40,10 @@ public class ChannelAccessor(CbContext context,
             .SaveChangesAsync()
             .ConfigureAwait(false);
 
-        return mapper.Map<ChannelDto>(entity);
+        return mapper.Map<ChannelConfigurationSummaryDto>(entity);
     }
 
-    public async Task<ChannelDto?> UpdateAsync(ChannelDto updated)
+    public async Task<ChannelDto> UpdateAsync(ChannelDto updated)
     {
         var channel = await context
             .Channels

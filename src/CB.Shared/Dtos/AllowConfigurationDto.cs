@@ -15,5 +15,5 @@ public class AllowConfigurationDto
     public bool AllowCrosspost { get; set; }
     public bool AllowDiscordLive { get; set; }
 
-    public virtual GuildDto Guild { get; set; }
+    //public virtual GuildDto Guild { get; set; }
 }

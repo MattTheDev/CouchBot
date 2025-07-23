@@ -18,7 +18,7 @@ public class UserAccessor(CbContext context,
             .ProjectTo<UserDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<UserDto?> GetByIdAsync(string id) => context.Users
+    public Task<UserDto> GetByIdAsync(string id) => context.Users
             .AsNoTracking()
             .Where(g => g.Id == id)
             .ProjectTo<UserDto>(mapper.ConfigurationProvider)
@@ -37,7 +37,7 @@ public class UserAccessor(CbContext context,
         return mapper.Map<UserDto>(entity);
     }
 
-    public async Task<UserDto?> UpdateAsync(string id, 
+    public async Task<UserDto> UpdateAsync(string id, 
         User updated)
     {
         var user = await context

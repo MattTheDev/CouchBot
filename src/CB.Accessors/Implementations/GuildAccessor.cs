@@ -18,11 +18,17 @@ public class GuildAccessor(CbContext context,
             .ProjectTo<GuildDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<GuildDto?> GetByIdAsync(string id) => context.Guilds
+    public Task<GuildDto> GetByIdAsync(string id) => context.Guilds
             .AsNoTracking()
             .Where(g => g.Id == id)
             .ProjectTo<GuildDto>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
+
+    public Task<GuildConfigurationSummaryDto> GetConfigurationSummaryByIdAsync(string id) => context.Guilds
+        .AsNoTracking()
+        .Where(g => g.Id == id)
+        .ProjectTo<GuildConfigurationSummaryDto>(mapper.ConfigurationProvider)
+        .FirstOrDefaultAsync();
 
     public async Task<GuildDto> CreateAsync(Guild entity)
     {
@@ -37,7 +43,7 @@ public class GuildAccessor(CbContext context,
         return mapper.Map<GuildDto>(entity);
     }
 
-    public async Task<GuildDto?> UpdateAsync(string id, 
+    public async Task<GuildDto> UpdateAsync(string id, 
         Guild updated)
     {
         var guild = await context

@@ -38,7 +38,7 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
             return;
         }
 
-        await ProcessGameList(page, channel?.Id.ToString(), Context.Guild, SocketInteraction);
+        await ProcessGameList(page, channel?.Id.ToString());
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
             return;
         }
 
-        await ProcessTeamList(page, channel?.Id.ToString(), Context.Guild, SocketInteraction);
+        await ProcessTeamList(page, channel?.Id.ToString());
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
             return;
         }
 
-        await ProcessCreatorList(page, channel?.Id.ToString(), Context.Guild, SocketInteraction);
+        await ProcessCreatorList(page, channel?.Id.ToString());
     }
 
     /// <summary>
@@ -103,23 +103,20 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
             return;
         }
 
-        await ProcessFilterList(page, Context.Guild, SocketInteraction);
+        await ProcessFilterList(page);
     }
 
-    private async Task ProcessCreatorList(
-        long page,
-        string channelId,
-        IGuild discordGuild,
-        SocketInteraction socketInteraction)
+    private async Task ProcessCreatorList(long page,
+        string channelId)
     {
-        var guildCreators = await guildAccessor.GetByIdAsync(discordGuild.Id.ToString());
+        var guildCreators = await guildAccessor.GetByIdAsync(SocketInteraction.GuildId.ToString());
         var creators = new List<ListViewModel>();
 
         if (string.IsNullOrWhiteSpace(channelId))
         {
             guildCreators?.Channels.ToList().ForEach(async x =>
             {
-                await ValidateChannelDisplayName(socketInteraction, x);
+                await ValidateChannelDisplayName(x);
                 creators.AddRange(x.CreatorChannels.Select(y => y.Creator).Select(creator => new ListViewModel
                 {
                     DisplayName = creator.DisplayName,
@@ -133,7 +130,7 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
         {
             guildCreators?.Channels.Where(x => x.Id.Equals(channelId)).ToList().ForEach(x =>
             {
-                ValidateChannelDisplayName(socketInteraction, x).GetAwaiter().GetResult();
+                ValidateChannelDisplayName(x).GetAwaiter().GetResult();
                 creators.AddRange(x.CreatorChannels.Select(y=>y.Creator).Select(creator => new ListViewModel
                 {
                     DisplayName = creator.DisplayName,
@@ -203,16 +200,12 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
         }
 
         builder.Description = creators.Count == 0 ? "It doesn't look like you are announcing any creators." : strBuilder.ToString();
-        await socketInteraction.FollowupAsync(embed: builder.Build(), ephemeral: true);
+        await SocketInteraction.FollowupAsync(embed: builder.Build(), ephemeral: true);
     }
 
-    private async Task ProcessFilterList(
-        long page,
-        IGuild discordGuild,
-        SocketInteraction socketInteraction)
+    private async Task ProcessFilterList(long page)
     {
-        var guild = await guildAccessor.GetByIdAsync(discordGuild.Id.ToString());
-        var filters = await filterAccessor.GetAllAsync(guild.Id);
+        var filters = await filterAccessor.GetAllAsync(SocketInteraction.GuildId.ToString());
 
         var builder = new EmbedBuilder();
         var authorBuilder = new EmbedAuthorBuilder();
@@ -271,16 +264,13 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
                     )
                 );
 
-        await socketInteraction.FollowupAsync(embed: builder.Build(), ephemeral: true);
+        await SocketInteraction.FollowupAsync(embed: builder.Build(), ephemeral: true);
     }
 
-    private async Task ProcessGameList(
-        long page,
-        string channelId,
-        IGuild discordGuild,
-        SocketInteraction socketInteraction)
+    private async Task ProcessGameList(long page,
+        string channelId)
     {
-        var guildCreators = await guildAccessor.GetByIdAsync(discordGuild.Id.ToString());
+        var guildCreators = await guildAccessor.GetByIdAsync(SocketInteraction.GuildId.ToString());
 
         var builder = new EmbedBuilder();
         var authorBuilder = new EmbedAuthorBuilder();
@@ -292,7 +282,7 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
         {
             guildCreators?.Channels.ToList().ForEach(async x =>
             {
-                await ValidateChannelDisplayName(socketInteraction, x);
+                await ValidateChannelDisplayName(x);
                 games.AddRange(x.GameChannels.Select(y => y.Game).Select(game => new ListViewModel
                 {
                     DisplayName = game.DisplayName,
@@ -304,7 +294,7 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
         {
             guildCreators?.Channels.Where(x => x.Id.Equals(channelId)).ToList().ForEach(x =>
             {
-                ValidateChannelDisplayName(socketInteraction, x).GetAwaiter().GetResult();
+                ValidateChannelDisplayName(x).GetAwaiter().GetResult();
                 games.AddRange(x.GameChannels.Select(y => y.Game).Select(game => new ListViewModel
                 {
                     DisplayName = game.DisplayName,
@@ -348,15 +338,14 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
 
         builder.Description = totalGames == 0 ? "It doesn't look like you are announcing any games." : string.Join("\r\n", gamesToDisplay.Select(x => $"<:twitch:844040506056376321> {x.DisplayName} - #{x.ChannelName}"));
 
-        await socketInteraction.FollowupAsync(embed: builder.Build(), ephemeral: true);
+        await SocketInteraction.FollowupAsync(embed: builder.Build(), ephemeral: true);
     }
 
-    private async Task ValidateChannelDisplayName(SocketInteraction socketInteraction,
-        ChannelDto x)
+    private async Task ValidateChannelDisplayName(ChannelDto x)
     {
         if (string.IsNullOrEmpty(x.DisplayName))
         {
-            var guild = discordSocketClient.GetGuild(socketInteraction.GuildId.Value);
+            var guild = discordSocketClient.GetGuild(SocketInteraction.GuildId.Value);
             var channel = guild.GetChannel(ulong.Parse(x.Id));
             x.DisplayName = channel.Name;
             x.ModifiedDate = DateTime.UtcNow;
@@ -364,13 +353,10 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
         }
     }
 
-    private async Task ProcessTeamList(
-        long page,
-        string channelId,
-        IGuild discordGuild,
-        SocketInteraction socketInteraction)
+    private async Task ProcessTeamList(long page,
+        string channelId)
     {
-        var guildCreators = await guildAccessor.GetByIdAsync(discordGuild.Id.ToString());
+        var guildCreators = await guildAccessor.GetByIdAsync(SocketInteraction.GuildId.ToString());
 
         var builder = new EmbedBuilder();
         var authorBuilder = new EmbedAuthorBuilder();
@@ -381,7 +367,7 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
         {
             guildCreators?.Channels.ToList().ForEach(async x =>
             {
-                await ValidateChannelDisplayName(socketInteraction, x);
+                await ValidateChannelDisplayName(x);
                 teams.AddRange(x.TeamChannels.Select(y => y.Team).Select(team => new ListViewModel
                 {
                     DisplayName = team.DisplayName,
@@ -393,7 +379,7 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
         {
             guildCreators?.Channels.Where(x => x.Id.Equals(channelId)).ToList().ForEach(x =>
             {
-                ValidateChannelDisplayName(socketInteraction, x).GetAwaiter().GetResult();
+                ValidateChannelDisplayName(x).GetAwaiter().GetResult();
                 teams.AddRange(x.TeamChannels.Select(y => y.Team).Select(team => new ListViewModel
                 {
                     DisplayName = team.DisplayName,
@@ -437,6 +423,6 @@ public class ListSlashCommands(DiscordSocketClient discordSocketClient,
 
         builder.Description = totalTeams == 0 ? "It doesn't look like you are announcing any teams." : string.Join("\r\n", teamsToDisplay.Select(x => $"<:twitch:844040506056376321> {x.DisplayName} - #{x.ChannelName}"));
 
-        await socketInteraction.FollowupAsync(embed: builder.Build(), ephemeral: true);
+        await SocketInteraction.FollowupAsync(embed: builder.Build(), ephemeral: true);
     }
 }

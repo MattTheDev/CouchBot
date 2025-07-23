@@ -18,7 +18,7 @@ public class ChannelConfigurationAccessor(CbContext context,
             .ProjectTo<ChannelConfigurationDto>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-    public Task<ChannelConfigurationDto?> GetByIdAsync(string id) => context.ChannelConfigurations
+    public Task<ChannelConfigurationDto> GetByIdAsync(string id) => context.ChannelConfigurations
             .AsNoTracking()
             .Where(g => g.GuildId == id)
             .ProjectTo<ChannelConfigurationDto>(mapper.ConfigurationProvider)
@@ -34,7 +34,7 @@ public class ChannelConfigurationAccessor(CbContext context,
         return mapper.Map<ChannelConfigurationDto>(entity);
     }
 
-    public async Task<ChannelConfigurationDto?> UpdateAsync(string id, 
+    public async Task<ChannelConfigurationDto> UpdateAsync(string id, 
         ChannelConfigurationDto dto)
     {
         var channelConfiguration = await context

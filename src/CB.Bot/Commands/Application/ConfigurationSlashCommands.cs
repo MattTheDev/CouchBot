@@ -33,7 +33,7 @@ public class ConfigurationSlashCommands(IGuildAccessor guildAccessor,
         }
 
         var guild = await guildAccessor
-            .GetByIdAsync(Context.Guild.Id.ToString())
+            .GetConfigurationSummaryByIdAsync(Context.Guild.Id.ToString())
             .ConfigureAwait(false);
 
         if (guild == null)
@@ -128,13 +128,13 @@ public class ConfigurationSlashCommands(IGuildAccessor guildAccessor,
             return;
         }
 
-        var guild = await guildAccessor.GetByIdAsync(Context.Guild.Id.ToString()).ConfigureAwait(false);
+        var guild = await guildAccessor.GetConfigurationSummaryByIdAsync(Context.Guild.Id.ToString()).ConfigureAwait(false);
 
         var builder = new EmbedBuilder();
         var authorBuilder = new EmbedAuthorBuilder();
         var footerBuilder = new EmbedFooterBuilder();
 
-        await BuildEmbed(builder, authorBuilder, footerBuilder, Context.Guild).ConfigureAwait(false);
+        await BuildEmbed(builder, authorBuilder, footerBuilder).ConfigureAwait(false);
         PopulateEmbedFields(builder, guild);
         await SocketInteraction.FollowupAsync(embed: builder.Build()).ConfigureAwait(false);
     }
@@ -142,22 +142,22 @@ public class ConfigurationSlashCommands(IGuildAccessor guildAccessor,
     private async Task BuildEmbed(
         EmbedBuilder builder,
         EmbedAuthorBuilder authorBuilder,
-        EmbedFooterBuilder footerBuilder,
-        IGuild guild)
+        EmbedFooterBuilder footerBuilder)
     {
         authorBuilder.IconUrl = discordSocketClient.CurrentUser.GetAvatarUrl();
         authorBuilder.Name = discordSocketClient.CurrentUser.Username;
         authorBuilder.Url = "https://couch.bot";
 
         footerBuilder.IconUrl = discordSocketClient.CurrentUser.GetAvatarUrl();
-        footerBuilder.Text = $"{guild.Name} Configuration • Established by {(await guild.GetOwnerAsync().ConfigureAwait(false)).Username} on {guild.CreatedAt:d}";
+        footerBuilder.Text = $"{Context.Guild.Name} Configuration • Established by {(await Context.Guild.GetOwnerAsync().ConfigureAwait(false)).Username} on {Context.Guild.CreatedAt:d}";
 
         builder.Author = authorBuilder;
         builder.Footer = footerBuilder;
         builder.Color = new Color(88, 101, 242);
     }
 
-    private void PopulateEmbedFields(EmbedBuilder builder, GuildDto guild)
+    private void PopulateEmbedFields(EmbedBuilder builder, 
+        GuildConfigurationSummaryDto guild)
     {
         builder.AddField("Allows", GetAllowConfigurationString(guild, 0), true);
 
@@ -183,7 +183,8 @@ public class ConfigurationSlashCommands(IGuildAccessor guildAccessor,
         builder.AddField("Messages", GetMessageConfigurationString(guild));
     }
 
-    private string GetAllowConfigurationString(GuildDto guild, int section)
+    private string GetAllowConfigurationString(GuildConfigurationSummaryDto guild, 
+        int section)
     {
         var strBuilder = new StringBuilder();
 
@@ -214,7 +215,7 @@ public class ConfigurationSlashCommands(IGuildAccessor guildAccessor,
         return strBuilder.ToString();
     }
 
-    private string GetChannelConfigurationString(GuildDto guild)
+    private string GetChannelConfigurationString(GuildConfigurationSummaryDto guild)
     {
         var strBuilder = new StringBuilder();
 
@@ -241,7 +242,7 @@ public class ConfigurationSlashCommands(IGuildAccessor guildAccessor,
         return strBuilder.ToString();
     }
 
-    private string GetServerConfigurationString(GuildDto guild)
+    private string GetServerConfigurationString(GuildConfigurationSummaryDto guild)
     {
         var strBuilder = new StringBuilder();
 
@@ -254,7 +255,7 @@ public class ConfigurationSlashCommands(IGuildAccessor guildAccessor,
         return strBuilder.ToString();
     }
 
-    private string GetRoleConfigurationString(GuildDto guild)
+    private string GetRoleConfigurationString(GuildConfigurationSummaryDto guild)
     {
         var strBuilder = new StringBuilder();
 
@@ -276,7 +277,7 @@ public class ConfigurationSlashCommands(IGuildAccessor guildAccessor,
         return strBuilder.ToString();
     }
 
-    private string GetMessageConfigurationString(GuildDto guild)
+    private string GetMessageConfigurationString(GuildConfigurationSummaryDto guild)
     {
         var strBuilder = new StringBuilder();
 

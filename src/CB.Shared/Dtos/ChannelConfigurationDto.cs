@@ -9,9 +9,9 @@ public class ChannelConfigurationDto
     public string? LiveChannelId { get; set; }
     public string? DiscordLiveChannelId { get; set; }
 
-    public virtual GuildDto Guild { get; set; }
-    public virtual ChannelDto GreetingChannel { get; set; }
-    public virtual ChannelDto GoodbyeChannel { get; set; }
-    public virtual ChannelDto LiveChannel { get; set; }
-    public virtual ChannelDto DiscordLiveChannel { get; set; }
+    //public virtual GuildDto Guild { get; set; }
+    //public virtual ChannelDto GreetingChannel { get; set; }
+    //public virtual ChannelDto GoodbyeChannel { get; set; }
+    //public virtual ChannelDto LiveChannel { get; set; }
+    //public virtual ChannelDto DiscordLiveChannel { get; set; }
 }

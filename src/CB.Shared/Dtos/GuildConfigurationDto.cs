@@ -7,5 +7,5 @@ public string GuildId { get; set; }
     public bool TextAnnouncements { get; set; }
     public bool DeleteOffline { get; set; }
 
-    public virtual GuildDto Guild { get; set; }
+    //public virtual GuildDto Guild { get; set; }
 }

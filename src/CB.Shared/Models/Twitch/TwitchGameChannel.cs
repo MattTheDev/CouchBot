@@ -4,6 +4,6 @@ public class TwitchGameChannel
 {
     public string GameId { get; set; }
     public string GameName { get; set; }
-    public int ChannelId { get; set; }
-    public int GuildId { get; set; }
+    public string ChannelId { get; set; }
+    public string GuildId { get; set; }
 }

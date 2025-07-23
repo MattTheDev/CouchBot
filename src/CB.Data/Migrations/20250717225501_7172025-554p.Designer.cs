@@ -3,6 +3,7 @@ using System;
 using CB.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CB.Data.Migrations
 {
     [DbContext(typeof(CbContext))]
-    partial class CbContextModelSnapshot : ModelSnapshot
+    [Migration("20250717225501_7172025-554p")]
+    partial class _7172025554p
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,7 +262,7 @@ namespace CB.Data.Migrations
                     b.Property<string>("GuildId")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PlatformId")
+                    b.Property<int>("PlatformId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Text")
@@ -290,18 +293,6 @@ namespace CB.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FilterType");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DisplayName = "Game"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DisplayName = "Title"
-                        });
                 });
 
             modelBuilder.Entity("CB.Data.Entities.Game", b =>
@@ -474,50 +465,6 @@ namespace CB.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Platform");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DisplayName = "All",
-                            Enabled = false
-                        },
-                        new
-                        {
-                            Id = 3,
-                            DisplayName = "Picarto",
-                            Enabled = false
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DisplayName = "Piczel",
-                            Enabled = false
-                        },
-                        new
-                        {
-                            Id = 6,
-                            DisplayName = "Twitch",
-                            Enabled = false
-                        },
-                        new
-                        {
-                            Id = 7,
-                            DisplayName = "YouTube",
-                            Enabled = false
-                        },
-                        new
-                        {
-                            Id = 10,
-                            DisplayName = "Trovo",
-                            Enabled = false
-                        },
-                        new
-                        {
-                            Id = 13,
-                            DisplayName = "DLive",
-                            Enabled = false
-                        });
                 });
 
             modelBuilder.Entity("CB.Data.Entities.RoleConfiguration", b =>
@@ -548,13 +495,13 @@ namespace CB.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("DisplayName")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("PlatformId")
                         .HasColumnType("integer");
@@ -754,7 +701,9 @@ namespace CB.Data.Migrations
 
                     b.HasOne("CB.Data.Entities.Platform", "Platform")
                         .WithMany()
-                        .HasForeignKey("PlatformId");
+                        .HasForeignKey("PlatformId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("FilterType");
 

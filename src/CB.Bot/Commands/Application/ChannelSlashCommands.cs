@@ -69,7 +69,7 @@ public class ChannelSlashCommands(IGuildAccessor guildAccessor,
         }
 
         var guild = await guildAccessor
-            .GetByIdAsync(Context.Guild.Id.ToString())
+            .GetConfigurationSummaryByIdAsync(Context.Guild.Id.ToString())
             .ConfigureAwait(false);
 
         if (guild == null)
@@ -79,7 +79,7 @@ public class ChannelSlashCommands(IGuildAccessor guildAccessor,
             return;
         }
 
-        var existingChannel = await channelAccessor.GetByIdAsync(discordChannel.Id.ToString()).ConfigureAwait(false)
+        var existingChannel = await channelAccessor.GetChannelConfigurationSummaryByIdAsync(discordChannel.Id.ToString()).ConfigureAwait(false)
                       ?? await channelAccessor.CreateAsync(new()
                       {
                           CreatedDate = DateTime.UtcNow,
