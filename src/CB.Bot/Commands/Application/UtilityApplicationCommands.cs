@@ -1,4 +1,6 @@
 ﻿using Discord.Interactions;
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
 
 namespace CB.Bot.Commands.Application;
 
