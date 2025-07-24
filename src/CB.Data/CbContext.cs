@@ -19,6 +19,7 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
     public DbSet<Guild> Guilds => Set<Guild>();
     public DbSet<GuildConfiguration> GuildConfigurations => Set<GuildConfiguration>();
     public DbSet<LiveEmbed> LiveEmbeds => Set<LiveEmbed>();
+    public DbSet<MessageConfiguration> MessageConfigurations => Set<MessageConfiguration>();
     public DbSet<RoleConfiguration> RoleConfigurations => Set<RoleConfiguration>();
     public DbSet<TeamChannel> TeamChannels => Set<TeamChannel>();
     public DbSet<User> Users => Set<User>();
