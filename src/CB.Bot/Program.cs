@@ -47,6 +47,7 @@ builder.Services.AddScoped<IFilterAccessor, FilterAccessor>();
 builder.Services.AddScoped<IGuildAccessor, GuildAccessor>();
 builder.Services.AddScoped<IGuildConfigurationAccessor, GuildConfigurationAccessor>();
 builder.Services.AddScoped<ILiveEmbedAccessor, LiveEmbedAccessor>();
+builder.Services.AddScoped<IMessageConfigurationAccessor, MessageConfigurationAccessor>();
 builder.Services.AddScoped<IRoleConfigurationAccessor, RoleConfigurationAccessor>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddScoped<IVodEmbedAccessor, VodEmbedAccessor>();
