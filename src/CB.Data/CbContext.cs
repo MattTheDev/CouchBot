@@ -14,6 +14,7 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
     public DbSet<DiscordLiveConfiguration> DiscordLiveConfigurations => Set<DiscordLiveConfiguration>();
     public DbSet<DropdownPayload> DropdownPayloads => Set<DropdownPayload>();
     public DbSet<Filter> Filters => Set<Filter>();
+    public DbSet<FunStuff> FunStuff => Set<FunStuff>();
     public DbSet<Game> Games => Set<Game>();
     public DbSet<GameChannel> GameChannels => Set<GameChannel>();
     public DbSet<Guild> Guilds => Set<Guild>();
@@ -113,6 +114,12 @@ public class CbContext(DbContextOptions<CbContext> options) : DbContext(options)
             new FilterType { Id = 1, DisplayName = "Game" },
             new FilterType { Id = 2, DisplayName = "Title" }
         );
+
+        // Configure FunStuff table
+        modelBuilder.Entity<FunStuff>()
+            .HasNoKey()
+            .Property(f => f.HaiBaiCount)
+            .HasDefaultValue(0);
 
         // Configure GameChannels table
         modelBuilder.Entity<GameChannel>()

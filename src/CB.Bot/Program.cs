@@ -44,6 +44,7 @@ builder.Services.AddScoped<ICreatorChannelAccessor, CreatorChannelAccessor>();
 builder.Services.AddScoped<IDiscordLiveConfigurationAccessor, DiscordLiveConfigurationAccessor>();
 builder.Services.AddScoped<IDropdownPayloadAccessor, DropdownPayloadAccessor>();
 builder.Services.AddScoped<IFilterAccessor, FilterAccessor>();
+builder.Services.AddScoped<IFunAccessor, FunAccessor>();
 builder.Services.AddScoped<IGuildAccessor, GuildAccessor>();
 builder.Services.AddScoped<IGuildConfigurationAccessor, GuildConfigurationAccessor>();
 builder.Services.AddScoped<ILiveEmbedAccessor, LiveEmbedAccessor>();
